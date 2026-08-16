@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "electronique",
+    "name": "Électronique",
+    "icon": "Cpu",
+    "tagline": "Son, vision et précision — sans compromis.",
+    "description": "Casques, montres connectées et enceintes sélectionnés pour leur ingénierie et leur finition.",
+    "order": 1,
+    "image": "/categories/electronique.svg"
+  },
+  {
+    "slug": "maison",
+    "name": "Maison",
+    "icon": "Lamp",
+    "tagline": "Des objets qui transforment le quotidien en rituel.",
+    "description": "Café, luminaires et ambiance — des pièces durables conçues pour durer dix ans.",
+    "order": 2,
+    "image": "/categories/maison.svg"
+  },
+  {
+    "slug": "sport",
+    "name": "Sport",
+    "icon": "Activity",
+    "tagline": "Du matériel qui suit votre rythme, pas l'inverse.",
+    "description": "Performance, précision et matériaux premium pour l'entraînement et le plein air.",
+    "order": 3,
+    "image": "/categories/sport.svg"
+  },
+  {
+    "slug": "beaute",
+    "name": "Beauté",
+    "icon": "Sparkles",
+    "tagline": "Le bon geste, avec la technologie de votre côté.",
+    "description": "Soins et appareils haut de gamme pour une routine quotidienne rayonnante.",
+    "order": 4,
+    "image": "/categories/beaute.svg"
+  }
+]

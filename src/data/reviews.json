@@ -1,0 +1,82 @@
+[
+  {
+    "id": "r1",
+    "author": "Camille D.",
+    "rating": 5,
+    "title": "Qualité bluffante",
+    "body": "Emballage soigné, finition impeccable. On sent que chaque détail a été pensé.",
+    "location": "Paris",
+    "date": "2026-05-12",
+    "verified": true
+  },
+  {
+    "id": "r2",
+    "author": "Thomas R.",
+    "rating": 5,
+    "title": "Livraison ultra rapide",
+    "body": "Commandé le soir, reçu le lendemain matin. Excellent rapport qualité-prix.",
+    "location": "Lyon",
+    "date": "2026-05-28",
+    "verified": true
+  },
+  {
+    "id": "r3",
+    "author": "Inès B.",
+    "rating": 4,
+    "title": "Très satisfaite",
+    "body": "Conforme à la description. Je retire une étoile pour la notice un peu succincte.",
+    "location": "Marseille",
+    "date": "2026-04-19",
+    "verified": true
+  },
+  {
+    "id": "r4",
+    "author": "Mehdi K.",
+    "rating": 5,
+    "title": "Je recommande sans hésiter",
+    "body": "Troisième achat sur cette boutique, jamais déçu. Une sélection vraiment haut de gamme.",
+    "location": "Bordeaux",
+    "date": "2026-06-02",
+    "verified": true
+  },
+  {
+    "id": "r5",
+    "author": "Sophie L.",
+    "rating": 5,
+    "title": "Un autre niveau",
+    "body": "Incomparable par rapport à mon ancien modèle. Je ne regrette absolument pas.",
+    "location": "Toulouse",
+    "date": "2026-03-30",
+    "verified": true
+  },
+  {
+    "id": "r6",
+    "author": "Antoine V.",
+    "rating": 4,
+    "title": "Solide et élégant",
+    "body": "Matériaux premium, design épuré. Parfait pour une utilisation quotidienne.",
+    "location": "Nantes",
+    "date": "2026-05-07",
+    "verified": true
+  },
+  {
+    "id": "r7",
+    "author": "Léa M.",
+    "rating": 5,
+    "title": "Mon coup de cœur",
+    "body": "Le design est magnifique et l'expérience encore meilleure. Je suis conquise.",
+    "location": "Lille",
+    "date": "2026-06-09",
+    "verified": true
+  },
+  {
+    "id": "r8",
+    "author": "Karim S.",
+    "rating": 5,
+    "title": "Service au top",
+    "body": "J'avais une question avant d'acheter — réponse en 10 minutes. Confiance totale.",
+    "location": "Strasbourg",
+    "date": "2026-04-25",
+    "verified": true
+  }
+]

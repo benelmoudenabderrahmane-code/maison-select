@@ -1,0 +1,3572 @@
+[
+  {
+    "asin": "B09XS7JWHH",
+    "slug": "sony-wh-1000xm5",
+    "title": "Sony WH-1000XM5",
+    "brand": "Sony",
+    "category": "electronique",
+    "price": 299,
+    "oldPrice": 419.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 18742,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B09XS7JWHH.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Le casque à réduction de bruit de référence. Huit microphones et deux processeurs analysent l'environnement en temps réel pour un silence absolu, avec un audio hi-res d'une finesse exceptionnelle et 30 heures d'autonomie.",
+    "features": [
+      "ANC de référence (8 micros, 2 processeurs)",
+      "30h d'autonomie + charge rapide (3 min = 3h)",
+      "Audio Hi-Res & LDAC, suréchantillonnage IA DSEE Extreme",
+      "Appels cristallins avec réduction de bruit IA",
+      "Bluetooth multipoint & détection du port"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "casque",
+      "audio",
+      "anc",
+      "sans-fil",
+      "bluetooth"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 421.49
+      },
+      {
+        "date": "2025-08-01",
+        "price": 406.98
+      },
+      {
+        "date": "2025-09-01",
+        "price": 388.46
+      },
+      {
+        "date": "2025-10-01",
+        "price": 401.97
+      },
+      {
+        "date": "2025-11-01",
+        "price": 361.03
+      },
+      {
+        "date": "2025-12-01",
+        "price": 346.62
+      },
+      {
+        "date": "2026-01-01",
+        "price": 354.19
+      },
+      {
+        "date": "2026-02-01",
+        "price": 336.28
+      },
+      {
+        "date": "2026-03-01",
+        "price": 320.81
+      },
+      {
+        "date": "2026-04-01",
+        "price": 342.02
+      },
+      {
+        "date": "2026-05-01",
+        "price": 310.22
+      },
+      {
+        "date": "2026-06-01",
+        "price": 299
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B09XS7JWHH",
+    "featured": true,
+    "bentoSize": "lg"
+  },
+  {
+    "asin": "B0CHWZ9TZS",
+    "slug": "apple-airpods-pro-2-usb-c",
+    "title": "Apple AirPods Pro 2 (USB-C)",
+    "brand": "Apple",
+    "category": "electronique",
+    "price": 229,
+    "oldPrice": 279,
+    "currency": "EUR",
+    "rating": 4.8,
+    "reviewCount": 9531,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B0CHWZ9TZS.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "La puce H2 double la réduction active du bruit et offre un son spatial personnalisé époustouflant. Quatre embouts, résistance à la transpiration et étui USB-C compatible MagSafe.",
+    "features": [
+      "ANC 2× plus puissant (puce H2)",
+      "Son spatial personnalisé avec suivi de tête",
+      "Mode Transparence Adaptative",
+      "Jusqu'à 6h d'écoute (30h avec l'étui)",
+      "Étui USB-C, MagSafe & résistance IPX4"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "écouteurs",
+      "airpods",
+      "anc",
+      "apple",
+      "intra-auriculaire"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 275.77
+      },
+      {
+        "date": "2025-08-01",
+        "price": 274.95
+      },
+      {
+        "date": "2025-09-01",
+        "price": 271.92
+      },
+      {
+        "date": "2025-10-01",
+        "price": 259.29
+      },
+      {
+        "date": "2025-11-01",
+        "price": 253.88
+      },
+      {
+        "date": "2025-12-01",
+        "price": 256.56
+      },
+      {
+        "date": "2026-01-01",
+        "price": 244.24
+      },
+      {
+        "date": "2026-02-01",
+        "price": 250.73
+      },
+      {
+        "date": "2026-03-01",
+        "price": 245.92
+      },
+      {
+        "date": "2026-04-01",
+        "price": 233.62
+      },
+      {
+        "date": "2026-05-01",
+        "price": 233.62
+      },
+      {
+        "date": "2026-06-01",
+        "price": 229
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0CHWZ9TZS",
+    "featured": true,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B075QRWPPJ",
+    "slug": "kindle-paperwhite",
+    "title": "Kindle Paperwhite (Étanche)",
+    "brand": "Amazon",
+    "category": "electronique",
+    "price": 129.99,
+    "oldPrice": 159.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 7218,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B075QRWPPJ.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "L'écran 6 pouces 300 ppp sans reflets se lit comme du papier même en plein soleil. Étanche IPX8, lumière intégrée réglable et des semaines d'autonomie — la liseuse définitive pour lire partout.",
+    "features": [
+      "Écran 6\" 300 ppp sans reflets",
+      "Étanche IPX8 (jusqu'à 2m, 60 min)",
+      "Lumière intégrée réglable",
+      "Des semaines d'autonomie par charge",
+      "Des milliers de livres, Wi-Fi"
+    ],
+    "tags": [
+      "liseuse",
+      "kindle",
+      "lecture",
+      "ebook"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 158.93
+      },
+      {
+        "date": "2025-08-01",
+        "price": 161.82
+      },
+      {
+        "date": "2025-09-01",
+        "price": 150.97
+      },
+      {
+        "date": "2025-10-01",
+        "price": 153.09
+      },
+      {
+        "date": "2025-11-01",
+        "price": 151.19
+      },
+      {
+        "date": "2025-12-01",
+        "price": 143.54
+      },
+      {
+        "date": "2026-01-01",
+        "price": 139.71
+      },
+      {
+        "date": "2026-02-01",
+        "price": 144.41
+      },
+      {
+        "date": "2026-03-01",
+        "price": 141.92
+      },
+      {
+        "date": "2026-04-01",
+        "price": 130.51
+      },
+      {
+        "date": "2026-05-01",
+        "price": 131.35
+      },
+      {
+        "date": "2026-06-01",
+        "price": 129.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B075QRWPPJ",
+    "featured": true,
+    "bentoSize": "md"
+  },
+  {
+    "asin": "B07FDJMC9Q",
+    "slug": "ninja-air-fryer",
+    "title": "Ninja Air Fryer (3,8 L)",
+    "brand": "Ninja",
+    "category": "maison",
+    "price": 99.99,
+    "oldPrice": 129.99,
+    "currency": "EUR",
+    "rating": 4.8,
+    "reviewCount": 41260,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B07FDJMC9Q.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Friture à air avec jusqu'à 75 % de matières grasses en moins. Quatre fonctions — Air Fryer, rôtissage, réchauffage, déshydratation — dans un panier antiadhésif 3,8 L compatible lave-vaisselle.",
+    "features": [
+      "Jusqu'à 75 % de matières grasses en moins",
+      "4-en-1 : Air Fryer, rôtissage, réchauffage, déshydratation",
+      "Panier antiadhésif 3,8 L compatible lave-vaisselle",
+      "Plage de température 40–200°C",
+      "1550W — résultats rapides et croustillants"
+    ],
+    "badge": "-23%",
+    "tags": [
+      "friteuse",
+      "cuisine",
+      "ninja",
+      "cuisson"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 133.27
+      },
+      {
+        "date": "2025-08-01",
+        "price": 124.46
+      },
+      {
+        "date": "2025-09-01",
+        "price": 124.73
+      },
+      {
+        "date": "2025-10-01",
+        "price": 116.99
+      },
+      {
+        "date": "2025-11-01",
+        "price": 116.16
+      },
+      {
+        "date": "2025-12-01",
+        "price": 116.2
+      },
+      {
+        "date": "2026-01-01",
+        "price": 112.06
+      },
+      {
+        "date": "2026-02-01",
+        "price": 107.59
+      },
+      {
+        "date": "2026-03-01",
+        "price": 109.96
+      },
+      {
+        "date": "2026-04-01",
+        "price": 110.44
+      },
+      {
+        "date": "2026-05-01",
+        "price": 104.51
+      },
+      {
+        "date": "2026-06-01",
+        "price": 99.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B07FDJMC9Q",
+    "featured": true,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B01MR8Y1UJ",
+    "slug": "nespresso-vertuo",
+    "title": "Nespresso Vertuo",
+    "brand": "Nespresso",
+    "category": "maison",
+    "price": 99,
+    "oldPrice": 149,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 28104,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B01MR8Y1UJ.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "La technologie Centrifusion lit le code-barres de chaque capsule pour préparer le café parfait, couronné d'une généreuse crema. Cinq tailles de tasse, de l'espresso au grand café, en une simple pression.",
+    "features": [
+      "Technologie Centrifusion (lecture code-barres)",
+      "5 tailles de tasse de l'espresso à 414 ml",
+      "Crema généreuse sur chaque préparation",
+      "Chauffe en 15–20s",
+      "Réservoir 1,1 L & arrêt automatique"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "café",
+      "espresso",
+      "nespresso",
+      "cuisine"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 151.8
+      },
+      {
+        "date": "2025-08-01",
+        "price": 139.42
+      },
+      {
+        "date": "2025-09-01",
+        "price": 148.08
+      },
+      {
+        "date": "2025-10-01",
+        "price": 133.32
+      },
+      {
+        "date": "2025-11-01",
+        "price": 122.9
+      },
+      {
+        "date": "2025-12-01",
+        "price": 119.9
+      },
+      {
+        "date": "2026-01-01",
+        "price": 122.22
+      },
+      {
+        "date": "2026-02-01",
+        "price": 109.51
+      },
+      {
+        "date": "2026-03-01",
+        "price": 112.5
+      },
+      {
+        "date": "2026-04-01",
+        "price": 102.61
+      },
+      {
+        "date": "2026-05-01",
+        "price": 97.18
+      },
+      {
+        "date": "2026-06-01",
+        "price": 99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B01MR8Y1UJ",
+    "featured": true,
+    "bentoSize": "wide"
+  },
+  {
+    "asin": "B0C2J8KJH9",
+    "slug": "dyson-v15-detect",
+    "title": "Dyson V15 Detect",
+    "brand": "Dyson",
+    "category": "maison",
+    "price": 599,
+    "oldPrice": 699,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 12483,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B0C2J8KJH9.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Un laser vert révèle la poussière invisible tandis qu'un capteur piézo compte les particules sur l'écran LCD. L'aspirateur Dyson le plus puissant, avec jusqu'à 60 minutes d'autonomie sans fil.",
+    "features": [
+      "Détection laser de la poussière microscopique",
+      "Capteur piézo + écran LCD (comptage de particules)",
+      "Aspiration Dyson la plus puissante",
+      "Jusqu'à 60 min d'autonomie",
+      "Filtration complète captant 99,99 % des particules"
+    ],
+    "tags": [
+      "aspirateur",
+      "sans-fil",
+      "dyson",
+      "nettoyage"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 714.11
+      },
+      {
+        "date": "2025-08-01",
+        "price": 678.46
+      },
+      {
+        "date": "2025-09-01",
+        "price": 675.45
+      },
+      {
+        "date": "2025-10-01",
+        "price": 666.85
+      },
+      {
+        "date": "2025-11-01",
+        "price": 671.33
+      },
+      {
+        "date": "2025-12-01",
+        "price": 652.85
+      },
+      {
+        "date": "2026-01-01",
+        "price": 660.65
+      },
+      {
+        "date": "2026-02-01",
+        "price": 636.13
+      },
+      {
+        "date": "2026-03-01",
+        "price": 635.68
+      },
+      {
+        "date": "2026-04-01",
+        "price": 609.37
+      },
+      {
+        "date": "2026-05-01",
+        "price": 619.35
+      },
+      {
+        "date": "2026-06-01",
+        "price": 599
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0C2J8KJH9",
+    "featured": true,
+    "bentoSize": "tall"
+  },
+  {
+    "asin": "B0BS1T7G8S",
+    "slug": "garmin-forerunner-265",
+    "title": "Garmin Forerunner 265",
+    "brand": "Garmin",
+    "category": "sport",
+    "price": 449,
+    "oldPrice": 499.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 6342,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B0BS1T7G8S.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "La montre de running passe à l'AMOLED : écran tactile vif, GPS multi-bandes, suivi de la récupération et statut d'entraînement. Jusqu'à 13 jours d'autonomie sans jamais penser à recharger.",
+    "features": [
+      "Écran AMOLED lumineux tactile",
+      "GPS multi-bandes haute précision",
+      "Disponibilité à l'entraînement & charge d'entraînement",
+      "VO2 max, sommeil, fréquence cardiaque au poignet",
+      "Jusqu'à 13j en mode montre, 20h GPS"
+    ],
+    "badge": "Nouveau",
+    "tags": [
+      "montre",
+      "gps",
+      "running",
+      "garmin",
+      "sport"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 492.06
+      },
+      {
+        "date": "2025-08-01",
+        "price": 493.07
+      },
+      {
+        "date": "2025-09-01",
+        "price": 482.13
+      },
+      {
+        "date": "2025-10-01",
+        "price": 491.7
+      },
+      {
+        "date": "2025-11-01",
+        "price": 474.77
+      },
+      {
+        "date": "2025-12-01",
+        "price": 469.83
+      },
+      {
+        "date": "2026-01-01",
+        "price": 464.71
+      },
+      {
+        "date": "2026-02-01",
+        "price": 459.9
+      },
+      {
+        "date": "2026-03-01",
+        "price": 465.04
+      },
+      {
+        "date": "2026-04-01",
+        "price": 449.51
+      },
+      {
+        "date": "2026-05-01",
+        "price": 452.86
+      },
+      {
+        "date": "2026-06-01",
+        "price": 449
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0BS1T7G8S",
+    "featured": true,
+    "bentoSize": "tall"
+  },
+  {
+    "asin": "B085NTR26K",
+    "slug": "renpho-massage-gun",
+    "title": "RENPHO Pistolet de Massage",
+    "brand": "RENPHO",
+    "category": "sport",
+    "price": 89.99,
+    "oldPrice": 129.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 33571,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B085NTR26K.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Récupération musculaire professionnelle à domicile : moteur ultra-silencieux puissant, 5 vitesses et 5 têtes interchangeables. Poignée ergonomique et housse de transport incluses.",
+    "features": [
+      "Percussion profonde, moteur quasi-silencieux",
+      "5 vitesses réglables",
+      "5 têtes interchangeables",
+      "Batterie longue durée, charge USB",
+      "Poignée ergonomique + housse de transport"
+    ],
+    "badge": "-31%",
+    "tags": [
+      "massage",
+      "récupération",
+      "fitness",
+      "renpho"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 130.28
+      },
+      {
+        "date": "2025-08-01",
+        "price": 133.23
+      },
+      {
+        "date": "2025-09-01",
+        "price": 117.27
+      },
+      {
+        "date": "2025-10-01",
+        "price": 117.06
+      },
+      {
+        "date": "2025-11-01",
+        "price": 109.54
+      },
+      {
+        "date": "2025-12-01",
+        "price": 111.51
+      },
+      {
+        "date": "2026-01-01",
+        "price": 104.56
+      },
+      {
+        "date": "2026-02-01",
+        "price": 98.92
+      },
+      {
+        "date": "2026-03-01",
+        "price": 97.85
+      },
+      {
+        "date": "2026-04-01",
+        "price": 95.45
+      },
+      {
+        "date": "2026-05-01",
+        "price": 97.73
+      },
+      {
+        "date": "2026-06-01",
+        "price": 89.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B085NTR26K",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B083GC98D8",
+    "slug": "hydro-flask-32oz",
+    "title": "Hydro Flask 32 oz Large Ouverture",
+    "brand": "Hydro Flask",
+    "category": "sport",
+    "price": 44.95,
+    "oldPrice": 54.95,
+    "currency": "EUR",
+    "rating": 4.8,
+    "reviewCount": 52890,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B083GC98D8.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "L'isolation sous vide TempShield maintient les boissons glacées jusqu'à 24h et chaudes pendant 12h. Acier inoxydable 18/8 robuste, finition mate antidérapante et Flex Cap étanche.",
+    "features": [
+      "Froid 24h / chaud 12h (isolation TempShield)",
+      "Acier inoxydable 18/8 de qualité pro, sans BPA",
+      "Finition mate antidérapante",
+      "Léger & Flex Cap étanche",
+      "Large ouverture — glaçons faciles à insérer"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "gourde",
+      "hydratation",
+      "outdoor",
+      "hydro-flask"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 55.15
+      },
+      {
+        "date": "2025-08-01",
+        "price": 55.25
+      },
+      {
+        "date": "2025-09-01",
+        "price": 51.65
+      },
+      {
+        "date": "2025-10-01",
+        "price": 51.48
+      },
+      {
+        "date": "2025-11-01",
+        "price": 50.28
+      },
+      {
+        "date": "2025-12-01",
+        "price": 49.01
+      },
+      {
+        "date": "2026-01-01",
+        "price": 50.78
+      },
+      {
+        "date": "2026-02-01",
+        "price": 49.8
+      },
+      {
+        "date": "2026-03-01",
+        "price": 46.63
+      },
+      {
+        "date": "2026-04-01",
+        "price": 47.94
+      },
+      {
+        "date": "2026-05-01",
+        "price": 44.21
+      },
+      {
+        "date": "2026-06-01",
+        "price": 44.95
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B083GC98D8",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0BJP9L9GT",
+    "slug": "kpon-chargeur-sans-fil-invisible",
+    "title": "KPON Chargeur Sans Fil Invisible Sous Bureau",
+    "brand": "KPON",
+    "category": "electronique",
+    "price": 47.59,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 1823,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71aMuve-pRL._AC_SL1000_.jpg"
+    ],
+    "description": "Ce chargeur sans fil s'installe sous votre bureau en bois et charge votre téléphone à travers jusqu'à 30 mm d'épaisseur. Fini les câbles encombrants — votre bureau reste propre et parfaitement rangé.",
+    "features": [
+      "Charge à travers jusqu'à 30 mm de bois",
+      "Compatible Qi (iPhone, Samsung…)",
+      "Installation facile sous le bureau",
+      "Charge rapide 15W",
+      "Design totalement invisible"
+    ],
+    "badge": "Tendance",
+    "tags": [
+      "chargeur",
+      "sans-fil",
+      "bureau",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 56.01
+      },
+      {
+        "date": "2025-08-01",
+        "price": 54.94
+      },
+      {
+        "date": "2025-09-01",
+        "price": 54.79
+      },
+      {
+        "date": "2025-10-01",
+        "price": 54.78
+      },
+      {
+        "date": "2025-11-01",
+        "price": 54.16
+      },
+      {
+        "date": "2025-12-01",
+        "price": 52.7
+      },
+      {
+        "date": "2026-01-01",
+        "price": 50.88
+      },
+      {
+        "date": "2026-02-01",
+        "price": 49.72
+      },
+      {
+        "date": "2026-03-01",
+        "price": 51.18
+      },
+      {
+        "date": "2026-04-01",
+        "price": 48.94
+      },
+      {
+        "date": "2026-05-01",
+        "price": 48.77
+      },
+      {
+        "date": "2026-06-01",
+        "price": 47.59
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0BJP9L9GT",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B001CDP5VS",
+    "slug": "oxo-bol-melangeur-antiderapant",
+    "title": "OXO Good Grips Bol Mélangeur Antidérapant",
+    "brand": "OXO",
+    "category": "maison",
+    "price": 35.95,
+    "currency": "EUR",
+    "rating": 4.8,
+    "reviewCount": 12540,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B001CDP5VS.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Le fond antidérapant breveté OXO maintient le bol stable sur le plan de travail. Bec verseur intégré, poignée ergonomique et échelle graduée — le bol incontournable de la cuisine.",
+    "features": [
+      "Fond antidérapant — ne glisse pas",
+      "Bec verseur précis sans éclaboussures",
+      "Poignée confortable ergonomique",
+      "Échelle graduée lisible",
+      "Compatible lave-vaisselle"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "cuisine",
+      "patisserie",
+      "bol",
+      "oxo"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 43.03
+      },
+      {
+        "date": "2025-08-01",
+        "price": 41.79
+      },
+      {
+        "date": "2025-09-01",
+        "price": 41.28
+      },
+      {
+        "date": "2025-10-01",
+        "price": 40.68
+      },
+      {
+        "date": "2025-11-01",
+        "price": 40.29
+      },
+      {
+        "date": "2025-12-01",
+        "price": 40.03
+      },
+      {
+        "date": "2026-01-01",
+        "price": 37.91
+      },
+      {
+        "date": "2026-02-01",
+        "price": 38.45
+      },
+      {
+        "date": "2026-03-01",
+        "price": 38.67
+      },
+      {
+        "date": "2026-04-01",
+        "price": 36.89
+      },
+      {
+        "date": "2026-05-01",
+        "price": 36.88
+      },
+      {
+        "date": "2026-06-01",
+        "price": 35.95
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B001CDP5VS",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0DQCKL1FP",
+    "slug": "panier-linge-pliable-90l",
+    "title": "Caroeas Panier à Linge Pliable 90 L avec Poignées",
+    "brand": "Caroeas",
+    "category": "maison",
+    "price": 15.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 3241,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/713iI4cOVPL._AC_SL1000_.jpg"
+    ],
+    "description": "Le panier à linge pliable idéal pour transporter votre linge de la machine au séchoir. Grande capacité 90 L, poignées rembourrées pour un transport confortable, se plie à plat pour un rangement discret.",
+    "features": [
+      "Capacité 90 L — grandes familles",
+      "Poignées rembourrées confortables",
+      "Se plie à plat pour le rangement",
+      "Léger et résistant",
+      "Idéal machine → séchoir → tiroirs"
+    ],
+    "badge": "-20%",
+    "tags": [
+      "linge",
+      "panier",
+      "rangement",
+      "buanderie"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 18.68
+      },
+      {
+        "date": "2025-08-01",
+        "price": 18.3
+      },
+      {
+        "date": "2025-09-01",
+        "price": 18.35
+      },
+      {
+        "date": "2025-10-01",
+        "price": 18.25
+      },
+      {
+        "date": "2025-11-01",
+        "price": 18.28
+      },
+      {
+        "date": "2025-12-01",
+        "price": 17.54
+      },
+      {
+        "date": "2026-01-01",
+        "price": 17.49
+      },
+      {
+        "date": "2026-02-01",
+        "price": 17.43
+      },
+      {
+        "date": "2026-03-01",
+        "price": 17.01
+      },
+      {
+        "date": "2026-04-01",
+        "price": 16.05
+      },
+      {
+        "date": "2026-05-01",
+        "price": 15.75
+      },
+      {
+        "date": "2026-06-01",
+        "price": 15.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0DQCKL1FP",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0DP4NLTTM",
+    "slug": "sac-lavage-chaussures-machine",
+    "title": "Sac de Lavage pour Chaussures en Machine",
+    "brand": "HomeKeep",
+    "category": "maison",
+    "price": 17.69,
+    "currency": "EUR",
+    "rating": 4.4,
+    "reviewCount": 2876,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71cGNgIbytL._AC_SL1000_.jpg"
+    ],
+    "description": "Ce sac rembourré protège vos baskets en machine : fibres douces, maintien de la forme et zéro bruit de tambour. Résultat : des chaussures propres sans effort et sans dommage.",
+    "features": [
+      "Fibres douces — ne raye pas",
+      "Maintient la forme des chaussures",
+      "Réduit le bruit en machine",
+      "Fermeture éclair solide",
+      "Compatible toutes marques de baskets"
+    ],
+    "tags": [
+      "chaussures",
+      "linge",
+      "lavage",
+      "baskets"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 20.67
+      },
+      {
+        "date": "2025-08-01",
+        "price": 20.41
+      },
+      {
+        "date": "2025-09-01",
+        "price": 20.51
+      },
+      {
+        "date": "2025-10-01",
+        "price": 20.4
+      },
+      {
+        "date": "2025-11-01",
+        "price": 19.89
+      },
+      {
+        "date": "2025-12-01",
+        "price": 19.59
+      },
+      {
+        "date": "2026-01-01",
+        "price": 19.09
+      },
+      {
+        "date": "2026-02-01",
+        "price": 19.38
+      },
+      {
+        "date": "2026-03-01",
+        "price": 18.6
+      },
+      {
+        "date": "2026-04-01",
+        "price": 18.69
+      },
+      {
+        "date": "2026-05-01",
+        "price": 17.77
+      },
+      {
+        "date": "2026-06-01",
+        "price": 17.69
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0DP4NLTTM",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0CTMQN54K",
+    "slug": "table-repasser-pliante-compacte",
+    "title": "JUPPLIES Table à Repasser Pliable Compacte 80×30 cm",
+    "brand": "JUPPLIES",
+    "category": "maison",
+    "price": 32.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 1654,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71q+6f-Tg8L._AC_SL1000_.jpg"
+    ],
+    "description": "Cette mini planche à repasser se pose sur n'importe quelle table et se plie en quelques secondes. Parfaite pour les petits espaces : appartement, studio, voyage.",
+    "features": [
+      "Dimensions 80×30 cm — compact",
+      "Se plie en quelques secondes",
+      "Repose-fer intégré",
+      "Surface résistante à la chaleur",
+      "Légère — facile à transporter"
+    ],
+    "badge": "Gain de place",
+    "tags": [
+      "repassage",
+      "linge",
+      "planche",
+      "gain-de-place"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 39.44
+      },
+      {
+        "date": "2025-08-01",
+        "price": 38.8
+      },
+      {
+        "date": "2025-09-01",
+        "price": 38.8
+      },
+      {
+        "date": "2025-10-01",
+        "price": 37.55
+      },
+      {
+        "date": "2025-11-01",
+        "price": 37.23
+      },
+      {
+        "date": "2025-12-01",
+        "price": 35.87
+      },
+      {
+        "date": "2026-01-01",
+        "price": 35.76
+      },
+      {
+        "date": "2026-02-01",
+        "price": 36.07
+      },
+      {
+        "date": "2026-03-01",
+        "price": 33.57
+      },
+      {
+        "date": "2026-04-01",
+        "price": 34.07
+      },
+      {
+        "date": "2026-05-01",
+        "price": 34.41
+      },
+      {
+        "date": "2026-06-01",
+        "price": 32.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0CTMQN54K",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B00CFN3KHK",
+    "slug": "range-bottes-suspendu-placard",
+    "title": "Whitmor Range-Bottes Suspendu (Lot de 3 Paires)",
+    "brand": "Whitmor",
+    "category": "maison",
+    "price": 13.2,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 987,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71iOe5IoCPL._AC_SL1000_.jpg"
+    ],
+    "description": "Ces dossiers suspendus maintiennent vos bottes debout et préservent leur forme. Ils s'accrochent à votre tringle sans outil et libèrent de l'espace au sol dans le placard.",
+    "features": [
+      "Lot de 3 paires de dossiers",
+      "Maintient la forme des bottes",
+      "Libère de l'espace au sol",
+      "Accrochage sur tringle — sans perçage",
+      "Compatible toutes tailles de bottes"
+    ],
+    "badge": "Organisation",
+    "tags": [
+      "bottes",
+      "placard",
+      "rangement",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 15.19
+      },
+      {
+        "date": "2025-08-01",
+        "price": 15.6
+      },
+      {
+        "date": "2025-09-01",
+        "price": 14.82
+      },
+      {
+        "date": "2025-10-01",
+        "price": 14.98
+      },
+      {
+        "date": "2025-11-01",
+        "price": 14.86
+      },
+      {
+        "date": "2025-12-01",
+        "price": 14.6
+      },
+      {
+        "date": "2026-01-01",
+        "price": 14.58
+      },
+      {
+        "date": "2026-02-01",
+        "price": 14.39
+      },
+      {
+        "date": "2026-03-01",
+        "price": 13.93
+      },
+      {
+        "date": "2026-04-01",
+        "price": 13.54
+      },
+      {
+        "date": "2026-05-01",
+        "price": 13.17
+      },
+      {
+        "date": "2026-06-01",
+        "price": 13.2
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B00CFN3KHK",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B08L9VG9QP",
+    "slug": "dyson-airwrap",
+    "title": "Dyson Airwrap Complete",
+    "brand": "Dyson",
+    "category": "beaute",
+    "price": 499,
+    "oldPrice": 549,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 15904,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B08L9VG9QP.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "L'effet Coandă coiffe les cheveux humides sans chaleur excessive — boucles, brushing, lissage. Contrôle intelligent de la chaleur pour protéger les cheveux, avec une gamme complète d'accessoires.",
+    "features": [
+      "Effet Coandă : coiffage sans chaleur excessive",
+      "Contrôle intelligent de la chaleur (mesuré 40×/s)",
+      "Set complet multi-accessoires",
+      "Sécher, boucler, onduler, lisser et gainer",
+      "Moteur numérique Dyson V9"
+    ],
+    "badge": "Iconique",
+    "tags": [
+      "cheveux",
+      "coiffage",
+      "dyson",
+      "beauté",
+      "brushing"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 544.29
+      },
+      {
+        "date": "2025-08-01",
+        "price": 546.85
+      },
+      {
+        "date": "2025-09-01",
+        "price": 535.6
+      },
+      {
+        "date": "2025-10-01",
+        "price": 536.11
+      },
+      {
+        "date": "2025-11-01",
+        "price": 522.23
+      },
+      {
+        "date": "2025-12-01",
+        "price": 532.62
+      },
+      {
+        "date": "2026-01-01",
+        "price": 524.6
+      },
+      {
+        "date": "2026-02-01",
+        "price": 511.37
+      },
+      {
+        "date": "2026-03-01",
+        "price": 514.62
+      },
+      {
+        "date": "2026-04-01",
+        "price": 504.18
+      },
+      {
+        "date": "2026-05-01",
+        "price": 499.49
+      },
+      {
+        "date": "2026-06-01",
+        "price": 499
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B08L9VG9QP",
+    "featured": true,
+    "bentoSize": "md"
+  },
+  {
+    "asin": "B088CK6XJ4",
+    "slug": "oral-b-io-series-9",
+    "title": "Oral-B iO Series 9",
+    "brand": "Oral-B",
+    "category": "beaute",
+    "price": 249,
+    "oldPrice": 349.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 21037,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B088CK6XJ4.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "La technologie magnétique iO combine micro-vibrations et tête de brosse ronde pour des dents 100 % plus propres. Capteur de pression 3 couleurs et affichage interactif pour guider chaque brossage.",
+    "features": [
+      "Entraînement magnétique iO + micro-vibrations",
+      "Capteur de pression intelligent (3 couleurs)",
+      "Affichage couleur interactif",
+      "7 modes de brossage",
+      "Étui de voyage avec charge & suivi IA"
+    ],
+    "badge": "-29%",
+    "tags": [
+      "brosse-à-dents",
+      "oral-b",
+      "hygiène",
+      "beauté"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 355.06
+      },
+      {
+        "date": "2025-08-01",
+        "price": 345.42
+      },
+      {
+        "date": "2025-09-01",
+        "price": 343.48
+      },
+      {
+        "date": "2025-10-01",
+        "price": 321.92
+      },
+      {
+        "date": "2025-11-01",
+        "price": 325.03
+      },
+      {
+        "date": "2025-12-01",
+        "price": 312.42
+      },
+      {
+        "date": "2026-01-01",
+        "price": 278.49
+      },
+      {
+        "date": "2026-02-01",
+        "price": 299.4
+      },
+      {
+        "date": "2026-03-01",
+        "price": 270.09
+      },
+      {
+        "date": "2026-04-01",
+        "price": 249.73
+      },
+      {
+        "date": "2026-05-01",
+        "price": 265.71
+      },
+      {
+        "date": "2026-06-01",
+        "price": 249
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B088CK6XJ4",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0853C7CFQ",
+    "slug": "cerave-creme-hydratante",
+    "title": "CeraVe Crème Hydratante (454g)",
+    "brand": "CeraVe",
+    "category": "beaute",
+    "price": 16.99,
+    "oldPrice": 19.99,
+    "currency": "EUR",
+    "rating": 4.8,
+    "reviewCount": 96420,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/P/B0853C7CFQ.01._SCLZZZZZZZ_.jpg"
+    ],
+    "description": "Développée avec des dermatologues : trois céramides essentiels et de l'acide hyaluronique restaurent la barrière cutanée et hydratent pendant 24 heures. Texture riche, sans parfum, non comédogène, pour le visage et le corps.",
+    "features": [
+      "3 céramides essentiels + acide hyaluronique",
+      "Hydratation continue 24h",
+      "Technologie MVE à libération prolongée",
+      "Sans parfum, non comédogène",
+      "Visage et corps — peaux normales à sèches"
+    ],
+    "badge": "N°1 des ventes",
+    "tags": [
+      "soin",
+      "hydratant",
+      "cerave",
+      "peau",
+      "crème"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 19.95
+      },
+      {
+        "date": "2025-08-01",
+        "price": 19.87
+      },
+      {
+        "date": "2025-09-01",
+        "price": 19.48
+      },
+      {
+        "date": "2025-10-01",
+        "price": 19.24
+      },
+      {
+        "date": "2025-11-01",
+        "price": 18.51
+      },
+      {
+        "date": "2025-12-01",
+        "price": 18.72
+      },
+      {
+        "date": "2026-01-01",
+        "price": 18.3
+      },
+      {
+        "date": "2026-02-01",
+        "price": 17.7
+      },
+      {
+        "date": "2026-03-01",
+        "price": 17.48
+      },
+      {
+        "date": "2026-04-01",
+        "price": 17.69
+      },
+      {
+        "date": "2026-05-01",
+        "price": 17.27
+      },
+      {
+        "date": "2026-06-01",
+        "price": 16.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0853C7CFQ",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0GQM8BLMP",
+    "slug": "organisateur-tiroir-extensible",
+    "title": "Organisateur de Tiroir Extensible (14 Pièces)",
+    "brand": "mDesign",
+    "category": "maison",
+    "price": 24.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 2140,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71lo4mWkm8L._AC_SL1000_.jpg"
+    ],
+    "description": "Un kit de 14 séparateurs en 3 tailles pour organiser tiroirs de cuisine, bureau ou salle de bain. Extensibles et modulables, ils s'adaptent à toutes les dimensions.",
+    "features": [
+      "14 pièces en 3 tailles",
+      "Extensible et modulable",
+      "Compatible cuisine, bureau, SDB",
+      "Antidérapant",
+      "Montage sans outil"
+    ],
+    "badge": "Tendance",
+    "tags": [
+      "rangement",
+      "tiroir",
+      "cuisine",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 28.71
+      },
+      {
+        "date": "2025-08-01",
+        "price": 28.3
+      },
+      {
+        "date": "2025-09-01",
+        "price": 29.42
+      },
+      {
+        "date": "2025-10-01",
+        "price": 27.76
+      },
+      {
+        "date": "2025-11-01",
+        "price": 28.12
+      },
+      {
+        "date": "2025-12-01",
+        "price": 27.83
+      },
+      {
+        "date": "2026-01-01",
+        "price": 26.52
+      },
+      {
+        "date": "2026-02-01",
+        "price": 27.4
+      },
+      {
+        "date": "2026-03-01",
+        "price": 26.04
+      },
+      {
+        "date": "2026-04-01",
+        "price": 26.22
+      },
+      {
+        "date": "2026-05-01",
+        "price": 25.71
+      },
+      {
+        "date": "2026-06-01",
+        "price": 24.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0GQM8BLMP",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B08P9XT8XX",
+    "slug": "range-couverts-bambou",
+    "title": "Range-Couverts en Bambou 5 Compartiments",
+    "brand": "Relaxdays",
+    "category": "maison",
+    "price": 25.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 5830,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71c5T6HgzNL._AC_SL1000_.jpg"
+    ],
+    "description": "Un organiseur en bambou naturel avec 5 compartiments pour ranger couverts et ustensiles avec élégance. Robuste, durable et facile à nettoyer.",
+    "features": [
+      "Bambou naturel durable",
+      "5 compartiments spacieux",
+      "Finition lisse anti-échardes",
+      "S'adapte à la plupart des tiroirs",
+      "Entretien facile"
+    ],
+    "tags": [
+      "cuisine",
+      "couverts",
+      "bambou",
+      "rangement"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 31.31
+      },
+      {
+        "date": "2025-08-01",
+        "price": 29.97
+      },
+      {
+        "date": "2025-09-01",
+        "price": 29.91
+      },
+      {
+        "date": "2025-10-01",
+        "price": 29.47
+      },
+      {
+        "date": "2025-11-01",
+        "price": 29.3
+      },
+      {
+        "date": "2025-12-01",
+        "price": 29.03
+      },
+      {
+        "date": "2026-01-01",
+        "price": 28.74
+      },
+      {
+        "date": "2026-02-01",
+        "price": 28.48
+      },
+      {
+        "date": "2026-03-01",
+        "price": 27.79
+      },
+      {
+        "date": "2026-04-01",
+        "price": 27.36
+      },
+      {
+        "date": "2026-05-01",
+        "price": 25.6
+      },
+      {
+        "date": "2026-06-01",
+        "price": 25.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B08P9XT8XX",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0FCSSND2X",
+    "slug": "boites-verre-hermetiques-10",
+    "title": "Lot de 10 Boîtes Alimentaires en Verre Hermétiques",
+    "brand": "Uandu",
+    "category": "maison",
+    "price": 33.24,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 1920,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81yCmV6s71L._AC_SL1000_.jpg"
+    ],
+    "description": "10 boîtes en verre borosilicate avec couvercles hermétiques à clips. Passent au four, micro-ondes, congélateur et lave-vaisselle — pour conserver et réchauffer sans plastique.",
+    "features": [
+      "Verre borosilicate résistant",
+      "Couvercles hermétiques 4 clips",
+      "Four, micro-ondes, congélateur",
+      "Compatible lave-vaisselle",
+      "Sans BPA — zéro plastique au contact"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "conservation",
+      "cuisine",
+      "verre",
+      "meal-prep"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 39.56
+      },
+      {
+        "date": "2025-08-01",
+        "price": 38.8
+      },
+      {
+        "date": "2025-09-01",
+        "price": 38.47
+      },
+      {
+        "date": "2025-10-01",
+        "price": 38.3
+      },
+      {
+        "date": "2025-11-01",
+        "price": 36.3
+      },
+      {
+        "date": "2025-12-01",
+        "price": 36.09
+      },
+      {
+        "date": "2026-01-01",
+        "price": 34.95
+      },
+      {
+        "date": "2026-02-01",
+        "price": 35.97
+      },
+      {
+        "date": "2026-03-01",
+        "price": 35.55
+      },
+      {
+        "date": "2026-04-01",
+        "price": 34.73
+      },
+      {
+        "date": "2026-05-01",
+        "price": 33.33
+      },
+      {
+        "date": "2026-06-01",
+        "price": 33.24
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0FCSSND2X",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0CF22LPZR",
+    "slug": "boites-verre-hermetiques-18",
+    "title": "edihome Boîtes en Verre Hermétiques (18 Pièces)",
+    "brand": "edihome",
+    "category": "maison",
+    "price": 29.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 3410,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81fW7v2C2xL._AC_SL1000_.jpg"
+    ],
+    "description": "Ensemble de 18 pièces (9 boîtes + 9 couvercles) en verre pour une cuisine parfaitement organisée. Empilables pour gagner de la place dans les placards.",
+    "features": [
+      "18 pièces (9 boîtes + couvercles)",
+      "Verre résistant à la chaleur",
+      "Couvercles hermétiques",
+      "Empilables — gain de place",
+      "Convient au meal-prep"
+    ],
+    "tags": [
+      "conservation",
+      "cuisine",
+      "verre",
+      "rangement"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 34.89
+      },
+      {
+        "date": "2025-08-01",
+        "price": 34.49
+      },
+      {
+        "date": "2025-09-01",
+        "price": 34.74
+      },
+      {
+        "date": "2025-10-01",
+        "price": 33.68
+      },
+      {
+        "date": "2025-11-01",
+        "price": 32.83
+      },
+      {
+        "date": "2025-12-01",
+        "price": 32.42
+      },
+      {
+        "date": "2026-01-01",
+        "price": 31.56
+      },
+      {
+        "date": "2026-02-01",
+        "price": 32.23
+      },
+      {
+        "date": "2026-03-01",
+        "price": 30.75
+      },
+      {
+        "date": "2026-04-01",
+        "price": 31
+      },
+      {
+        "date": "2026-05-01",
+        "price": 30.59
+      },
+      {
+        "date": "2026-06-01",
+        "price": 29.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0CF22LPZR",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0GYFWPS11",
+    "slug": "boites-rangement-tissu-couvercle",
+    "title": "Lot de 4 Boîtes de Rangement en Tissu avec Couvercle",
+    "brand": "Homyfort",
+    "category": "maison",
+    "price": 28.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 1240,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/91aDmM9mbRL._AC_SL1000_.jpg"
+    ],
+    "description": "4 boîtes pliables en tissu avec couvercle et poignées, idéales pour ranger vêtements, linge ou jouets. Se plient à plat quand elles ne servent pas.",
+    "features": [
+      "Lot de 4 avec couvercle",
+      "Poignées de transport",
+      "Se plient à plat",
+      "Tissu résistant lavable",
+      "Empilables"
+    ],
+    "tags": [
+      "rangement",
+      "placard",
+      "tissu",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 34.19
+      },
+      {
+        "date": "2025-08-01",
+        "price": 34.45
+      },
+      {
+        "date": "2025-09-01",
+        "price": 34.04
+      },
+      {
+        "date": "2025-10-01",
+        "price": 33.18
+      },
+      {
+        "date": "2025-11-01",
+        "price": 32.87
+      },
+      {
+        "date": "2025-12-01",
+        "price": 31.38
+      },
+      {
+        "date": "2026-01-01",
+        "price": 31.16
+      },
+      {
+        "date": "2026-02-01",
+        "price": 31.36
+      },
+      {
+        "date": "2026-03-01",
+        "price": 30.19
+      },
+      {
+        "date": "2026-04-01",
+        "price": 30.44
+      },
+      {
+        "date": "2026-05-01",
+        "price": 29.28
+      },
+      {
+        "date": "2026-06-01",
+        "price": 28.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0GYFWPS11",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0FFTG4SZ1",
+    "slug": "paniers-rangement-pliables-tissu",
+    "title": "Lot de 4 Paniers de Rangement Pliables 45×28×20 cm",
+    "brand": "Homyfort",
+    "category": "maison",
+    "price": 23.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 2670,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71-k-7OhdvL._AC_SL1000_.jpg"
+    ],
+    "description": "4 paniers ouverts en tissu pour étagères, placards ou buanderie. Poignées intégrées et structure semi-rigide qui garde sa forme.",
+    "features": [
+      "Lot de 4 — 45×28×20 cm",
+      "Poignées intégrées",
+      "Structure qui garde sa forme",
+      "Pliables pour le rangement",
+      "Polyvalents (placard, buanderie…)"
+    ],
+    "badge": "-20%",
+    "tags": [
+      "rangement",
+      "panier",
+      "placard",
+      "buanderie"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 27.62
+      },
+      {
+        "date": "2025-08-01",
+        "price": 27.67
+      },
+      {
+        "date": "2025-09-01",
+        "price": 28.02
+      },
+      {
+        "date": "2025-10-01",
+        "price": 27.7
+      },
+      {
+        "date": "2025-11-01",
+        "price": 27.3
+      },
+      {
+        "date": "2025-12-01",
+        "price": 26.35
+      },
+      {
+        "date": "2026-01-01",
+        "price": 26.29
+      },
+      {
+        "date": "2026-02-01",
+        "price": 26.3
+      },
+      {
+        "date": "2026-03-01",
+        "price": 25.48
+      },
+      {
+        "date": "2026-04-01",
+        "price": 24.87
+      },
+      {
+        "date": "2026-05-01",
+        "price": 24.07
+      },
+      {
+        "date": "2026-06-01",
+        "price": 23.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0FFTG4SZ1",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0D48ZJKLX",
+    "slug": "etageres-douche-angle-sans-percage",
+    "title": "Lot de 2 Étagères de Douche d'Angle Sans Perçage",
+    "brand": "PNNP",
+    "category": "maison",
+    "price": 19.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 1560,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71MZEbp26wL._AC_SL1000_.jpg"
+    ],
+    "description": "2 étagères d'angle adhésives qui s'installent sans perçage dans la douche. Acier inoxydable anti-rouille, drainage intégré pour éviter l'eau stagnante.",
+    "features": [
+      "Installation sans perçage",
+      "Acier inoxydable anti-rouille",
+      "Drainage intégré",
+      "Grande capacité d'angle",
+      "Adhésif ultra-résistant"
+    ],
+    "tags": [
+      "salle-de-bain",
+      "douche",
+      "étagère",
+      "sans-perçage"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 24.05
+      },
+      {
+        "date": "2025-08-01",
+        "price": 23.57
+      },
+      {
+        "date": "2025-09-01",
+        "price": 22.8
+      },
+      {
+        "date": "2025-10-01",
+        "price": 22.69
+      },
+      {
+        "date": "2025-11-01",
+        "price": 22.54
+      },
+      {
+        "date": "2025-12-01",
+        "price": 22.36
+      },
+      {
+        "date": "2026-01-01",
+        "price": 21.36
+      },
+      {
+        "date": "2026-02-01",
+        "price": 21.08
+      },
+      {
+        "date": "2026-03-01",
+        "price": 20.69
+      },
+      {
+        "date": "2026-04-01",
+        "price": 20.23
+      },
+      {
+        "date": "2026-05-01",
+        "price": 19.98
+      },
+      {
+        "date": "2026-06-01",
+        "price": 19.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0D48ZJKLX",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0BKNYRH7L",
+    "slug": "etagere-douche-inox-304",
+    "title": "Étagère d'Angle de Douche en Inox 304 Sans Perçage",
+    "brand": "Orimade",
+    "category": "maison",
+    "price": 39.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 4120,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/61cNYeaUBzL._AC_SL1000_.jpg"
+    ],
+    "description": "Étagère d'angle premium en acier inoxydable 304, montage adhésif sans perçage. Robuste, elle supporte shampoings et gels sans plier.",
+    "features": [
+      "Acier inoxydable 304 premium",
+      "Sans perçage — adhésif fort",
+      "Supporte de lourdes charges",
+      "Anti-rouille garanti",
+      "Crochets intégrés"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "salle-de-bain",
+      "douche",
+      "inox",
+      "sans-perçage"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 48.06
+      },
+      {
+        "date": "2025-08-01",
+        "price": 46.69
+      },
+      {
+        "date": "2025-09-01",
+        "price": 46.94
+      },
+      {
+        "date": "2025-10-01",
+        "price": 45.23
+      },
+      {
+        "date": "2025-11-01",
+        "price": 45.49
+      },
+      {
+        "date": "2025-12-01",
+        "price": 44.37
+      },
+      {
+        "date": "2026-01-01",
+        "price": 44.43
+      },
+      {
+        "date": "2026-02-01",
+        "price": 43.55
+      },
+      {
+        "date": "2026-03-01",
+        "price": 42.68
+      },
+      {
+        "date": "2026-04-01",
+        "price": 42.4
+      },
+      {
+        "date": "2026-05-01",
+        "price": 40.05
+      },
+      {
+        "date": "2026-06-01",
+        "price": 39.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0BKNYRH7L",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0FH4MWBXW",
+    "slug": "etagere-epices-extensible-2-etages",
+    "title": "Étagère à Épices Extensible 2 Étages Réglable",
+    "brand": "Kesper",
+    "category": "maison",
+    "price": 31.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 980,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81AEocwcFWL._AC_SL1000_.jpg"
+    ],
+    "description": "Étagère à épices à 2 niveaux, hauteur et largeur réglables, pour voir tous vos flacons d'un coup d'œil. Idéale dans un placard ou sur le plan de travail.",
+    "features": [
+      "2 étages — visibilité totale",
+      "Hauteur et largeur réglables",
+      "Métal robuste",
+      "Placard ou plan de travail",
+      "Montage rapide"
+    ],
+    "badge": "Gain de place",
+    "tags": [
+      "cuisine",
+      "épices",
+      "étagère",
+      "gain-de-place"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 37.12
+      },
+      {
+        "date": "2025-08-01",
+        "price": 37.36
+      },
+      {
+        "date": "2025-09-01",
+        "price": 36.79
+      },
+      {
+        "date": "2025-10-01",
+        "price": 36.69
+      },
+      {
+        "date": "2025-11-01",
+        "price": 36.49
+      },
+      {
+        "date": "2025-12-01",
+        "price": 35.34
+      },
+      {
+        "date": "2026-01-01",
+        "price": 33.93
+      },
+      {
+        "date": "2026-02-01",
+        "price": 34.51
+      },
+      {
+        "date": "2026-03-01",
+        "price": 34.02
+      },
+      {
+        "date": "2026-04-01",
+        "price": 34.03
+      },
+      {
+        "date": "2026-05-01",
+        "price": 31.68
+      },
+      {
+        "date": "2026-06-01",
+        "price": 31.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0FH4MWBXW",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0GTV3NVNL",
+    "slug": "etageres-epices-tiroir-lot-2",
+    "title": "Noa Home Deco Étagères à Épices pour Tiroir (Lot de 2)",
+    "brand": "Noa Home Deco",
+    "category": "maison",
+    "price": 16.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 640,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71WyucaMVcL._AC_SL1000_.jpg"
+    ],
+    "description": "2 range-épices extensibles à poser dans un tiroir : vos flacons inclinés et visibles instantanément. Libère le plan de travail.",
+    "features": [
+      "Lot de 2 extensibles",
+      "Flacons inclinés et visibles",
+      "Se glissent dans le tiroir",
+      "Antidérapant",
+      "Libère le plan de travail"
+    ],
+    "tags": [
+      "cuisine",
+      "épices",
+      "tiroir",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 20.05
+      },
+      {
+        "date": "2025-08-01",
+        "price": 19.52
+      },
+      {
+        "date": "2025-09-01",
+        "price": 19.63
+      },
+      {
+        "date": "2025-10-01",
+        "price": 18.97
+      },
+      {
+        "date": "2025-11-01",
+        "price": 18.42
+      },
+      {
+        "date": "2025-12-01",
+        "price": 18.34
+      },
+      {
+        "date": "2026-01-01",
+        "price": 18.04
+      },
+      {
+        "date": "2026-02-01",
+        "price": 17.64
+      },
+      {
+        "date": "2026-03-01",
+        "price": 17.72
+      },
+      {
+        "date": "2026-04-01",
+        "price": 17.74
+      },
+      {
+        "date": "2026-05-01",
+        "price": 16.79
+      },
+      {
+        "date": "2026-06-01",
+        "price": 16.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0GTV3NVNL",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0FJ1YFQB5",
+    "slug": "crochets-adhesifs-inox-304",
+    "title": "Lot de 6 Crochets Adhésifs Muraux Inox 304",
+    "brand": "Uxsiya",
+    "category": "maison",
+    "price": 10.99,
+    "currency": "EUR",
+    "rating": 4.4,
+    "reviewCount": 3280,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71Z7m5hcA0L._AC_SL1000_.jpg"
+    ],
+    "description": "6 crochets doubles en acier inoxydable 304 à coller sans perçage. Parfaits pour serviettes, manteaux, torchons ou clés — jusqu'à 5 kg chacun.",
+    "features": [
+      "Lot de 6 crochets doubles",
+      "Inox 304 anti-rouille",
+      "Sans perçage — adhésif fort",
+      "Jusqu'à 5 kg chacun",
+      "Cuisine, SDB, entrée"
+    ],
+    "tags": [
+      "crochet",
+      "sans-perçage",
+      "rangement",
+      "mural"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 13.22
+      },
+      {
+        "date": "2025-08-01",
+        "price": 13.01
+      },
+      {
+        "date": "2025-09-01",
+        "price": 12.68
+      },
+      {
+        "date": "2025-10-01",
+        "price": 12.17
+      },
+      {
+        "date": "2025-11-01",
+        "price": 12.51
+      },
+      {
+        "date": "2025-12-01",
+        "price": 11.82
+      },
+      {
+        "date": "2026-01-01",
+        "price": 11.98
+      },
+      {
+        "date": "2026-02-01",
+        "price": 11.54
+      },
+      {
+        "date": "2026-03-01",
+        "price": 11.62
+      },
+      {
+        "date": "2026-04-01",
+        "price": 11.58
+      },
+      {
+        "date": "2026-05-01",
+        "price": 11.29
+      },
+      {
+        "date": "2026-06-01",
+        "price": 10.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0FJ1YFQB5",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B09NZNDG4Z",
+    "slug": "pateres-murales-adhesives-noir",
+    "title": "Feligio Lot de 4 Patères Murales Adhésives Inox Noir",
+    "brand": "Feligio",
+    "category": "maison",
+    "price": 11.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 1870,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/61QgjNPnKnL._AC_SL1000_.jpg"
+    ],
+    "description": "4 patères murales en acier inoxydable noir mat, design épuré, montage adhésif sans perçage. Élégantes dans une salle de bain ou une entrée.",
+    "features": [
+      "Lot de 4 — noir mat",
+      "Acier inoxydable",
+      "Sans perçage",
+      "Design épuré",
+      "Résistantes à l'humidité"
+    ],
+    "tags": [
+      "patère",
+      "crochet",
+      "salle-de-bain",
+      "mural"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 14.11
+      },
+      {
+        "date": "2025-08-01",
+        "price": 13.67
+      },
+      {
+        "date": "2025-09-01",
+        "price": 13.79
+      },
+      {
+        "date": "2025-10-01",
+        "price": 13.56
+      },
+      {
+        "date": "2025-11-01",
+        "price": 13.36
+      },
+      {
+        "date": "2025-12-01",
+        "price": 13.47
+      },
+      {
+        "date": "2026-01-01",
+        "price": 13.1
+      },
+      {
+        "date": "2026-02-01",
+        "price": 12.51
+      },
+      {
+        "date": "2026-03-01",
+        "price": 12.37
+      },
+      {
+        "date": "2026-04-01",
+        "price": 12.34
+      },
+      {
+        "date": "2026-05-01",
+        "price": 12.16
+      },
+      {
+        "date": "2026-06-01",
+        "price": 11.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B09NZNDG4Z",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B07V32XHWS",
+    "slug": "sacs-sous-vide-pompe-12",
+    "title": "Boxlegend 12 Sacs Sous Vide + Pompe Électrique",
+    "brand": "Boxlegend",
+    "category": "maison",
+    "price": 28.26,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 6120,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71aBMf7F1jL._AC_SL1000_.jpg"
+    ],
+    "description": "12 sacs de compression sous vide avec pompe électrique incluse : réduisez le volume de vos couettes et vêtements jusqu'à 80 %. Idéal placards et voyages.",
+    "features": [
+      "12 sacs de tailles variées",
+      "Pompe électrique incluse",
+      "Jusqu'à 80 % d'espace gagné",
+      "Double zip étanche",
+      "Protège de l'humidité et des mites"
+    ],
+    "badge": "Tendance",
+    "tags": [
+      "rangement",
+      "sous-vide",
+      "vêtements",
+      "gain-de-place"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 34.06
+      },
+      {
+        "date": "2025-08-01",
+        "price": 33.3
+      },
+      {
+        "date": "2025-09-01",
+        "price": 31.66
+      },
+      {
+        "date": "2025-10-01",
+        "price": 31.81
+      },
+      {
+        "date": "2025-11-01",
+        "price": 30.63
+      },
+      {
+        "date": "2025-12-01",
+        "price": 30.22
+      },
+      {
+        "date": "2026-01-01",
+        "price": 31.34
+      },
+      {
+        "date": "2026-02-01",
+        "price": 30.21
+      },
+      {
+        "date": "2026-03-01",
+        "price": 29.2
+      },
+      {
+        "date": "2026-04-01",
+        "price": 29.25
+      },
+      {
+        "date": "2026-05-01",
+        "price": 29.14
+      },
+      {
+        "date": "2026-06-01",
+        "price": 28.26
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B07V32XHWS",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0FCFJ84DC",
+    "slug": "sacs-sous-vide-vetements-20",
+    "title": "Sacs Sous Vide pour Vêtements (20 Pièces)",
+    "brand": "Hometalk",
+    "category": "maison",
+    "price": 36.99,
+    "currency": "EUR",
+    "rating": 4.4,
+    "reviewCount": 890,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71RJDBUpA7L._AC_SL1000_.jpg"
+    ],
+    "description": "Kit de 20 sacs de compression en 4 tailles pour ranger vêtements, couettes et oreillers. Aspiration par aspirateur ou pompe manuelle.",
+    "features": [
+      "20 sacs en 4 tailles",
+      "Compression maximale",
+      "Valve anti-retour",
+      "Réutilisables",
+      "Protègent des odeurs et de l'humidité"
+    ],
+    "tags": [
+      "rangement",
+      "sous-vide",
+      "vêtements",
+      "placard"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 43.84
+      },
+      {
+        "date": "2025-08-01",
+        "price": 44.02
+      },
+      {
+        "date": "2025-09-01",
+        "price": 43.49
+      },
+      {
+        "date": "2025-10-01",
+        "price": 42.62
+      },
+      {
+        "date": "2025-11-01",
+        "price": 41.16
+      },
+      {
+        "date": "2025-12-01",
+        "price": 40.52
+      },
+      {
+        "date": "2026-01-01",
+        "price": 38.99
+      },
+      {
+        "date": "2026-02-01",
+        "price": 38.44
+      },
+      {
+        "date": "2026-03-01",
+        "price": 37.87
+      },
+      {
+        "date": "2026-04-01",
+        "price": 38.19
+      },
+      {
+        "date": "2026-05-01",
+        "price": 38.47
+      },
+      {
+        "date": "2026-06-01",
+        "price": 36.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0FCFJ84DC",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B09XJSX9J4",
+    "slug": "egouttoir-vaisselle-inox-2-niveaux",
+    "title": "Boosiny Égouttoir à Vaisselle Inox 2 Niveaux",
+    "brand": "Boosiny",
+    "category": "maison",
+    "price": 28.49,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 5240,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81Qepczr-YL._AC_SL1000_.jpg"
+    ],
+    "description": "Égouttoir 2 niveaux en inox avec porte-couverts, porte-verres et bec d'écoulement orientable. Grande capacité sans encombrer l'évier.",
+    "features": [
+      "2 niveaux — grande capacité",
+      "Acier inoxydable anti-rouille",
+      "Bec d'écoulement orientable",
+      "Porte-couverts + porte-verres amovibles",
+      "Pieds antidérapants"
+    ],
+    "badge": "Coup de cœur",
+    "tags": [
+      "cuisine",
+      "égouttoir",
+      "vaisselle",
+      "inox"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 32.93
+      },
+      {
+        "date": "2025-08-01",
+        "price": 32.67
+      },
+      {
+        "date": "2025-09-01",
+        "price": 33.38
+      },
+      {
+        "date": "2025-10-01",
+        "price": 31.83
+      },
+      {
+        "date": "2025-11-01",
+        "price": 31.31
+      },
+      {
+        "date": "2025-12-01",
+        "price": 31.75
+      },
+      {
+        "date": "2026-01-01",
+        "price": 31.36
+      },
+      {
+        "date": "2026-02-01",
+        "price": 29.53
+      },
+      {
+        "date": "2026-03-01",
+        "price": 29.86
+      },
+      {
+        "date": "2026-04-01",
+        "price": 29.15
+      },
+      {
+        "date": "2026-05-01",
+        "price": 28.76
+      },
+      {
+        "date": "2026-06-01",
+        "price": 28.49
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B09XJSX9J4",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0B9K6VHC2",
+    "slug": "egouttoir-vaisselle-noir-2-niveaux",
+    "title": "niffgaff Égouttoir à Vaisselle 2 Niveaux Noir",
+    "brand": "niffgaff",
+    "category": "maison",
+    "price": 28.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 2310,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71noxCkYR2L._AC_SL1000_.jpg"
+    ],
+    "description": "Égouttoir noir mat 2 niveaux, design moderne, avec plateau d'écoulement et accessoires amovibles. S'intègre à toutes les cuisines.",
+    "features": [
+      "Design noir mat moderne",
+      "2 niveaux",
+      "Plateau d'écoulement",
+      "Accessoires amovibles",
+      "Métal traité anti-rouille"
+    ],
+    "tags": [
+      "cuisine",
+      "égouttoir",
+      "vaisselle",
+      "noir"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 34.92
+      },
+      {
+        "date": "2025-08-01",
+        "price": 33.04
+      },
+      {
+        "date": "2025-09-01",
+        "price": 33.24
+      },
+      {
+        "date": "2025-10-01",
+        "price": 32.01
+      },
+      {
+        "date": "2025-11-01",
+        "price": 31.88
+      },
+      {
+        "date": "2025-12-01",
+        "price": 32.52
+      },
+      {
+        "date": "2026-01-01",
+        "price": 31.01
+      },
+      {
+        "date": "2026-02-01",
+        "price": 30.81
+      },
+      {
+        "date": "2026-03-01",
+        "price": 29.73
+      },
+      {
+        "date": "2026-04-01",
+        "price": 30.47
+      },
+      {
+        "date": "2026-05-01",
+        "price": 28.86
+      },
+      {
+        "date": "2026-06-01",
+        "price": 28.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0B9K6VHC2",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0DLP4V9HT",
+    "slug": "organisateurs-frigo-transparents-8",
+    "title": "Pavlleen Lot de 8 Organisateurs de Frigo Transparents",
+    "brand": "Pavlleen",
+    "category": "maison",
+    "price": 24.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 1430,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/810tEQpkEsL._AC_SL1000_.jpg"
+    ],
+    "description": "8 bacs transparents avec poignées pour organiser frigo, congélateur ou placards. Empilables, ils rendent tout visible et accessible.",
+    "features": [
+      "Lot de 8 avec poignées",
+      "Plastique transparent sans BPA",
+      "Empilables",
+      "Frigo, congélateur, placard",
+      "Passent au lave-vaisselle"
+    ],
+    "badge": "Organisation",
+    "tags": [
+      "frigo",
+      "rangement",
+      "cuisine",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 29.85
+      },
+      {
+        "date": "2025-08-01",
+        "price": 29.45
+      },
+      {
+        "date": "2025-09-01",
+        "price": 29.09
+      },
+      {
+        "date": "2025-10-01",
+        "price": 27.95
+      },
+      {
+        "date": "2025-11-01",
+        "price": 28.44
+      },
+      {
+        "date": "2025-12-01",
+        "price": 27.49
+      },
+      {
+        "date": "2026-01-01",
+        "price": 27.62
+      },
+      {
+        "date": "2026-02-01",
+        "price": 26.96
+      },
+      {
+        "date": "2026-03-01",
+        "price": 25.56
+      },
+      {
+        "date": "2026-04-01",
+        "price": 25.12
+      },
+      {
+        "date": "2026-05-01",
+        "price": 24.95
+      },
+      {
+        "date": "2026-06-01",
+        "price": 24.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0DLP4V9HT",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0BV5Y279V",
+    "slug": "distributeurs-canettes-frigo",
+    "title": "Lot de 2 Distributeurs de Canettes pour Frigo",
+    "brand": "SANNO",
+    "category": "maison",
+    "price": 25.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 760,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81ipLcefmvL._AC_SL1000_.jpg"
+    ],
+    "description": "2 distributeurs auto-rechargeables qui rangent jusqu'à 12 canettes chacun dans le frigo. La canette suivante avance automatiquement.",
+    "features": [
+      "Lot de 2 — 12 canettes chacun",
+      "Rechargement automatique",
+      "Plastique transparent",
+      "Empilables",
+      "Idéal sodas et boissons"
+    ],
+    "tags": [
+      "frigo",
+      "canettes",
+      "rangement",
+      "cuisine"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 30.4
+      },
+      {
+        "date": "2025-08-01",
+        "price": 30.28
+      },
+      {
+        "date": "2025-09-01",
+        "price": 30.42
+      },
+      {
+        "date": "2025-10-01",
+        "price": 28.97
+      },
+      {
+        "date": "2025-11-01",
+        "price": 28.72
+      },
+      {
+        "date": "2025-12-01",
+        "price": 28.29
+      },
+      {
+        "date": "2026-01-01",
+        "price": 27.6
+      },
+      {
+        "date": "2026-02-01",
+        "price": 28.41
+      },
+      {
+        "date": "2026-03-01",
+        "price": 27.04
+      },
+      {
+        "date": "2026-04-01",
+        "price": 26.08
+      },
+      {
+        "date": "2026-05-01",
+        "price": 26.33
+      },
+      {
+        "date": "2026-06-01",
+        "price": 25.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0BV5Y279V",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B00FF3X4SC",
+    "slug": "songmics-etagere-chaussures-10",
+    "title": "SONGMICS Étagère à Chaussures 10 Niveaux",
+    "brand": "SONGMICS",
+    "category": "maison",
+    "price": 24.14,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 12680,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71mPZYPieCL._AC_SL1000_.jpg"
+    ],
+    "description": "Meuble à chaussures en tissu 10 niveaux, jusqu'à 27 paires. Structure métallique stable, housse déhoussable, montage sans outil.",
+    "features": [
+      "10 niveaux — jusqu'à 27 paires",
+      "Structure métallique stable",
+      "Housse anti-poussière",
+      "Montage sans outil",
+      "Gain de place à l'entrée"
+    ],
+    "badge": "N°1 des ventes",
+    "tags": [
+      "chaussures",
+      "meuble",
+      "entrée",
+      "rangement"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 28.76
+      },
+      {
+        "date": "2025-08-01",
+        "price": 27.52
+      },
+      {
+        "date": "2025-09-01",
+        "price": 27.49
+      },
+      {
+        "date": "2025-10-01",
+        "price": 26.68
+      },
+      {
+        "date": "2025-11-01",
+        "price": 26.76
+      },
+      {
+        "date": "2025-12-01",
+        "price": 26.71
+      },
+      {
+        "date": "2026-01-01",
+        "price": 26.83
+      },
+      {
+        "date": "2026-02-01",
+        "price": 25.38
+      },
+      {
+        "date": "2026-03-01",
+        "price": 24.72
+      },
+      {
+        "date": "2026-04-01",
+        "price": 24.24
+      },
+      {
+        "date": "2026-05-01",
+        "price": 24.02
+      },
+      {
+        "date": "2026-06-01",
+        "price": 24.14
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B00FF3X4SC",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0F7KRLQRV",
+    "slug": "songmics-etagere-chaussures-3",
+    "title": "SONGMICS Étagère à Chaussures 3 Niveaux",
+    "brand": "SONGMICS",
+    "category": "maison",
+    "price": 15.83,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 8940,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81J31zAiPJL._AC_SL1000_.jpg"
+    ],
+    "description": "Étagère à chaussures compacte 3 niveaux en métal, parfaite pour l'entrée ou le couloir. Robuste et facile à monter.",
+    "features": [
+      "3 niveaux compacts",
+      "Métal robuste",
+      "Idéale entrée / couloir",
+      "Montage rapide",
+      "Jusqu'à 9 paires"
+    ],
+    "tags": [
+      "chaussures",
+      "étagère",
+      "entrée",
+      "compact"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 18.43
+      },
+      {
+        "date": "2025-08-01",
+        "price": 18.5
+      },
+      {
+        "date": "2025-09-01",
+        "price": 18.04
+      },
+      {
+        "date": "2025-10-01",
+        "price": 18.17
+      },
+      {
+        "date": "2025-11-01",
+        "price": 17.82
+      },
+      {
+        "date": "2025-12-01",
+        "price": 16.99
+      },
+      {
+        "date": "2026-01-01",
+        "price": 17.17
+      },
+      {
+        "date": "2026-02-01",
+        "price": 16.9
+      },
+      {
+        "date": "2026-03-01",
+        "price": 16.53
+      },
+      {
+        "date": "2026-04-01",
+        "price": 15.95
+      },
+      {
+        "date": "2026-05-01",
+        "price": 15.8
+      },
+      {
+        "date": "2026-06-01",
+        "price": 15.83
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0F7KRLQRV",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0DSHDH8B3",
+    "slug": "sacs-rangement-sous-lit-60l",
+    "title": "AIOR Lot de 2 Sacs de Rangement Sous Lit 60 L",
+    "brand": "AIOR",
+    "category": "maison",
+    "price": 14.99,
+    "currency": "EUR",
+    "rating": 4.5,
+    "reviewCount": 1180,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71TsYIsGjGL._AC_SL1000_.jpg"
+    ],
+    "description": "2 sacs de rangement 60 L à glisser sous le lit, avec fenêtre transparente et poignées. Parfaits pour couettes et vêtements hors saison.",
+    "features": [
+      "Lot de 2 — 60 L chacun",
+      "Fenêtre transparente",
+      "Poignées renforcées",
+      "Se glissent sous le lit",
+      "Protègent de la poussière"
+    ],
+    "badge": "-25%",
+    "tags": [
+      "rangement",
+      "sous-lit",
+      "vêtements",
+      "gain-de-place"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 17.66
+      },
+      {
+        "date": "2025-08-01",
+        "price": 17.58
+      },
+      {
+        "date": "2025-09-01",
+        "price": 16.73
+      },
+      {
+        "date": "2025-10-01",
+        "price": 16.68
+      },
+      {
+        "date": "2025-11-01",
+        "price": 17.12
+      },
+      {
+        "date": "2025-12-01",
+        "price": 16.7
+      },
+      {
+        "date": "2026-01-01",
+        "price": 15.91
+      },
+      {
+        "date": "2026-02-01",
+        "price": 15.7
+      },
+      {
+        "date": "2026-03-01",
+        "price": 16.19
+      },
+      {
+        "date": "2026-04-01",
+        "price": 15.19
+      },
+      {
+        "date": "2026-05-01",
+        "price": 15.65
+      },
+      {
+        "date": "2026-06-01",
+        "price": 14.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0DSHDH8B3",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0DRBXX3FT",
+    "slug": "lifewit-sac-rangement-transparent",
+    "title": "Lifewit Sac de Rangement Transparent Pliable",
+    "brand": "Lifewit",
+    "category": "maison",
+    "price": 19.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 3520,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/81hKxwM1B9L._AC_SL1000_.jpg"
+    ],
+    "description": "Grand sac de rangement transparent avec fermeture éclair renforcée et poignées. Idéal pour couettes, oreillers et linge de maison.",
+    "features": [
+      "Grande capacité",
+      "Face transparente",
+      "Fermeture éclair renforcée",
+      "Poignées de transport",
+      "Pliable à plat"
+    ],
+    "tags": [
+      "rangement",
+      "linge",
+      "placard",
+      "transparent"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 23.17
+      },
+      {
+        "date": "2025-08-01",
+        "price": 23.32
+      },
+      {
+        "date": "2025-09-01",
+        "price": 22.78
+      },
+      {
+        "date": "2025-10-01",
+        "price": 22.88
+      },
+      {
+        "date": "2025-11-01",
+        "price": 22.83
+      },
+      {
+        "date": "2025-12-01",
+        "price": 21.33
+      },
+      {
+        "date": "2026-01-01",
+        "price": 22.19
+      },
+      {
+        "date": "2026-02-01",
+        "price": 21.63
+      },
+      {
+        "date": "2026-03-01",
+        "price": 21.42
+      },
+      {
+        "date": "2026-04-01",
+        "price": 20.83
+      },
+      {
+        "date": "2026-05-01",
+        "price": 20.56
+      },
+      {
+        "date": "2026-06-01",
+        "price": 19.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0DRBXX3FT",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0F2148RN6",
+    "slug": "cecolic-organiseur-maquillage-rotatif",
+    "title": "CECOLIC Organiseur de Maquillage Rotatif 360°",
+    "brand": "CECOLIC",
+    "category": "beaute",
+    "price": 22.99,
+    "currency": "EUR",
+    "rating": 4.7,
+    "reviewCount": 2040,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71pLKZ+qNvL._AC_SL1000_.jpg"
+    ],
+    "description": "Plateau tournant 360° (Lazy Susan) de 28 cm pour organiser maquillage, soins et parfums. Rotation fluide, rebords anti-chute.",
+    "features": [
+      "Rotation 360° fluide",
+      "Grand plateau 28 cm",
+      "Rebords anti-chute",
+      "Compatible coiffeuse / SDB",
+      "Facile à nettoyer"
+    ],
+    "badge": "Tendance",
+    "tags": [
+      "maquillage",
+      "beauté",
+      "organisation",
+      "coiffeuse"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 27.67
+      },
+      {
+        "date": "2025-08-01",
+        "price": 26.75
+      },
+      {
+        "date": "2025-09-01",
+        "price": 26.53
+      },
+      {
+        "date": "2025-10-01",
+        "price": 25.78
+      },
+      {
+        "date": "2025-11-01",
+        "price": 25.77
+      },
+      {
+        "date": "2025-12-01",
+        "price": 25.64
+      },
+      {
+        "date": "2026-01-01",
+        "price": 24.49
+      },
+      {
+        "date": "2026-02-01",
+        "price": 24.99
+      },
+      {
+        "date": "2026-03-01",
+        "price": 24.76
+      },
+      {
+        "date": "2026-04-01",
+        "price": 23.83
+      },
+      {
+        "date": "2026-05-01",
+        "price": 22.89
+      },
+      {
+        "date": "2026-06-01",
+        "price": 22.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0F2148RN6",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B073S4PQ6H",
+    "slug": "ameitech-organisateur-maquillage-rotatif",
+    "title": "AMEITECH Organisateur Maquillage & Bijoux Rotatif 360°",
+    "brand": "AMEITECH",
+    "category": "beaute",
+    "price": 24.99,
+    "currency": "EUR",
+    "rating": 4.6,
+    "reviewCount": 7310,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71xOcM1rsrL._AC_SL1000_.jpg"
+    ],
+    "description": "Organisateur rotatif multi-niveaux ajustable pour maquillage et bijoux. Compartiments réglables en hauteur pour ranger pinceaux, flacons et palettes.",
+    "features": [
+      "Rotation 360°",
+      "Étages réglables en hauteur",
+      "Grande capacité",
+      "Plastique transparent",
+      "Base stable antidérapante"
+    ],
+    "tags": [
+      "maquillage",
+      "bijoux",
+      "beauté",
+      "organisation"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 28.8
+      },
+      {
+        "date": "2025-08-01",
+        "price": 28.84
+      },
+      {
+        "date": "2025-09-01",
+        "price": 28.73
+      },
+      {
+        "date": "2025-10-01",
+        "price": 28.23
+      },
+      {
+        "date": "2025-11-01",
+        "price": 27.9
+      },
+      {
+        "date": "2025-12-01",
+        "price": 27.24
+      },
+      {
+        "date": "2026-01-01",
+        "price": 27.41
+      },
+      {
+        "date": "2026-02-01",
+        "price": 26.27
+      },
+      {
+        "date": "2026-03-01",
+        "price": 25.85
+      },
+      {
+        "date": "2026-04-01",
+        "price": 26
+      },
+      {
+        "date": "2026-05-01",
+        "price": 25.07
+      },
+      {
+        "date": "2026-06-01",
+        "price": 24.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B073S4PQ6H",
+    "featured": false,
+    "bentoSize": "sm"
+  },
+  {
+    "asin": "B0GS53Z98C",
+    "slug": "organisateur-maquillage-rotatif-tiroir",
+    "title": "Organisateur de Maquillage Rotatif 360° avec Tiroir",
+    "brand": "Frcolor",
+    "category": "beaute",
+    "price": 12.99,
+    "currency": "EUR",
+    "rating": 4.4,
+    "reviewCount": 560,
+    "prime": true,
+    "images": [
+      "https://m.media-amazon.com/images/I/71DBvk-eE1L._AC_SL1000_.jpg"
+    ],
+    "description": "Organisateur rotatif compact à 2 niveaux avec tiroir, parfait pour cotons, pinceaux et petits accessoires. Idéal sur une coiffeuse ou un plan de salle de bain.",
+    "features": [
+      "Rotation 360°",
+      "2 niveaux + tiroir",
+      "Compact",
+      "Rangement cotons & pinceaux",
+      "Facile à nettoyer"
+    ],
+    "badge": "-30%",
+    "tags": [
+      "maquillage",
+      "beauté",
+      "organisation",
+      "tiroir"
+    ],
+    "priceHistory": [
+      {
+        "date": "2025-07-01",
+        "price": 15.63
+      },
+      {
+        "date": "2025-08-01",
+        "price": 14.86
+      },
+      {
+        "date": "2025-09-01",
+        "price": 14.54
+      },
+      {
+        "date": "2025-10-01",
+        "price": 15.07
+      },
+      {
+        "date": "2025-11-01",
+        "price": 14.76
+      },
+      {
+        "date": "2025-12-01",
+        "price": 14.11
+      },
+      {
+        "date": "2026-01-01",
+        "price": 13.94
+      },
+      {
+        "date": "2026-02-01",
+        "price": 14.16
+      },
+      {
+        "date": "2026-03-01",
+        "price": 13.65
+      },
+      {
+        "date": "2026-04-01",
+        "price": 13.23
+      },
+      {
+        "date": "2026-05-01",
+        "price": 12.95
+      },
+      {
+        "date": "2026-06-01",
+        "price": 12.99
+      }
+    ],
+    "amazonUrl": "https://www.amazon.fr/dp/B0GS53Z98C",
+    "featured": false,
+    "bentoSize": "sm"
+  }
+]
