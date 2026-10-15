@@ -123,5 +123,12 @@ if (isMain) {
     rmSync(zip, { force: true });
     execFileSync("zip", ["-rq", zip, "TIDDYPLANNER", "-x", "*.DS_Store"], { cwd: join(out, "..") });
     console.log("Zipped →", zip);
+    // One zip per app, so each product can be stored and sold on its own.
+    for (const ed of config.editions) {
+      const one = join(out, "..", `${fileBase(ed)}.zip`);
+      rmSync(one, { force: true });
+      execFileSync("zip", ["-rq", one, ed.folder, "-x", "*.DS_Store"], { cwd: out });
+      console.log("Zipped →", one);
+    }
   }
 }
