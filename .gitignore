@@ -45,3 +45,4 @@ next-env.d.ts
 # Planner kit intermediates
 /budget-planner/etsy/build/
 /TIDDYPLANNER.zip
+/tiddyplanner-site.zip
