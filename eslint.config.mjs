@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone budget planner: plain browser JS concatenated at build time.
+    "budget-planner/**",
+    "public/lumi/**",
   ]),
 ]);
 

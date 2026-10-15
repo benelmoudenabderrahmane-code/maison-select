@@ -89,6 +89,8 @@ function loadSample() {
     }
     if (!spentToday && d < today && rnd() < 0.8) S.noSpend[d] = true;
   }
+  // Something tracked today, so the Today view isn't empty.
+  if (!S.transactions.some((t) => t.date === today)) S.transactions.push({ id: uid(), createdAt: Date.now() - 1, type: "expense", catId: cat("Coffee & Treats"), name: "Iced latte", amount: 5.4, date: today, note: "" });
   // A one-off and a note, for realism.
   S.transactions.push({ id: uid(), createdAt: Date.now(), type: "expense", catId: cat("Shopping"), name: "Winter coat", amount: 96, date: addDays(today, -9), note: "On sale!" });
 

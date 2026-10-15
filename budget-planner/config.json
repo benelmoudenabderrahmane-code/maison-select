@@ -1,5 +1,6 @@
 {
   "appName": "Lumi Budget",
   "shopUrl": "https://www.etsy.com/shop/YOUR-SHOP-NAME",
-  "hostedDir": "lumi/planner-ec98eebc3064"
+  "hostedDir": "lumi/planner-ec98eebc3064",
+  "publicUrl": "https://YOUR-DOMAIN.com"
 }

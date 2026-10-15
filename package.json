@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -p 3006",
     "lint": "eslint",
-    "gen:images": "node scripts/gen-images.mjs"
+    "gen:images": "node scripts/gen-images.mjs",
+    "planner:build": "node budget-planner/scripts/build.mjs",
+    "planner:etsy": "node budget-planner/scripts/build.mjs && node budget-planner/scripts/etsy.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slider": "^1.4.1",

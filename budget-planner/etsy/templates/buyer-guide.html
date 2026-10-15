@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{APP}} — Start here</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..700&family=Caveat:wght@600&display=swap">
+<style>
+  @page { size: Letter; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", sans-serif; color: #2a1a20; font-size: 11.5pt; line-height: 1.5; }
+  .page { width: 8.5in; height: 11in; padding: .7in .75in; position: relative; overflow: hidden; page-break-after: always; background: linear-gradient(160deg, #fdf8f6, #f8e9ec); }
+  .page:last-child { page-break-after: auto; }
+  h1, h2, h3 { font-family: "Fraunces", serif; margin: 0; letter-spacing: -.01em; }
+  h1 { font-size: 40pt; line-height: 1; }
+  h1 em { font-weight: 500; }
+  h2 { font-size: 17pt; margin-bottom: 8pt; }
+  .eyebrow { letter-spacing: .35em; text-transform: uppercase; font-family: "Fraunces", serif; font-size: 10pt; color: #6e5a61; }
+  .hand { font-family: "Caveat", cursive; font-size: 22pt; color: #dc5679; }
+  .card { background: #fffaf9; border-radius: 16pt; padding: 14pt 18pt; margin-top: 12pt; box-shadow: 0 6pt 18pt -10pt rgba(80, 30, 45, .25); }
+  .link { display: block; background: #dc5679; color: #fff; text-decoration: none; border-radius: 12pt; padding: 13pt 16pt; font-weight: 700; font-size: 12.5pt; text-align: center; margin-top: 8pt; word-break: break-all; }
+  .link.alt { background: #f8dfe6; color: #2a1a20; }
+  .steps { counter-reset: s; margin: 6pt 0 0; padding: 0; list-style: none; }
+  .steps li { counter-increment: s; position: relative; padding-left: 28pt; margin-top: 8pt; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 19pt; height: 19pt; border-radius: 50%; background: #f8dfe6; font-weight: 700; font-size: 9.5pt; display: grid; place-items: center; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .muted { color: #6e5a61; }
+  .small { font-size: 9.5pt; }
+  .foot { position: absolute; left: .75in; right: .75in; bottom: .45in; display: flex; justify-content: space-between; font-size: 9pt; color: #6e5a61; }
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="eyebrow">{{APP}}</div>
+  <h1 style="margin-top:14pt">Thank you &amp;<br><em>welcome!</em></h1>
+  <p class="muted" style="margin-top:10pt;max-width:5.4in">Your calm, beginner-friendly money planner is ready. Pick how you'd like to use it — you can use both.</p>
+
+  <div class="card">
+    <h2>🌐 Use it online — any device</h2>
+    <p class="muted small">Your private link. Bookmark it, and keep it to yourself.</p>
+    <a class="link" href="{{URL}}">{{URL}}</a>
+    <ol class="steps small">
+      <li><b>iPhone / iPad:</b> open the link in Safari → tap <b>Share</b> → <b>Add to Home Screen</b>.</li>
+      <li><b>Android:</b> open it in Chrome → tap <b>⋮</b> → <b>Install app</b> (or Add to Home screen).</li>
+      <li><b>Computer:</b> open it in Chrome or Edge and click the <b>install</b> icon in the address bar — or just bookmark it.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>💾 Use it offline — on your computer</h2>
+    <p class="muted small">Your download also includes <b>{{FILE}}</b>. Save it anywhere (Desktop, Documents) and double-click to open it in your browser. No internet needed.</p>
+    <p class="muted small" style="margin-top:6pt">Tip: always open the same file in the same browser, so your data is there each time.</p>
+  </div>
+
+  <div class="card">
+    <h2>⏱️ Your first 3 minutes</h2>
+    <ol class="steps small">
+      <li>Open the planner and choose <b>Set up my planner</b> (or <b>Explore with sample data</b> to look around first).</li>
+      <li>Add your name, currency and paycheck.</li>
+      <li>Follow the <b>Getting started</b> checklist: bills → budget → savings fund → first spend.</li>
+      <li>Open <b>Today</b> once a day. Press <b>N</b> (or tap <b>+</b>) whenever you spend.</li>
+    </ol>
+  </div>
+  <div class="foot"><span>{{APP}} · Start here</span><span>Page 1 of 2</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">{{APP}}</div>
+  <h1 style="margin-top:10pt;font-size:30pt">Good to <em>know</em></h1>
+
+  <div class="two">
+    <div class="card">
+      <h2>🔒 Your data is private</h2>
+      <p class="small muted">Everything is saved inside your own browser on your own device. There's no account and nothing is sent to a server.</p>
+    </div>
+    <div class="card">
+      <h2>🗂️ Back it up</h2>
+      <p class="small muted"><b>Settings → Back up</b> saves a small file. Keep it in your cloud drive or email it to yourself. Use <b>Restore backup</b> to bring it back.</p>
+    </div>
+    <div class="card">
+      <h2>📱 Switch devices</h2>
+      <p class="small muted">Make a backup on device A, then open your link on device B and choose <b>Restore backup</b>. Data doesn't sync automatically.</p>
+    </div>
+    <div class="card">
+      <h2>⚠️ Before clearing your browser</h2>
+      <p class="small muted">Clearing browsing data or using private/incognito mode can erase saved data. Back up first!</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✨ Features made for busy brains</h2>
+    <p class="small muted"><b>Today</b> — one daily number you can spend. <b>Paycheck plan</b> — which bills each paycheck covers. <b>Impulse Pause</b> — wait 24h–7 days before buying. <b>Focus mode</b> — hides everything but the essentials. <b>Privacy blur</b> — hides amounts. <b>Readable font &amp; large text</b> in Settings. <b>Streaks, badges &amp; confetti</b> for small wins.</p>
+  </div>
+
+  <div class="card">
+    <h2>💌 Need help?</h2>
+    <p class="small muted">Message me through Etsy any time — I'm happy to help you get set up. If you enjoy your planner, a review means the world to a small shop. ♡</p>
+    <a class="link alt" href="{{SHOP}}">{{SHOP}}</a>
+  </div>
+
+  <p class="small muted" style="margin-top:12pt">For personal use only — please don't share or resell your link or file. {{APP}} is a budgeting tool and does not provide financial advice.</p>
+  <div class="foot"><span>{{APP}} · Start here</span><span>Page 2 of 2</span></div>
+</section>
+</body>
+</html>
