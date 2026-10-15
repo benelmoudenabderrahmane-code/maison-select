@@ -40,6 +40,12 @@ const ICONS = {
   heart: '<path d="M12 20s-7.5-4.6-9.3-9.2A5 5 0 0 1 12 6a5 5 0 0 1 9.3 4.8C19.5 15.4 12 20 12 20Z"/>',
   repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+  arrowUp: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  arrowDown: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+  leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15Z"/><path d="M5 19 13 11"/>',
+  chevDown: '<path d="m6 9 6 6 6-6"/>',
+  dots: '<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+  sort: '<path d="m8 9 4-4 4 4M8 15l4 4 4-4"/>',
 };
 const icon = (name, size) =>
   `<svg viewBox="0 0 24 24" ${size ? `width="${size}" height="${size}"` : ""} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ""}</svg>`;
@@ -77,7 +83,7 @@ const shortMoney = (v) => {
 /** Paired bars: planned (outlined) vs actual (solid), one pair per item. */
 function chartPlanVsActual(items) {
   if (!items.length) return empty("📊", "Nothing to chart yet", "Add a budget or track a few spends and this fills in.");
-  const H = 230, top = 14, bottom = 62, left = 44, colW = 74;
+  const H = 262, top = 26, bottom = 74, left = 44, colW = 78;
   const W = Math.max(640, left + items.length * colW + 10);
   const max = niceMax(Math.max(...items.map((i) => Math.max(i.plan, i.actual)), 1));
   const y = (v) => top + (H - top - bottom) * (1 - v / max);
@@ -88,12 +94,17 @@ function chartPlanVsActual(items) {
   }
   items.forEach((it, i) => {
     const x = left + i * colW + 12, bw = 19;
+    const ya = y(it.actual) - 6;
+    let yp = y(it.plan) - 6;
+    if (Math.abs(yp - ya) < 13) yp = Math.min(yp, ya) - 12; // keep the two value labels from colliding
     const tip = `${it.label}: ${money(it.actual)} of ${money(it.plan)}`;
     g += `<g data-tip="${esc(tip)}"><rect class="bar-plan" x="${x}" y="${y(it.plan)}" width="${bw}" height="${Math.max(0, y(0) - y(it.plan))}" rx="5" style="fill:${it.soft};stroke:${it.color}"/>
       <rect class="bar-act ${it.actual > it.plan ? "over" : ""}" x="${x + bw + 3}" y="${y(it.actual)}" width="${bw}" height="${Math.max(0, y(0) - y(it.actual))}" rx="5" style="${it.actual > it.plan ? "" : `fill:${it.color}`}"/>
       <rect x="${x - 6}" y="${top}" width="${colW - 8}" height="${H - top}" fill="transparent"/></g>
-      <text x="${x + bw + 1}" y="${H - bottom + 18}" text-anchor="middle" style="font-weight:600;fill:var(--ink)">${esc(trunc(it.short || it.label, 11))}</text>
-      <text x="${x + bw + 1}" y="${H - bottom + 33}" text-anchor="middle">${shortMoney(it.actual)} / ${shortMoney(it.plan)}</text>`;
+      ${it.plan > 0 ? `<text x="${x + bw / 2}" y="${yp}" text-anchor="middle" style="font-size:10px">${shortMoney(it.plan)}</text>` : ""}
+      <text x="${x + bw * 1.5 + 3}" y="${ya}" text-anchor="middle" style="font-size:10px;font-weight:700;fill:var(--ink)">${shortMoney(it.actual)}</text>
+      <text x="${x + bw + 1}" y="${H - bottom + 22}" text-anchor="middle" style="font-size:16px">${esc(it.emoji || "")}</text>
+      <text x="${x + bw + 1}" y="${H - bottom + 42}" text-anchor="middle" style="font-weight:600;fill:var(--ink)">${esc(trunc(it.short || it.label, 11))}</text>`;
   });
   return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${W}px" role="img" aria-label="Budget versus actual by category">${g}</svg></div>
     <div class="legend"><span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Planned</span><span><i style="background:var(--accent)"></i>Actual</span><span><i style="background:var(--bad)"></i>Over budget</span></div>`;
@@ -121,7 +132,7 @@ function chartInOut(rows) {
     <div class="legend"><span><i style="background:var(--good)"></i>Money in</span><span><i style="background:var(--accent)"></i>Money out (spent + saved)</span></div>`;
 }
 /** Simple line chart; `series` = [{values, cls}] sharing x positions; labels at a few ticks. */
-function chartLine(series, labelFor, { height = 220, width = 640, aria = "Line chart" } = {}) {
+function chartLine(series, labelFor, { height = 220, width = 640, aria = "Line chart", points = false } = {}) {
   const n = Math.max(...series.map((s) => s.values.length));
   if (n < 2) return "";
   const W = width, H = height, top = 12, bottom = 28, left = 52, right = 10;
@@ -142,6 +153,9 @@ function chartLine(series, labelFor, { height = 220, width = 640, aria = "Line c
     const pts = s.values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`);
     if (si === 0) g += `<path class="area" d="M${x(0)},${y(0)} L${pts.join(" L")} L${x(s.values.length - 1)},${y(0)} Z"/>`;
     g += `<polyline class="line ${s.cls || ""}" points="${pts.join(" ")}"/>`;
+    if (points && si === 0) s.values.forEach((v, i) => {
+      g += `<circle cx="${x(i)}" cy="${y(v)}" r="5" class="pt"/><text x="${x(i)}" y="${y(v) - 12}" text-anchor="middle" style="font-weight:700;fill:var(--ink)">${shortMoney(v)}</text>`;
+    });
   });
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${g}</svg>`;
 }

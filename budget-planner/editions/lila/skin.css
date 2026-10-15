@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Lila Bloom — soft lavender, white cards, deep plum accents
+   ========================================================================== */
+:root {
+  --font-head: "Lora", Georgia, "Times New Roman", serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --bg: hsl(var(--h) 55% 97.6%);
+  --bg-2: hsl(var(--h) 45% 95.6%);
+  --surface: #fff;
+  --surface-2: hsl(var(--h) 50% 97.6%);
+  --ink: hsl(var(--h) 48% 17%);
+  --head: hsl(var(--h) 52% 19%);
+  --ink-2: hsl(var(--h) 12% 42%);
+  --ink-3: hsl(var(--h) 10% 60%);
+  --line: hsl(var(--h) 40% 92.5%);
+  --line-2: hsl(var(--h) 30% 86%);
+  --accent: hsl(var(--h) var(--s) 50%);
+  --accent-strong: hsl(var(--h) var(--s) 41%);
+  --accent-soft: hsl(var(--h) 72% 94%);
+  --accent-softer: hsl(var(--h) 72% 96.6%);
+  --good: hsl(150 32% 38%);
+  --good-soft: hsl(145 35% 93%);
+  --warn: hsl(18 70% 48%);
+  --warn-soft: hsl(18 90% 94%);
+  --shadow: 0 1px 2px hsl(var(--h) 40% 40% / .04), 0 12px 32px -20px hsl(var(--h) 40% 35% / .28);
+}
+:root[data-theme="dark"] {
+  --bg: hsl(var(--h) 26% 8.5%);
+  --bg-2: hsl(var(--h) 24% 10.5%);
+  --surface: hsl(var(--h) 22% 12.5%);
+  --surface-2: hsl(var(--h) 20% 15.5%);
+  --ink: hsl(var(--h) 30% 94%);
+  --head: hsl(var(--h) 45% 92%);
+  --ink-2: hsl(var(--h) 12% 70%);
+  --line: hsl(var(--h) 16% 20%);
+  --line-2: hsl(var(--h) 16% 27%);
+  --accent: hsl(var(--h) var(--s) 72%);
+  --accent-strong: hsl(var(--h) var(--s) 78%);
+  --accent-ink: hsl(var(--h) 40% 12%);
+  --accent-soft: hsl(var(--h) 30% 22%);
+  --accent-softer: hsl(var(--h) 25% 17%);
+  --good-soft: hsl(150 22% 17%);
+  --warn-soft: hsl(18 30% 18%);
+}
+h1 { font-size: clamp(1.8rem, 3.4vw, 2.5rem); font-weight: 700; }
+.sidebar { background: var(--bg-2); border-right: 0; padding: 26px 18px 18px; }
+.brand { gap: 12px; padding-bottom: 22px; }
+.brand-logo { width: 46px; height: 46px; }
+.brand b { font-size: 1.55rem; line-height: .98; font-weight: 700; color: var(--head); }
+.brand span { display: none; }
+.nav a { font-size: 1rem; padding: 11px 14px; color: var(--ink); gap: 14px; }
+.nav a svg { color: var(--ink-2); width: 20px; height: 20px; }
+.nav a.active { background: var(--accent-soft); font-weight: 650; }
+.nav a.active svg { color: var(--accent-strong); }
+.nav a.active::before { display: none; }
+.btn { border-radius: 12px; }
+.btn.primary { box-shadow: 0 10px 22px -12px var(--accent-strong); }
+.track-btn { border-radius: 14px; }
+.chip, .months button, .seg, .seg button { border-radius: 10px; }
+.tile.accent { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.tile .value { font-family: var(--font-body); font-weight: 700; letter-spacing: -.02em; }
+.card { border-color: var(--line); }
+.kpi-hero .value { color: var(--accent-strong); }
+.hero-split { background: var(--surface); border: 1px solid var(--line); }

@@ -51,7 +51,12 @@ function scheduleIn(from, to) {
   const out = [];
   const push = (kind, ref, date, extra) => {
     const key = `${kind}:${ref.id}:${date}`;
-    out.push({ key, kind, refId: ref.id, date, name: ref.name, done: !!S.links[key], txId: S.links[key], ...extra });
+    const o = { key, kind, refId: ref.id, date, name: ref.name, done: !!S.links[key], txId: S.links[key], ...extra };
+    if (o.done) {
+      const t = S.transactions.find((x) => x.id === o.txId);
+      if (t) o.amount = Math.abs(t.amount);
+    }
+    out.push(o);
   };
   for (const inc of S.incomes) {
     for (const d of occurrences(inc.freq, inc.anchor, from, to, inc.endDate)) push("income", inc, d, { amount: inc.amount, emoji: inc.emoji || "💰" });

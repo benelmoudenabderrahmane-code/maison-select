@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Cherry Blossom — warm cream, crimson serif, blush & sage, blossom art
+   ========================================================================== */
+:root {
+  --font-head: "Playfair Display", Georgia, "Times New Roman", serif;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --bg: hsl(24 75% 97.3%);
+  --bg-2: hsl(12 65% 95.6%);
+  --surface: hsl(30 80% 99.3%);
+  --surface-2: hsl(18 70% 97%);
+  --ink: hsl(345 32% 18%);
+  --head: hsl(var(--h) 72% 31%);
+  --ink-2: hsl(345 10% 42%);
+  --ink-3: hsl(345 8% 60%);
+  --line: hsl(10 50% 90.5%);
+  --line-2: hsl(10 38% 84%);
+  --accent: hsl(var(--h) var(--s) 60%);
+  --accent-strong: hsl(var(--h) var(--s) 49%);
+  --accent-soft: hsl(var(--h) 88% 94.5%);
+  --accent-softer: hsl(var(--h) 88% 96.8%);
+  --good: hsl(100 26% 34%);
+  --good-soft: hsl(92 32% 92%);
+  --info: hsl(100 22% 38%);
+  --info-soft: hsl(80 28% 93%);
+  --shadow: 0 1px 2px hsl(345 40% 40% / .04), 0 12px 30px -20px hsl(345 50% 35% / .3);
+}
+:root[data-theme="dark"] {
+  --bg: hsl(345 24% 8%);
+  --bg-2: hsl(345 22% 10.5%);
+  --surface: hsl(345 18% 12%);
+  --surface-2: hsl(345 16% 15%);
+  --ink: hsl(20 40% 93%);
+  --head: hsl(var(--h) 85% 80%);
+  --ink-2: hsl(20 10% 70%);
+  --line: hsl(345 14% 20%);
+  --line-2: hsl(345 14% 27%);
+  --accent: hsl(var(--h) var(--s) 70%);
+  --accent-strong: hsl(var(--h) var(--s) 76%);
+  --accent-ink: hsl(345 40% 12%);
+  --accent-soft: hsl(var(--h) 35% 22%);
+  --accent-softer: hsl(var(--h) 30% 16%);
+  --good: hsl(95 30% 64%);
+  --good-soft: hsl(95 18% 17%);
+  --info-soft: hsl(80 16% 17%);
+}
+h1 { font-size: clamp(2rem, 4vw, 2.9rem); font-weight: 700; letter-spacing: -.005em; }
+h2 { font-size: 1.45rem; }
+.sidebar { background: var(--bg-2); border-right: 1px solid var(--line); position: sticky; overflow: hidden; }
+.sidebar > * { position: relative; z-index: 1; }
+.side-art { margin: 18px -16px -8px -18px; width: calc(100% + 34px); opacity: .95; pointer-events: none; }
+.side-art + .sidebar-foot { margin-top: 0; }
+.brand { flex-direction: column; text-align: center; gap: 4px; padding-bottom: 18px; }
+.brand-logo { width: 58px; height: 58px; }
+.brand b { font-size: 1.6rem; color: var(--head); font-weight: 700; line-height: 1; }
+.brand span { text-transform: uppercase; letter-spacing: .26em; font-size: .62rem; margin-top: 4px; }
+.nav a { font-size: 1rem; padding: 10px 14px; color: var(--ink); }
+.nav a svg { color: var(--ink-2); }
+.nav a.active { background: var(--accent); color: var(--accent-ink); font-weight: 650; box-shadow: 0 10px 22px -14px var(--accent-strong); }
+.nav a.active svg { color: var(--accent-ink); }
+.nav a.active::before { display: none; }
+.btn { border-radius: 10px; }
+.chip, .months button, .seg, .seg button { border-radius: 999px; }
+.tile.accent { background: var(--surface); border: 1px solid var(--line); }
+.tile.good { background: var(--good-soft); border: 1px solid hsl(92 30% 84%); }
+.tile .value { color: var(--head); }
+.tile.good .value { color: var(--good); }
+.kpi-hero .value { color: var(--head); }
+.hero-split { background: linear-gradient(120deg, var(--accent-softer), var(--good-soft)); }
+.savings-hero { background: linear-gradient(110deg, var(--good-soft), var(--surface) 60%, var(--accent-softer)); }
+:root[data-theme="dark"] .side-art { opacity: .55; }

@@ -10,6 +10,7 @@ const ui = {
   txQuery: "",
   txType: "all",
   txCat: "",
+  txSort: { k: "date", dir: -1 },
   budgetScope: "all",
   debtStrategy: "avalanche",
   debtExtra: 100,
@@ -39,10 +40,20 @@ const NAV = [
 ];
 
 /* ---------- Shared pieces ---------- */
-function pageHead(title, sub, actions = "") {
-  return `<div class="page-head"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>`;
+function pageHead(title, sub, actions = "", { month } = {}) {
+  const fl = SKIN.flourish ? `<span class="flourish">${SKIN.flourish}</span>` : "";
+  const nav = month && SKIN.monthNav === "compact" ? monthNav(month) : "";
+  return `<div class="page-head"><div><h1>${title}${fl}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${nav || actions ? `<div class="actions">${nav}${actions}</div>` : ""}</div>`;
+}
+function monthNav(mk, action = "set-month") {
+  return `<div class="month-nav" role="group" aria-label="Choose month">
+    <button class="btn ghost icon-btn" data-action="${action}" data-mk="${addMonths(mk, -1)}" aria-label="Previous month">${icon("chevL")}</button>
+    <span class="month-nav-label">${icon("calendar", 18)}<span>${monthLabel(mk)}</span></span>
+    <button class="btn ghost icon-btn" data-action="${action}" data-mk="${addMonths(mk, 1)}" aria-label="Next month">${icon("chevR")}</button>
+  </div>`;
 }
 function monthsBar(selected, action = "set-month") {
+  if (SKIN.monthNav === "compact") return "";
   const y = selected.slice(0, 4);
   return `<div class="months" role="group" aria-label="Choose month">
     <button data-action="${action}" data-mk="${addMonths(selected, -12)}" aria-label="Previous year">${icon("chevL", 14)}</button>
@@ -96,6 +107,64 @@ const debtTotals = () => {
 };
 
 /* ---------- Home ---------- */
+/** Totals for a month, optionally only up to a given day (for fair month-to-date comparisons). */
+function periodTotals(mk, uptoDay = 31) {
+  const txs = txInMonth(mk).filter((t) => Number(t.date.slice(8)) <= uptoDay);
+  return {
+    income: sum(txs.filter((t) => t.type === "income"), (t) => t.amount),
+    spent: sum(txs.filter((t) => t.type === "expense"), (t) => t.amount),
+    saved: sum(txs.filter((t) => t.type === "saving"), (t) => t.amount),
+  };
+}
+function delta(cur, prev, prevMk, upIsGood = true) {
+  if (!(prev > 0)) return `<span class="delta">&nbsp;</span>`;
+  const p = Math.round(((cur - prev) / prev) * 100);
+  const cls = p === 0 ? "" : (p > 0) === upIsGood ? "up" : "down";
+  return `<span class="delta ${cls}">${p > 0 ? "+" : ""}${p}% vs ${MONTHS_S[Number(prevMk.slice(5)) - 1]}</span>`;
+}
+function homeChartItems(mk) {
+  return chartItems(S.categories.map((c) => ({ c, plan: catAvailable(c, mk), spent: catSpent(c.id, mk) })));
+}
+/** Chart rows for budget vs. actual: the biggest categories, then everything else grouped. */
+function chartItems(rows, max = 8) {
+  const mono = SKIN.chartMono;
+  const item = (c, plan, actual) => ({ label: c.name, emoji: c.emoji, short: c.name.split(/[ /&]/)[0], plan, actual,
+    color: mono ? "var(--accent)" : catColor(c), soft: mono ? "var(--accent-soft)" : isDark() ? `hsl(${c.hue} 30% 22%)` : `hsl(${c.hue} 70% 92%)` });
+  const live = rows.filter((r) => r.plan > 0 || r.spent > 0).sort((a, b) => Math.max(b.plan, b.spent) - Math.max(a.plan, a.spent));
+  const items = live.slice(0, max).map((r) => item(r.c, r.plan, r.spent));
+  const rest = live.slice(max);
+  if (rest.length) items.push(item({ name: "Other", emoji: "…", hue: 0 }, sum(rest, (r) => r.plan), sum(rest, (r) => r.spent)));
+  return items;
+}
+function savingsMonthCard(m) {
+  const planned = sum(m.sched.filter((o) => o.kind === "fund"), (o) => o.amount);
+  const saved = Math.max(0, m.saved);
+  const p = planned > 0 ? saved / planned : saved > 0 ? 1 : 0;
+  const [title, text] = !planned && !saved
+    ? ["Start small", "Give a savings fund an automatic transfer and it becomes your monthly target."]
+    : p >= 1 ? ["Monthly goal reached! 🎉", `You saved ${money(saved)} this month. Future you is grateful.`]
+    : ["You're on the right track!", `${money(planned - saved)} to go to reach this month's savings goal.`];
+  return `<div class="card">
+    <div class="card-head"><h2>${icon("target", 20)} Savings this month</h2><button class="btn ghost icon-btn" data-action="go" data-view="savings" aria-label="Open savings">${icon("chevR")}</button></div>
+    <div class="ring-center">${ring(p, { size: 176, stroke: 14, label: `<span class="big-pct">${Math.round(p * 100)}%</span>`, sub: `${money(saved)} of ${money(planned)}`, color: "var(--good)" })}</div>
+    <div class="nudge good-nudge mt"><span class="e">🌿</span><div><b>${title}</b><div class="tiny">${text}</div></div></div>
+  </div>`;
+}
+function goalsMini() {
+  const funds = S.funds.slice(0, 4);
+  return `<div class="card">
+    <div class="card-head"><h2>${icon("sparkle", 20)} My savings goals</h2><a class="link-sm" href="#savings">See all</a></div>
+    ${funds.length ? `<div class="list">${funds.map((f) => { const p = f.target > 0 ? f.saved / f.target : 0; const st = catStyle({ hue: f.hue ?? 205 }); return `<a class="li goal-li" href="#savings" style="${st}"><span class="emoji-badge">${esc(f.emoji || "🐷")}</span><div class="grow"><div class="row between"><b>${esc(f.name)}</b><span class="tiny">${Math.round(p * 100)}%</span></div><div class="tiny">${money(f.saved)} of ${money(f.target)}</div><div class="mt-s">${progressBar(f.saved, f.target, st)}</div></div>${icon("chevR", 18)}</a>`; }).join("")}</div>`
+      : empty("🌱", "No goals yet", "A trip, a cushion, a new laptop… start a savings fund.", `<button class="btn primary" data-action="add-fund">New fund</button>`)}
+  </div>`;
+}
+function upcomingPayments(today, limit = 5) {
+  const items = scheduleIn(today, addDays(today, 31)).filter((o) => o.kind !== "income" && !o.done).slice(0, limit);
+  return `<div class="card">
+    <div class="card-head"><h2>${icon("calendar", 20)} Upcoming payments</h2><a class="link-sm" href="#calendar">See all</a></div>
+    ${items.length ? `<div class="list">${items.map((o) => schedRow(o)).join("")}</div>` : empty("🌤️", "Nothing due soon", "Add your bills and they'll show up here with a checkbox.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
+  </div>`;
+}
 function viewHome() {
   const today = todayISO();
   const mk = ui.month;
@@ -103,15 +172,45 @@ function viewHome() {
   const isCur = mk === monthKey(today);
   const ft = fundTotals(), dt = debtTotals();
   const goalsActive = S.goals.filter((g) => g.status === "progress").length;
-  const upcoming = (isCur ? scheduleIn(today, addDays(today, 14)) : m.sched).slice(0, 7);
-  const catItems = S.categories
-    .map((c) => ({ label: c.name, short: c.name.split(/[ /&]/)[0], plan: catAvailable(c, mk), actual: catSpent(c.id, mk), color: catColor(c), soft: isDark() ? `hsl(${c.hue} 30% 22%)` : `hsl(${c.hue} 70% 92%)` }))
-    .filter((i) => i.plan > 0 || i.actual > 0);
+  const catItems = homeChartItems(mk);
   const hello = S.profile.name ? `Hello, ${esc(S.profile.name)}` : "Hello there";
-  const greetingSub = isCur ? "Here's the shape of your money today." : `Looking back at ${monthLabel(mk)}.`;
+  const greetingSub = isCur ? "One step at a time — you're doing great." : `Looking back at ${monthLabel(mk)}.`;
+  const t = isCur ? todaySummary() : null;
+  const chartCard = `<div class="card focus-hide">
+    <div class="card-head"><h2>${icon("chart", 20)} Budget vs. actual — ${monthName(mk)}</h2><button class="btn sm" data-action="go" data-view="budget">Edit budget</button></div>
+    ${chartPlanVsActual(catItems)}
+  </div>`;
 
+  if (SKIN.homeLayout === "tiles") {
+    const prevMk = addMonths(mk, -1);
+    const day = isCur ? Number(today.slice(8)) : 31;
+    const cur = periodTotals(mk, day), prev = periodTotals(prevMk, day);
+    const prevFull = monthSummary(prevMk);
+    return `
+    ${pageHead(hello, greetingSub, `<button class="btn primary" data-action="quick-add">${icon("plus")}Add a spend</button>`, { month: mk })}
+    ${monthsBar(mk)}
+    <div class="kpis">
+      <div class="card kpi kpi-hero" data-action="go" data-view="today" style="cursor:pointer">
+        <div class="row"><span class="kpi-ic acc">${icon("wallet")}</span><div><h3 class="row" style="gap:6px">Safe to spend <span data-tip="Money in − spent − bills, savings & debt still due">${icon("info", 16)}</span></h3><div class="tiny">${isCur ? "This month" : monthLabel(mk)}</div></div></div>
+        <div class="value ${m.safe < 0 ? "neg" : ""}">${moneyHTML(m.safe)}</div>
+        <div class="tiny">${isCur ? `≈ ${money(t.allowance)} a day · ${plural(t.daysLeft, "day")} left` : "Left after everything that month"}</div>
+      </div>
+      <div class="card kpi"><span class="kpi-ic good">${icon("arrowUp")}</span><div class="label">Income</div><div class="value">${moneyHTML(m.income + m.expected)}</div>${delta(m.income + m.expected, prevFull.income, prevMk, true)}</div>
+      <div class="card kpi"><span class="kpi-ic warn">${icon("arrowDown")}</span><div class="label">Spent</div><div class="value">${moneyHTML(m.spent)}</div>${delta(cur.spent, prev.spent, prevMk, false)}</div>
+      <div class="card kpi"><span class="kpi-ic info">${icon("leaf")}</span><div class="label">Total saved</div><div class="value">${moneyHTML(ft.saved)}</div><span class="delta up">+${money(Math.max(0, m.saved))} this month</span></div>
+    </div>
+    <div class="grid g-side mt">${chartCard}${savingsMonthCard(m)}</div>
+    <div class="grid g2 mt">${upcomingPayments(isCur ? today : monthStart(mk))}${goalsMini()}</div>
+    <div class="grid g2 mt focus-hide">
+      <div class="card"><div class="card-head"><h2>Where it went</h2></div>${spendingDonut(m.txs)}</div>
+      <div class="card"><div class="card-head"><h3>${icon("info", 18)} How safe to spend works</h3></div>${formulaHTML(m)}
+        <div class="formula mt"><span>Still owed on debts</span><b class="m">${money(dt.owed)}</b><span>Goals in progress</span><b>${goalsActive}</b></div></div>
+    </div>`;
+  }
+
+  const upcoming = (isCur ? scheduleIn(today, addDays(today, 14)) : m.sched).slice(0, 7);
   return `
-  ${pageHead(hello, greetingSub, `<button class="btn" data-action="go" data-view="calendar">${icon("calendar")}Open calendar</button>`)}
+  ${pageHead(hello, greetingSub, `<button class="btn" data-action="go" data-view="calendar">${icon("calendar")}Open calendar</button>`, { month: mk })}
   ${monthsBar(mk)}
   <div class="grid g-hero">
     <div class="card hero-split" style="padding:0">
@@ -130,7 +229,7 @@ function viewHome() {
     <div class="tile good big" data-action="go" data-view="today" style="cursor:pointer">
       <div class="label">${icon("sparkle", 15)} ${monthName(mk)} safe to spend</div>
       <div class="value ${m.safe < 0 ? "neg" : ""}">${moneyHTML(m.safe)}</div>
-      <div class="sub">${isCur ? `About ${money(Math.max(0, todaySummary().allowance))} a day for the rest of the month` : "Left after everything that month"}</div>
+      <div class="sub">${isCur ? `About ${money(Math.max(0, t.allowance))} a day for the rest of the month` : "Left after everything that month"}</div>
     </div>
   </div>
   <div class="grid g4 mt">
@@ -151,12 +250,8 @@ function viewHome() {
       <p class="tiny mt">Safe to spend is what's left after every bill, savings transfer and debt payment you've planned this month. Spend it guilt-free.</p>
     </div>
   </div>
-
-  <div class="card mt focus-hide">
-    <div class="card-head"><h2>Budget vs. actuals — ${monthName(mk)}</h2><button class="btn sm" data-action="go" data-view="budget">Edit budget</button></div>
-    ${chartPlanVsActual(catItems)}
-  </div>
-
+  <div class="mt">${chartCard}</div>
+  <div class="grid g2 mt">${savingsMonthCard(m)}${goalsMini()}</div>
   <div class="grid g2 mt focus-hide">
     <div class="card"><div class="card-head"><h2>Where it went</h2></div>${spendingDonut(m.txs)}</div>
     <div class="card">
@@ -186,7 +281,8 @@ function spendingDonut(txs) {
   const top = rows.slice(0, 6), rest = rows.slice(6);
   const segs = top.map((r) => ({ value: r.value, color: catColor(r.cat), label: r.cat?.name || "Other", emoji: r.cat?.emoji || "•" }));
   if (rest.length) segs.push({ value: sum(rest, (r) => r.value), color: "var(--ink-3)", label: "Everything else", emoji: "…" });
-  return `<div class="donut-wrap">${donut(segs)}<div class="donut-legend">${segs.map((s) => `<div><i class="dot" style="background:${s.color}"></i>${esc(s.emoji)} ${esc(s.label)}<b>${moneyHTML(s.value)}</b></div>`).join("")}</div></div>`;
+  const total = sum(segs, (x) => x.value);
+  return `<div class="donut-wrap">${donut(segs)}<div class="donut-legend">${segs.map((s) => `<div><i class="dot" style="background:${s.color}"></i>${esc(s.emoji)} ${esc(s.label)}<b>${moneyHTML(s.value)}</b><span class="tiny pct-col">${pct(s.value, total)}%</span></div>`).join("")}</div></div>`;
 }
 
 /* ---------- Today ---------- */
@@ -285,7 +381,7 @@ function viewCalendar() {
     const spent = sum(txs.filter((t) => t.date === d && t.type === "expense" && !t.link), (t) => t.amount);
     grid += `<button class="day ${monthKey(d) !== mk ? "out" : ""} ${d === today ? "today" : ""} ${d === ui.calSel ? "sel" : ""} ${S.noSpend[d] ? "nospend" : ""}" data-action="cal-day" data-date="${d}" aria-label="${fmtLong(d)}">
       <span class="num"><span>${Number(d.slice(8))}</span>${S.noSpend[d] ? "<span title='No-spend day'>🧘</span>" : ""}</span>
-      ${ev.slice(0, 3).map((o) => `<span class="ev ${o.kind === "income" ? "inc" : o.kind} ${o.done ? "paid" : ""}">${esc(o.name)}</span>`).join("")}
+      ${ev.slice(0, 3).map((o) => `<span class="ev ${o.kind === "income" ? "inc" : o.kind} ${o.done ? "paid" : ""}" title="${esc(`${o.name} · ${money(o.amount)}`)}"><b>${esc(o.emoji || "")} ${esc(o.name)}</b><i class="m">${money(o.amount)}</i></span>`).join("")}
       ${ev.length > 3 ? `<span class="tiny">+${ev.length - 3} more</span>` : ""}
       ${spent ? `<span class="spent m">−${money(spent)}</span>` : ""}
     </button>`;
@@ -293,9 +389,11 @@ function viewCalendar() {
   const sel = ui.calSel;
   const selEv = scheduleIn(sel, sel);
   const selTx = S.transactions.filter((t) => t.date === sel);
-  const m = monthSummary(mk);
+  const from = mk === monthKey(today) ? today : monthStart(mk);
+  const due = scheduleIn(from, monthEnd(mk)).filter((o) => o.kind !== "income" && !o.done);
+  const fl = SKIN.flourish ? `<span class="flourish sm">${SKIN.flourish}</span>` : "";
   return `
-  ${pageHead("Calendar", "Tap any day to see what's due, check things off, or add something.", `<button class="btn" data-action="cal-month" data-mk="${addMonths(mk, -1)}">${icon("chevL")}</button><button class="btn" data-action="cal-month" data-mk="${monthKey(today)}">Today</button><button class="btn" data-action="cal-month" data-mk="${addMonths(mk, 1)}">${icon("chevR")}</button>`)}
+  ${pageHead("Calendar", `${monthLabel(mk)} · tap any day to see what's due, check things off, or add something.`, `<button class="btn" data-action="cal-month" data-mk="${addMonths(mk, -1)}" aria-label="Previous month">${icon("chevL")}</button><button class="btn" data-action="cal-month" data-mk="${monthKey(today)}">Today</button><button class="btn" data-action="cal-month" data-mk="${addMonths(mk, 1)}" aria-label="Next month">${icon("chevR")}</button><button class="btn primary" data-action="add-bill" data-date="${sel}">${icon("plus")}Add a reminder</button>`)}
   <div class="grid g-side">
     <div class="card">
       <div class="card-head"><h2>${monthLabel(mk)}</h2>
@@ -315,13 +413,18 @@ function viewCalendar() {
         </div>
       </div>
       <div class="card">
-        <h3>${monthName(mk)} at a glance</h3>
-        <div class="formula mt">
-          <span>Paydays</span><b>${m.sched.filter((o) => o.kind === "income").length}</b>
-          <span>Bills & payments</span><b>${m.sched.filter((o) => o.kind !== "income").length}</b>
-          <span>Still to check off</span><b>${m.sched.filter((o) => !o.done).length}</b>
-          <span>No-spend days</span><b>${Object.keys(S.noSpend).filter((d) => monthKey(d) === mk).length}</b>
-          <span class="tot">Safe to spend</span><b class="tot m ${m.safe < 0 ? "neg" : "pos"}">${money(m.safe)}</b>
+        <div class="card-head"><h2>Coming up${fl}</h2></div>
+        ${due.length ? `<div class="list">${due.slice(0, 6).map((o) => `<div class="li"><span class="emoji-badge" style="${o.kind === "fund" ? catVars(150) : ""}">${esc(o.emoji || "🧾")}</span><div class="name"><b>${esc(o.name)}</b><small>${fmtLong(o.date)}</small></div><div class="amt">${moneyHTML(o.amount)}</div></div>`).join("")}</div>${due.length > 6 ? `<p class="tiny mt-s">+ ${due.length - 6} more this month</p>` : ""}` : `<p class="tiny">Everything for ${monthName(mk)} is checked off. 🎉</p>`}
+        <div class="due-total mt"><div><div class="tiny">Total still to pay in ${monthName(mk)}</div><div class="value m">${money(sum(due, (o) => o.amount))}</div></div><span class="kpi-ic acc">${icon("receipt")}</span></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Legend${fl}</h2></div>
+        <div class="legend-list">
+          <div><i class="dot good"></i><div><b>Income</b><span>Paychecks, bonuses, side income</span></div></div>
+          <div><i class="dot"></i><div><b>Bills</b><span>Rent, internet, subscriptions…</span></div></div>
+          <div><i class="dot warn"></i><div><b>Debt</b><span>Minimum payments</span></div></div>
+          <div><i class="dot info"></i><div><b>Savings</b><span>Transfers to your funds</span></div></div>
+          <div><span>🧘</span><div><b>No-spend day</b><span>Nothing spent beyond plans</span></div></div>
         </div>
       </div>
     </div>
@@ -339,7 +442,7 @@ function viewPaycheck() {
   ${pageHead("Paycheck plan", "Budget one paycheck at a time: see exactly which bills each paycheck covers — and what's left to live on.", `<button class="btn primary" data-action="add-income">${icon("plus")}Add income</button>`)}
   <div class="grid g-side">
     <div class="stack">
-      ${windows.length ? windows.map((w) => paycheckCard(w, today)).join("") : `<div class="card">${empty("💸", "Add your paycheck to start", "Tell the planner how much you get paid and how often. It'll line up every bill with the paycheck that pays it.", `<button class="btn primary" data-action="add-income">Add my paycheck</button>`)}</div>`}
+      ${windows.length ? windows.map((w) => paycheckCard(w, today)).join("") : S.incomes.length ? `<div class="card">${empty("🔁", "Make your paycheck repeat", "Paycheck windows need a recurring income (weekly, every 2 weeks, twice a month or monthly). Edit your income and pick how often it arrives.")}</div>` : `<div class="card">${empty("💸", "Add your paycheck to start", "Tell the planner how much you get paid and how often. It'll line up every bill with the paycheck that pays it.", `<button class="btn primary" data-action="add-income">Add my paycheck</button>`)}</div>`}
     </div>
     <div class="stack">
       <div class="card">
@@ -378,46 +481,60 @@ function viewTransactions() {
   const mk = ui.month;
   const txs = txInMonth(mk);
   const out = txs.filter((t) => t.type === "expense");
-  const total = sum(out, (t) => t.amount);
+  const catOut = out.filter((t) => S.categories.some((c) => c.id === t.catId));
+  const spentCats = sum(catOut, (t) => t.amount);
+  const debtPaid = sum(out.filter((t) => t.catId === "debt"), (t) => t.amount);
+  const budget = sum(S.categories, (c) => catAvailable(c, mk));
+  const left = budget - spentCats;
+  const used = {};
+  for (const t of out) used[t.catId] = (used[t.catId] || 0) + t.amount;
+  const chips = Object.entries(used).sort((a, b) => b[1] - a[1]).map(([id]) => catById(id)).filter(Boolean);
   return `
-  ${pageHead("Transaction log", `Every dollar you've tracked in ${monthName(mk)}, in one place.`, `
-    <button class="btn" data-action="import-csv">${icon("upload")}Import CSV</button>
-    <button class="btn" data-action="export-csv">${icon("download")}Export CSV</button>
-    <button class="btn primary" data-action="quick-add">${icon("plus")}Add</button>`)}
+  ${pageHead("My spending", "A clear view of every dollar, month by month.", `
+    <button class="btn" data-action="import-csv">${icon("upload")}Import</button>
+    <button class="btn" data-action="export-csv">${icon("download")}Export</button>
+    <button class="btn primary" data-action="quick-add">${icon("plus")}Add</button>`, { month: mk })}
   ${monthsBar(mk)}
-  <div class="grid g4">
-    <div class="tile accent"><div class="label">Transactions in ${monthName(mk)}</div><div class="value">${txs.length}</div></div>
-    <div class="tile accent"><div class="label">Total spent</div><div class="value">${moneyHTML(total)}</div></div>
-    <div class="tile good"><div class="label">Income received</div><div class="value">${moneyHTML(sum(txs.filter((t) => t.type === "income"), (t) => t.amount))}</div></div>
-    <div class="tile accent"><div class="label">Average per spend</div><div class="value">${moneyHTML(out.length ? total / out.length : 0)}</div></div>
+  <div class="grid g3">
+    <div class="card kpi"><span class="kpi-ic warn">${icon("wallet")}</span><div class="label">Spent</div><div class="value">${moneyHTML(spentCats)}</div><div class="tiny">${pct(spentCats, budget)}% of budget${debtPaid ? ` · + ${money(debtPaid)} debt payments` : ""}</div><div class="mt-s">${progressBar(spentCats, budget, catVars(14))}</div></div>
+    <div class="card kpi"><span class="kpi-ic acc">${icon("target")}</span><div class="label">Budget</div><div class="value">${moneyHTML(budget)}</div><div class="tiny">for ${monthName(mk)} · ${plural(out.length, "spend")}</div><div class="mt-s">${progressBar(0, 1)}</div></div>
+    <div class="card kpi"><span class="kpi-ic good">${icon("leaf")}</span><div class="label">Left</div><div class="value ${left < 0 ? "neg" : ""}">${moneyHTML(left)}</div><div class="tiny">${budget > 0 ? `${pct(Math.max(0, left), budget)}% left` : "Set a budget to see this"}</div><div class="mt-s">${progressBar(Math.max(0, left), budget, catVars(150))}</div></div>
   </div>
-  <div class="card mt">
-    <div class="row wrap" style="margin-bottom:8px">
-      <div class="grow" style="position:relative;min-width:200px"><input class="input" id="tx-search" placeholder="Search name, note or category…  ( / )" value="${esc(ui.txQuery)}" style="padding-left:38px"><span style="position:absolute;left:12px;top:10px;color:var(--ink-3)">${icon("search", 18)}</span></div>
-      <div class="seg">${[["all", "All"], ["expense", "Spending"], ["income", "Income"], ["saving", "Savings"]].map(([v, l]) => `<button class="${ui.txType === v ? "on" : ""}" data-action="tx-type" data-v="${v}">${l}</button>`).join("")}</div>
-      <select class="input" id="tx-cat" style="width:auto">${[["", "All categories"], ...catOptions(), ["debt", "💳 Debt payment"], ["savings", "🐷 Savings transfer"]].map(([v, l]) => `<option value="${v}" ${ui.txCat === v ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+  <div class="grid g-side mt">
+    <div class="card">
+      <div class="row wrap" style="margin-bottom:12px">
+        <div class="grow search-box"><input class="input" id="tx-search" placeholder="Search a spend (shop, category, note…)  /" value="${esc(ui.txQuery)}"><span>${icon("search", 18)}</span></div>
+        <div class="seg">${[["all", "All"], ["expense", "Spending"], ["income", "Income"], ["saving", "Savings"]].map(([v, l]) => `<button class="${ui.txType === v ? "on" : ""}" data-action="tx-type" data-v="${v}">${l}</button>`).join("")}</div>
+      </div>
+      ${chips.length ? `<div class="chips chip-scroll" style="margin-bottom:10px"><button class="chip ${!ui.txCat ? "on" : ""}" data-action="tx-cat" data-v="">All</button>${chips.map((c) => `<button class="chip ${ui.txCat === c.id ? "on" : ""}" data-action="tx-cat" data-v="${c.id}">${esc(c.emoji)} ${esc(c.name)}</button>`).join("")}</div>` : ""}
+      <div class="tx-head">${[["date", "Date"], ["name", "Description"], ["cat", "Category"], ["amount", "Amount"]].map(([k, l]) => `<button class="${k === "amount" ? "r" : ""} ${ui.txSort.k === k ? "on" : ""}" data-action="tx-sort" data-k="${k}">${l} ${icon(ui.txSort.k === k ? (ui.txSort.dir < 0 ? "chevDown" : "arrowUp") : "sort", 13)}</button>`).join("")}<span></span></div>
+      <div id="tx-list">${txListHTML()}</div>
     </div>
-    <div id="tx-list">${txListHTML()}</div>
+    <div class="card"><div class="card-head"><h2>Spending by category</h2></div>${spendingDonut(txs)}</div>
   </div>`;
 }
 function txListHTML() {
   const q = ui.txQuery.trim().toLowerCase();
+  const { k, dir } = ui.txSort;
+  const keyOf = { date: (t) => t.date + String(t.createdAt).padStart(15, "0"), name: (t) => (t.name || "").toLowerCase(), cat: (t) => (catById(t.catId)?.name || "~").toLowerCase(), amount: (t) => (t.type === "expense" ? 1 : -1) * t.amount };
   const txs = txInMonth(ui.month)
     .filter((t) => ui.txType === "all" || t.type === ui.txType)
     .filter((t) => !ui.txCat || t.catId === ui.txCat)
     .filter((t) => !q || `${t.name} ${t.note} ${catById(t.catId)?.name || ""}`.toLowerCase().includes(q))
-    .sort((a, b) => (a.date === b.date ? b.createdAt - a.createdAt : a.date < b.date ? 1 : -1));
+    .sort((a, b) => { const x = keyOf[k](a), y = keyOf[k](b); return (x < y ? -1 : x > y ? 1 : 0) * dir; });
   if (!txs.length) return empty("🔎", q || ui.txCat || ui.txType !== "all" ? "No matches" : "Nothing tracked this month", "Track a spend with the + button, or press N anywhere.");
-  let html = "", day = "";
-  for (const t of txs) {
-    if (t.date !== day) {
-      day = t.date;
-      const dayOut = sum(txs.filter((x) => x.date === day && x.type === "expense"), (x) => x.amount);
-      html += `${html ? "</div>" : ""}<div class="day-group"><span>${relDay(day)} · ${fmtDay(day)}</span><span class="m">${dayOut ? "−" + money(dayOut) : ""}</span></div><div class="list">`;
-    }
-    html += txRow(t);
-  }
-  return html + "</div>";
+  return `<div class="tx-table">${txs.map((t) => {
+    const cat = catById(t.catId);
+    const isIn = t.type === "income" || (t.type === "saving" && t.amount < 0);
+    const amount = Math.abs(t.amount);
+    return `<div class="tx-row" data-action="edit-tx" data-id="${t.id}" role="button" tabindex="0">
+      <span class="c-date">${fmtDay(t.date)}</span>
+      <span class="c-desc"><span class="emoji-badge" style="${catStyle(cat)}">${esc(cat?.emoji || "•")}</span><span class="grow" style="min-width:0"><b>${esc(t.name || cat?.name || "Untitled")}</b><small>${t.note ? esc(t.note) : t.link ? "Scheduled" : esc(cat?.name || "")}</small></span></span>
+      <span class="c-cat">${catPill(cat)}</span>
+      <span class="c-amt ${isIn ? "pos" : ""}">${isIn ? "+" : "−"}${moneyHTML(amount)}</span>
+      <span class="c-more" aria-hidden="true">${icon("dots", 18)}</span>
+    </div>`;
+  }).join("")}</div>`;
 }
 
 /* ---------- Budget (envelopes) ---------- */
@@ -448,7 +565,7 @@ function viewBudget() {
   return `
   ${pageHead("Monthly budget", "Give every dollar a job. Tap an amount to change it — the chart and safe-to-spend update instantly.", `
     <button class="btn" data-action="copy-budget">${icon("repeat")}Copy last month</button>
-    <button class="btn primary" data-action="add-cat">${icon("plus")}Category</button>`)}
+    <button class="btn primary" data-action="add-cat">${icon("plus")}Category</button>`, { month: mk })}
   ${monthsBar(mk)}
   <div class="grid g4">
     <div class="tile accent"><div class="label">Expected income</div><div class="value">${moneyHTML(inc)}</div></div>
@@ -474,7 +591,7 @@ function viewBudget() {
     </div>
   </div>
   <div class="card mt"><div class="card-head"><h2>Budget vs. actuals — ${monthName(mk)}</h2></div>
-    ${chartPlanVsActual(rows.filter((r) => r.plan > 0 || r.spent > 0).map((r) => ({ label: r.c.name, short: r.c.name.split(/[ /&]/)[0], plan: r.plan, actual: r.spent, color: catColor(r.c), soft: isDark() ? `hsl(${r.c.hue} 30% 22%)` : `hsl(${r.c.hue} 70% 92%)` })))}
+    ${chartPlanVsActual(chartItems(rows, 14))}
   </div>`;
 }
 
@@ -519,38 +636,49 @@ function viewBills() {
 /* ---------- Savings ---------- */
 function viewSavings() {
   const ft = fundTotals();
+  const today = todayISO();
+  const cur = monthKey(today);
   const monthly = sum(S.funds, (f) => perMonth(f.monthly || 0, f.freq || "monthly"));
+  const fundIds = new Set(S.funds.map((f) => f.id));
+  const savTx = S.transactions.filter((t) => t.effect?.fundId && fundIds.has(t.effect.fundId));
+  const months = [5, 4, 3, 2, 1, 0].map((i) => addMonths(cur, -i));
+  const rhythm = months.map((mk) => Math.max(0, ft.saved - sum(savTx.filter((t) => t.date > monthEnd(mk)), (t) => t.amount)));
+  const p = ft.target > 0 ? ft.saved / ft.target : 0;
   const card = (f) => {
-    const p = f.target > 0 ? f.saved / f.target : 0;
+    const fp = f.target > 0 ? f.saved / f.target : 0;
     const style = catStyle({ hue: f.hue ?? 205 });
-    const hist = S.transactions.filter((t) => t.effect?.fundId === f.id).sort(by((t) => t.date));
-    let run = f.saved - sum(hist, (t) => t.amount);
-    const series = [run, ...hist.map((t) => (run += t.amount))];
+    const next = f.monthly > 0 ? scheduleIn(today, addDays(today, 120)).find((o) => o.kind === "fund" && o.refId === f.id && !o.done) : null;
     let needed = "";
     if (f.targetDate && f.target > f.saved) {
-      const months = Math.max(1, monthsBetween(monthKey(todayISO()), monthKey(f.targetDate)));
-      needed = `Save <b>${money((f.target - f.saved) / months)}</b>/month to reach it by ${MONTHS_S[fromISO(f.targetDate).getMonth()]} ${f.targetDate.slice(0, 4)}.`;
+      const mLeft = Math.max(1, monthsBetween(cur, monthKey(f.targetDate)));
+      needed = `Save <b>${money((f.target - f.saved) / mLeft)}</b>/month to reach it by ${MONTHS_S[fromISO(f.targetDate).getMonth()]} ${f.targetDate.slice(0, 4)}.`;
     } else if (f.monthly > 0 && f.target > f.saved) {
-      const months = Math.ceil((f.target - f.saved) / perMonth(f.monthly, f.freq || "monthly"));
-      needed = `At ${money(f.monthly)} ${FREQS[f.freq || "monthly"].toLowerCase()}, you'll get there around <b>${monthLabel(addMonths(monthKey(todayISO()), months))}</b>.`;
-    } else if (p >= 1) needed = "Fully funded — amazing work! 🦋";
+      const mLeft = Math.ceil((f.target - f.saved) / perMonth(f.monthly, f.freq || "monthly"));
+      needed = `At this pace you'll get there around <b>${monthLabel(addMonths(cur, mLeft))}</b>.`;
+    } else if (fp >= 1) needed = "Fully funded — amazing work! 🦋";
     return `<div class="card fund" style="${style}">
-      <div class="fund-top"><span class="big-emoji">${esc(f.emoji || "🐷")}</span><div class="grow"><h3>${esc(f.name)}</h3><div class="tiny">${f.target ? `Goal ${money(f.target)}` : "No target"}${f.targetDate ? ` · by ${fmtDay(f.targetDate)} ${f.targetDate.slice(0, 4)}` : ""}</div></div>
-        ${ring(p, { size: 76, stroke: 8, label: `${Math.round(p * 100)}%`, color: "var(--c)" })}</div>
-      <div class="row between"><div style="font-family:var(--font-head);font-size:1.6rem;font-weight:600">${moneyHTML(f.saved)}</div>${sparkline(series)}</div>
+      <div class="fund-top"><span class="big-emoji">${esc(f.emoji || "🐷")}</span><div class="grow"><h3>${esc(f.name)}</h3><div class="tiny">${f.targetDate ? `By ${fmtDay(f.targetDate)} ${f.targetDate.slice(0, 4)}` : "No deadline"}</div></div>
+        <button class="btn ghost icon-btn" data-action="edit-fund" data-id="${f.id}" aria-label="Edit ${esc(f.name)}">${icon("dots")}</button></div>
+      <div class="row between" style="align-items:baseline"><div><span class="fund-amt">${moneyHTML(f.saved)}</span> <span class="tiny">of ${money(f.target)}</span></div><b style="color:var(--c-ink)">${Math.round(fp * 100)}%</b></div>
       ${progressBar(f.saved, f.target, style, true)}
+      <div class="next-box"><span class="e">🐷</span><div>${next ? `<div class="tiny">Next contribution</div><b class="m">${money(next.amount)}</b><div class="tiny">${fmtLong(next.date)}</div>` : `<div class="tiny">No automatic transfer yet</div><button class="btn sm ghost" data-action="edit-fund" data-id="${f.id}" style="padding-left:0">Set one up →</button>`}</div></div>
       ${needed ? `<p class="tiny">${needed}</p>` : ""}
-      <div class="row wrap"><button class="btn sm primary" data-action="fund-money" data-id="${f.id}" data-mode="add">${icon("plus")}Add money</button><button class="btn sm" data-action="fund-money" data-id="${f.id}" data-mode="withdraw">Withdraw</button><button class="btn sm ghost" data-action="edit-fund" data-id="${f.id}">${icon("edit")}Edit</button></div>
+      <button class="btn primary block" data-action="fund-money" data-id="${f.id}" data-mode="add">${icon("plus")}Add a contribution</button>
+      <button class="btn ghost sm" data-action="fund-money" data-id="${f.id}" data-mode="withdraw">Withdraw</button>
     </div>`;
   };
   return `
-  ${pageHead("Savings", "Set up as many funds as you like — an emergency cushion, a trip, a new laptop. Each one has its own progress and plan.", `<button class="btn primary" data-action="add-fund">${icon("plus")}New fund</button>`)}
-  <div class="grid g3">
-    <div class="tile good big"><div class="label">Total saved</div><div class="value">${moneyHTML(ft.saved)}</div><div class="sub">${ft.target ? `${pct(ft.saved, ft.target)}% of ${money(ft.target)}` : ""}</div></div>
-    <div class="tile accent"><div class="label">Planned each month</div><div class="value">${moneyHTML(monthly)}</div><div class="sub">automatic transfers on your calendar</div></div>
-    <div class="tile info"><div class="label">Still to save</div><div class="value">${moneyHTML(Math.max(0, ft.target - ft.saved))}</div></div>
+  ${pageHead("My savings goals", "Plans that help tomorrow grow. Each fund has its own progress and plan.", `<button class="btn primary" data-action="add-fund">${icon("plus")}New goal</button>`)}
+  <div class="card savings-hero">
+    <div class="sh-total"><div class="tiny" style="text-transform:uppercase;letter-spacing:.12em">Total saved</div><div class="sh-value">${moneyHTML(ft.saved, { noCents: true })} <span class="tiny">of ${money(ft.target)}</span></div>
+      <div class="tiny">${money(monthly)} planned each month · ${money(Math.max(0, ft.target - ft.saved))} still to go</div></div>
+    ${ring(p, { size: 120, stroke: 11, label: `<span class="big-pct" style="font-size:1.5rem">${Math.round(p * 100)}%</span>` })}
+    <div class="sh-msg"><p class="serif-msg">${p >= 1 ? "Every goal is funded. Wow." : p >= 0.5 ? "Lovely plans are really taking shape!" : "Little by little, it all adds up."}</p></div>
+    ${SKIN.sideArt ? `<div class="sh-art">${SKIN.sideArt}</div>` : ""}
   </div>
-  <div class="grid g2 mt">${S.funds.length ? S.funds.map(card).join("") : `<div class="card" style="grid-column:1/-1">${empty("🐷", "Start your first savings fund", "Even $10 a paycheck adds up. An emergency fund is a great first one.", `<button class="btn primary" data-action="add-fund">Create a fund</button>`)}</div>`}</div>`;
+  <div class="grid g3 mt">${S.funds.length ? S.funds.map(card).join("") : `<div class="card" style="grid-column:1/-1">${empty("🐷", "Start your first savings goal", "Even $10 a paycheck adds up. An emergency fund is a great first one.", `<button class="btn primary" data-action="add-fund">Create a goal</button>`)}</div>`}</div>
+  ${S.funds.length ? `<div class="card mt"><div class="card-head"><div><h2>My savings rhythm</h2><p class="tiny">A steady climb toward your goals — the last 6 months.</p></div></div>
+    ${chartLine([{ values: rhythm }], (i) => MONTHS_S[Number(months[i].slice(5)) - 1], { height: 300, width: 1000, points: true, aria: "Total saved at the end of each month" })}</div>` : ""}`;
 }
 
 /* ---------- Debt ---------- */
@@ -655,7 +783,7 @@ function viewImpulse() {
       ${waiting.length ? waiting.map((w) => {
         const ready = now >= w.readyAt;
         return `<div class="card wish ${ready ? "ready" : ""}"><span class="big-emoji">${ready ? "⏰" : "⏳"}</span>
-          <div class="grow"><h3>${esc(w.name)}</h3><div class="tiny">${money(w.price)}${w.link ? ` · <a href="${esc(w.link)}" target="_blank" rel="noopener">link</a>` : ""} · paused ${relDay(toISO(new Date(w.addedAt))).toLowerCase()}</div>
+          <div class="grow"><h3>${esc(w.name)}</h3><div class="tiny">${money(w.price)}${/^https?:\/\//i.test(w.link || "") ? ` · <a href="${esc(w.link)}" target="_blank" rel="noopener noreferrer">link</a>` : ""} · paused ${relDay(toISO(new Date(w.addedAt))).toLowerCase()}</div>
             ${ready ? `<p class="mt-s"><b>Pause over.</b> Do you still want it as much?</p>` : `<div class="timer mt-s">Ready in ${timeLeft(w.readyAt - now)}</div>`}</div>
           <div class="stack" style="gap:6px">${ready ? `<button class="btn sm primary" data-action="wish-skip" data-id="${w.id}">Skip it 💎</button><button class="btn sm" data-action="wish-buy" data-id="${w.id}">Buy it</button>` : `<button class="btn sm" data-action="wish-skip" data-id="${w.id}">Skip now</button>`}<button class="btn sm ghost" data-action="wish-delete" data-id="${w.id}">Remove</button></div></div>`;
       }).join("") : `<div class="card">${empty("⏸️", "Nothing on pause", "Next time you're about to buy on a whim, add it here first. Most urges fade in 48 hours.")}</div>`}
@@ -734,9 +862,9 @@ function viewYear() {
       ${top.length ? `<div class="stack" style="gap:10px">${top.map(([id, v]) => { const c = catById(id); return `<div><div class="row between"><span>${esc(c?.emoji || "")} ${esc(c?.name || "Other")}</span><b class="m">${money(v)}</b></div><div class="mt-s">${progressBar(v, maxCat, catStyle(c))}</div></div>`; }).join("")}</div>` : `<p class="tiny">No spending recorded in ${yr}.</p>`}
     </div>
     <div class="card"><div class="card-head"><h2>Month by month</h2></div>
-      <table class="env"><thead><tr><th>Month</th><th class="r">In</th><th class="r">Out</th><th class="r">Net</th></tr></thead><tbody>
-      ${rows.map((r) => `<tr><td><button class="btn ghost sm" data-action="open-month" data-mk="${r.mk}">${MONTHS[Number(r.mk.slice(5)) - 1]}</button></td><td class="r m">${money(r.inc)}</td><td class="r m">${money(r.out)}</td><td class="r m ${r.inc - r.out < 0 ? "neg" : "pos"}">${money(r.inc - r.out)}</td></tr>`).join("")}
-      </tbody></table>
+      <div style="overflow-x:auto"><table class="env"><thead><tr><th>Month</th><th class="r">In</th><th class="r">Out</th><th class="r">Net</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr><td><button class="btn ghost sm" data-action="open-month" data-mk="${r.mk}">${MONTHS_S[Number(r.mk.slice(5)) - 1]}</button></td><td class="r m">${money(r.inc)}</td><td class="r m">${money(r.out)}</td><td class="r m ${r.inc - r.out < 0 ? "neg" : "pos"}">${money(r.inc - r.out)}</td></tr>`).join("")}
+      </tbody></table></div>
     </div>
   </div>`;
 }

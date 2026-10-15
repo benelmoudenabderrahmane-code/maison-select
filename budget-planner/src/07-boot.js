@@ -12,6 +12,7 @@ function applyTheme() {
   root.dataset.font = st.font;
   root.dataset.size = st.size;
   root.dataset.motion = st.motion;
+  root.dataset.skin = SKIN.id;
   document.body.classList.toggle("privacy", !!st.privacy);
   document.body.classList.toggle("focus", !!st.focus);
   const meta = $('meta[name="theme-color"]');
@@ -27,14 +28,16 @@ function sidebarHTML() {
     html += `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""} ${n.nf ? "nf" : ""}" ${ui.view === n.id ? 'aria-current="page"' : ""}>${icon(n.icon)}<span>${n.label}</span>${counts[n.id] ? `<span class="badge-dot">${counts[n.id]}</span>` : ""}</a>`;
   }
   return `
-    <div class="brand"><div class="brand-mark">${icon("logo")}</div><div><b>${APP_NAME}</b><span>${S.profile.name ? `${esc(S.profile.name)}'s money plan` : APP_TAGLINE}</span></div></div>
+    <div class="brand">${SKIN.logo ? `<div class="brand-logo">${SKIN.logo}</div>` : `<div class="brand-mark">${icon("logo")}</div>`}<div><b>${SKIN.logo ? APP_NAME.replace(" ", "<br>") : APP_NAME}</b><span>${SKIN.logo ? APP_TAGLINE : S.profile.name ? `${esc(S.profile.name)}'s money plan` : APP_TAGLINE}</span></div></div>
     <button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>
     <nav class="nav" aria-label="Main">${html}</nav>
+    ${SKIN.sideArt ? `<div class="side-art">${SKIN.sideArt}</div>` : ""}
     <div class="sidebar-foot">
       <button class="btn icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
       <button class="btn icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
       <button class="btn icon-btn ${S.settings.focus ? "primary" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode">${icon("focus")}</button>
-    </div>`;
+    </div>
+    <a class="user-chip" href="#settings"><span class="avatar">${esc((S.profile.name || "You").trim()[0].toUpperCase())}</span><span class="grow">${esc(S.profile.name || "Your profile")}</span>${icon("chevR", 16)}</a>`;
 }
 function tabbarHTML() {
   const t = (id, ic, label) => `<a href="#${id}" class="${ui.view === id ? "active" : ""}">${icon(ic)}<span>${label}</span></a>`;
@@ -93,7 +96,6 @@ function boot() {
     const el = e.target.closest("[data-input]");
     if (el && INPUTS[el.dataset.input]) INPUTS[el.dataset.input](el, e);
     if (e.target.id === "tx-search" && e.type === "input") { ui.txQuery = e.target.value; $("#tx-list").innerHTML = txListHTML(); }
-    if (e.target.id === "tx-cat") { ui.txCat = e.target.value; $("#tx-list").innerHTML = txListHTML(); }
   };
   document.addEventListener("input", onInput);
   document.addEventListener("change", onInput);
@@ -110,6 +112,9 @@ function boot() {
     }
   });
   window.addEventListener("hashchange", route);
+  // Never lose the last change when the tab is closed or hidden mid-debounce.
+  window.addEventListener("pagehide", saveNow);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") saveNow(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") return closeModal();
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
@@ -132,5 +137,8 @@ function boot() {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 }
+
+// Small hook used by the automated test suite (scripts/test.mjs).
+window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY };
 
 document.addEventListener("DOMContentLoaded", boot);

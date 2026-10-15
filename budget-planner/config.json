@@ -1,6 +1,87 @@
 {
-  "appName": "Lumi Budget",
   "shopUrl": "https://www.etsy.com/shop/YOUR-SHOP-NAME",
-  "hostedDir": "lumi/planner-ec98eebc3064",
-  "publicUrl": "https://YOUR-DOMAIN.com"
+  "publicUrl": "https://YOUR-SITE.netlify.app",
+  "outDir": "../TIDDYPLANNER",
+  "editions": [
+    {
+      "id": "lumi",
+      "folder": "1-Lumi-Budget",
+      "appName": "Lumi Budget",
+      "tagline": "Calm money planner",
+      "storeKey": "lumi-budget-v1",
+      "hostedDir": "lumi/planner-ec98eebc3064",
+      "listingImages": true,
+      "fonts": "family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&family=Lexend:wght@300..700",
+      "themeColor": "#e0607e",
+      "skin": {
+        "monthNav": "chips",
+        "homeLayout": "split",
+        "palette": "rose"
+      },
+      "brand": {
+        "accent": "#dc5679",
+        "ink": "#2a1a20",
+        "muted": "#6e5a61",
+        "soft": "#f8dfe6",
+        "bg1": "#fdf8f6",
+        "bg2": "#f8e9ec",
+        "head": "Fraunces",
+        "headColor": "#2a1a20"
+      }
+    },
+    {
+      "id": "lila",
+      "folder": "2-Lila-Bloom",
+      "appName": "Lila Bloom",
+      "tagline": "Budget planner",
+      "storeKey": "lila-bloom-v1",
+      "hostedDir": "lila/planner-391614a831f8",
+      "listingImages": false,
+      "fonts": "family=Lora:wght@500..700&family=Inter:wght@400..800&family=Lexend:wght@300..700",
+      "themeColor": "#6b46a8",
+      "skin": {
+        "monthNav": "compact",
+        "homeLayout": "tiles",
+        "palette": "lilac",
+        "chartMono": true
+      },
+      "brand": {
+        "accent": "#6b46a8",
+        "ink": "#24173f",
+        "muted": "#675d78",
+        "soft": "#ece4f8",
+        "bg1": "#fbf9fe",
+        "bg2": "#f1ebfa",
+        "head": "Lora",
+        "headColor": "#24173f"
+      }
+    },
+    {
+      "id": "cherry",
+      "folder": "3-Cherry-Blossom",
+      "appName": "Cherry Blossom",
+      "tagline": "Money in full bloom",
+      "storeKey": "cherry-blossom-v1",
+      "hostedDir": "cherry/planner-fdffc850a002",
+      "listingImages": false,
+      "fonts": "family=Playfair+Display:wght@500..800&family=Inter:wght@400..800&family=Lexend:wght@300..700",
+      "themeColor": "#e0526f",
+      "skin": {
+        "monthNav": "compact",
+        "homeLayout": "tiles",
+        "palette": "cherry",
+        "chartMono": true
+      },
+      "brand": {
+        "accent": "#e0526f",
+        "ink": "#3a1a24",
+        "muted": "#6f5a60",
+        "soft": "#fbe1e7",
+        "bg1": "#fdf7f2",
+        "bg2": "#fbece9",
+        "head": "Playfair Display",
+        "headColor": "#9b1b3a"
+      }
+    }
+  ]
 }

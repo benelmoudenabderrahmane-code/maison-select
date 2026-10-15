@@ -59,6 +59,7 @@ function openTxForm(tx = null, preset = {}) {
       } else {
         const undo = snapshot();
         addTx(rec);
+        preset.onAdded?.();
         commit(`${type === "income" ? "Income" : type === "saving" ? "Transfer" : "Spend"} added — ${money(amount)}`, undo);
         if (type === "expense") nudgeIfOver(rec.catId, monthKey(rec.date));
       }
@@ -347,7 +348,11 @@ function openGoalForm(goal = null) {
 }
 
 /* ---------- CSV ---------- */
-const csvCell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+const csvCell = (v) => {
+  let s = String(v);
+  if (/^[=+\-@\t\r]/.test(s) && !/^-?\d/.test(s)) s = "'" + s; // keep spreadsheets from running it as a formula
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
 function exportCSV() {
   const rows = [["Date", "Type", "Category", "Name", "Amount", "Note"]];
   for (const t of [...S.transactions].sort(by((t) => t.date))) rows.push([t.date, t.type, catById(t.catId)?.name || "", t.name, t.amount.toFixed(2), t.note || ""]);
@@ -494,6 +499,9 @@ const ACTIONS = {
   "add-cat": () => openCatForm(),
   "edit-cat": (el) => openCatForm(S.categories.find((x) => x.id === el.dataset.id)),
   "budget-scope": (el) => { ui.budgetScope = el.dataset.v; render(); },
+  "tx-type": (el) => { ui.txType = el.dataset.v; render(); },
+  "tx-cat": (el) => { ui.txCat = el.dataset.v; render(); },
+  "tx-sort": (el) => { const k = el.dataset.k; ui.txSort = { k, dir: ui.txSort.k === k ? -ui.txSort.dir : k === "name" || k === "cat" ? 1 : -1 }; render(); },
   "copy-budget": () => {
     const prev = addMonths(ui.month, -1);
     const undo = snapshot();
@@ -532,11 +540,7 @@ const ACTIONS = {
   },
   "wish-buy": (el) => {
     const w = S.wishlist.find((x) => x.id === el.dataset.id);
-    w.decision = "bought";
-    w.decidedAt = Date.now();
-    save();
-    render();
-    openTxForm(null, { amount: w.price, name: w.name });
+    openTxForm(null, { amount: w.price, name: w.name, onAdded: () => { w.decision = "bought"; w.decidedAt = Date.now(); } });
   },
   "wish-delete": (el) => { const undo = snapshot(); S.wishlist = S.wishlist.filter((x) => x.id !== el.dataset.id); commit("Removed", undo); },
   set: (el) => { S.settings[el.dataset.key] = el.dataset.v; applyTheme(); commit(); },

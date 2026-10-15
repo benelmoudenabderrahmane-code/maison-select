@@ -2,13 +2,15 @@
    Lumi Budget — core: constants, utilities, dates, money, storage
    ========================================================================== */
 
-const APP_NAME = "Lumi Budget";
-const APP_TAGLINE = "Calm money planner";
-const STORE_KEY = "lumi-budget-v1";
-// Replaced at build time: "full" or "demo".
-const EDITION = "__EDITION__";
+// Everything edition-specific is injected at build time (see scripts/build.mjs).
+const BUILD = typeof __BUILD__ !== "undefined" ? __BUILD__ : {};
+const APP_NAME = BUILD.appName || "Lumi Budget";
+const APP_TAGLINE = BUILD.tagline || "Calm money planner";
+const STORE_KEY = BUILD.storeKey || "lumi-budget-v1";
+const EDITION = BUILD.edition || "full"; // "full" or "demo"
 const IS_DEMO = EDITION === "demo";
-const SHOP_URL = "https://www.etsy.com/shop/YOUR-SHOP-NAME";
+const SHOP_URL = BUILD.shopUrl || "#";
+const SKIN = { id: "lumi", monthNav: "chips", homeLayout: "split", palette: "rose", logo: "", flourish: "", sideArt: "", ...(BUILD.skin || {}) };
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -165,16 +167,40 @@ const FREQS = {
   quarterly: "Every 3 months",
   yearly: "Every year",
 };
-const PALETTES = [
-  { id: "rose", name: "Blush", h: 345, s: 62 },
-  { id: "peach", name: "Peach", h: 14, s: 72 },
-  { id: "honey", name: "Honey", h: 36, s: 70 },
-  { id: "sage", name: "Sage", h: 150, s: 24 },
-  { id: "ocean", name: "Ocean", h: 205, s: 55 },
-  { id: "lavender", name: "Lavender", h: 265, s: 42 },
-  { id: "mocha", name: "Mocha", h: 22, s: 30 },
-  { id: "noir", name: "Noir", h: 240, s: 6 },
-];
+const PALETTE_SETS = {
+  lumi: [
+    { id: "rose", name: "Blush", h: 345, s: 62 },
+    { id: "peach", name: "Peach", h: 14, s: 72 },
+    { id: "honey", name: "Honey", h: 36, s: 70 },
+    { id: "sage", name: "Sage", h: 150, s: 24 },
+    { id: "ocean", name: "Ocean", h: 205, s: 55 },
+    { id: "lavender", name: "Lavender", h: 265, s: 42 },
+    { id: "mocha", name: "Mocha", h: 22, s: 30 },
+    { id: "noir", name: "Noir", h: 240, s: 6 },
+  ],
+  lila: [
+    { id: "lilac", name: "Lilac", h: 266, s: 44 },
+    { id: "plum", name: "Plum", h: 292, s: 38 },
+    { id: "periwinkle", name: "Periwinkle", h: 236, s: 48 },
+    { id: "mist", name: "Lavender mist", h: 256, s: 26 },
+    { id: "orchid", name: "Orchid", h: 318, s: 42 },
+    { id: "sage", name: "Sage", h: 152, s: 24 },
+    { id: "peach", name: "Peach", h: 16, s: 62 },
+    { id: "midnight", name: "Midnight", h: 245, s: 18 },
+  ],
+  cherry: [
+    { id: "cherry", name: "Cherry", h: 348, s: 70 },
+    { id: "blossom", name: "Blossom", h: 340, s: 78 },
+    { id: "peony", name: "Peony", h: 328, s: 58 },
+    { id: "coral", name: "Coral", h: 8, s: 74 },
+    { id: "wine", name: "Wine", h: 350, s: 44 },
+    { id: "plum", name: "Plum", h: 318, s: 36 },
+    { id: "matcha", name: "Matcha", h: 95, s: 28 },
+    { id: "mocha", name: "Mocha", h: 20, s: 32 },
+  ],
+};
+const PALETTES = PALETTE_SETS[SKIN.id] || PALETTE_SETS.lumi;
+const DEFAULT_PALETTE = PALETTES.find((p) => p.id === SKIN.palette) || PALETTES[0];
 
 function freshState() {
   return {
@@ -183,7 +209,7 @@ function freshState() {
     onboarded: false,
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
-      theme: "light", palette: "rose", h: 345, s: 62, font: "elegant", size: "normal",
+      theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
       motion: "on", celebrate: true, privacy: false, focus: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
@@ -253,6 +279,7 @@ function save() {
   _saveTimer = setTimeout(saveNow, 150);
 }
 function saveNow() {
+  clearTimeout(_saveTimer);
   if (!storage) return;
   try {
     storage.setItem(STORE_KEY, JSON.stringify(S));
