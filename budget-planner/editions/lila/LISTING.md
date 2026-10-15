@@ -135,3 +135,5 @@ Questions? Just message me — happy to help!
 7. Debt payoff planner
 8. Day & night mode + colour themes
 9. "How it works" (download → open → add to phone)
+
+**Video:** upload `video/Lila-Bloom-Walkthrough.mp4` (14.5 s, real app walkthrough). Etsy allows one video per listing, 5–15 s, and plays it without sound.

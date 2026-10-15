@@ -11,7 +11,8 @@
     "planner:build": "node budget-planner/scripts/build.mjs",
     "planner:kit": "node budget-planner/scripts/build.mjs && node budget-planner/scripts/kit.mjs && node budget-planner/scripts/build.mjs --zip",
     "planner:test": "node budget-planner/scripts/test.mjs",
-    "planner:video": "node budget-planner/scripts/video.mjs"
+    "planner:video": "node budget-planner/scripts/video.mjs",
+    "planner:walkthrough": "node budget-planner/scripts/build.mjs && node budget-planner/scripts/walkthrough.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slider": "^1.4.1",

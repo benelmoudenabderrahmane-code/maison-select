@@ -71,7 +71,7 @@ Open a demo file (`<Name>-Demo.html`) in Chrome. It's already filled with realis
 - Set the window to 1440×900, open the page you want, and take a screenshot (Windows: `Win + Shift + S`).
 - To switch to night mode, press **D**. To blur amounts, press **P**.
 - Recommended canvas: 2000×2000 px (or 3000×2250, 4:3). Keep text large: buyers see the thumbnail on phones.
-- A 5–15 second screen recording (track a spend → confetti) makes a great listing video.
+- Each app folder has `video/<Name>-Walkthrough.mp4` (14.5 s, silent) — upload it as the listing video.
 
 ## 5. Tips to sell more
 
