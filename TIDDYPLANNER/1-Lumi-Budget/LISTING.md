@@ -64,7 +64,7 @@ Tip: Etsy accepts `.html` files. If it ever refuses, zip it (`Lumi-Budget-Planne
 7. `images/Lumi-Budget-NEW-06-themes.jpg`
 8. `images/Lumi-Budget-NEW-08-how.jpg`
 
-Add a 5–15 second video too (screen-record the demo: Today → track a spend → confetti). Listings with video get more clicks.
+**Video:** upload `video/Lumi-Budget-Video-1-Reveal.mp4` (12 s) or `video/Lumi-Budget-Video-2-Tour.mp4` (15 s). Etsy allows one video per listing, 5–15 s, and plays it without sound.
 
 ## Pricing (suggestion)
 

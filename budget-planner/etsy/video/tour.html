@@ -1,0 +1,81 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..700&display=swap">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; background: #f8efe9; font-family: Inter, sans-serif; color: #2d1220; }
+  .abs { position: absolute; will-change: transform, opacity; }
+  #bg { inset: 0; background: radial-gradient(800px 700px at 70% 65%, #f9d9cf 0%, #f8e7e1 45%, #f8efe9 75%); }
+  .frame { inset: 26px; border: 1px solid rgba(176, 132, 92, .45); border-radius: 26px; }
+  #intro { left: 0; right: 0; top: 380px; text-align: center; }
+  .t { font-family: Fraunces, serif; font-weight: 600; letter-spacing: -.03em; line-height: .98; font-size: 120px; }
+  .t em { font-style: italic; font-weight: 500; color: #c23e62; }
+  .eyebrow { font-size: 21px; letter-spacing: .42em; text-transform: uppercase; color: #a07650; margin-bottom: 24px; }
+  .beat { inset: 0; }
+  .cap { position: absolute; left: 80px; top: 90px; width: 900px; }
+  .cap .n { font-size: 20px; letter-spacing: .3em; color: #a07650; font-weight: 600; }
+  .cap .h { font-family: Fraunces, serif; font-size: 68px; font-weight: 600; letter-spacing: -.025em; line-height: 1.02; margin-top: 12px; }
+  .cap .h em { font-style: italic; font-weight: 500; color: #c23e62; }
+  .lap { position: absolute; left: 110px; top: 330px; width: 860px; }
+  .screen { background: #1b1015; border-radius: 24px 24px 0 0; padding: 16px 16px 20px; box-shadow: 0 50px 100px -40px rgba(70,20,40,.55); position: relative; }
+  .screen img { display: block; width: 100%; border-radius: 8px; }
+  .base { height: 28px; margin: 0 -56px; background: linear-gradient(#efe8e6, #cdc3c3); border-radius: 0 0 28px 28px; }
+  .phone { position: absolute; left: 390px; top: 300px; width: 262px; background: #1b1015; border-radius: 52px; padding: 14px; box-shadow: 0 50px 100px -36px rgba(70,20,40,.6); }
+  .phone::before { content: ""; display: block; height: 40px; background: #fbf4f6; border-radius: 40px 40px 0 0; }
+  .phone img { display: block; width: 100%; border-radius: 0 0 40px 40px; }
+  .note { position: absolute; background: #fffaf7; border-radius: 22px; padding: 20px 24px; box-shadow: 0 30px 60px -30px rgba(70,20,40,.45); font-size: 21px; }
+  .note b { display: block; font-family: Fraunces, serif; font-size: 40px; color: #2d1220; }
+  .note span { color: #6f5560; }
+  #dark { position: absolute; left: 16px; top: 16px; right: 16px; }
+  #bar { left: 80px; right: 80px; bottom: 70px; display: flex; gap: 10px; }
+  #bar i { flex: 1; height: 4px; border-radius: 4px; background: rgba(45,18,32,.12); overflow: hidden; }
+  #bar i b { display: block; height: 100%; width: 0; background: #c23e62; }
+  #end { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #end .w { font-family: Fraunces, serif; font-size: 112px; font-weight: 650; letter-spacing: -.03em; }
+  #end .w em { font-style: italic; font-weight: 500; color: #c23e62; }
+  #end .l { width: 120px; height: 1px; background: #a07650; margin: 26px auto; }
+  #end .tag { font-size: 30px; color: #6f5560; }
+  #end .cta { margin-top: 34px; background: #2d1220; color: #f8efe9; border-radius: 18px; padding: 18px 34px; font-size: 26px; font-weight: 650; }
+  #end .shop { margin-top: 30px; font-size: 19px; letter-spacing: .18em; color: #a07650; text-transform: uppercase; }
+</style></head><body>
+<div id="bg" class="abs"></div>
+<div id="intro" class="abs"><div class="eyebrow">Lumi Budget</div><div class="t">Fifteen tools.</div><div class="t"><em>One calm app.</em></div></div>
+
+<div id="b1" class="beat abs"><div class="cap"><div class="n">01 / 05</div><div class="h">Know what you can<br><em>spend today.</em></div></div>
+  <div class="phone" style="left:600px;top:280px"><img src="../build/shots/m-today.png"></div>
+  <div class="note" style="left:90px;top:560px;width:420px"><span>Safe to spend today</span><b>$41.68</b><span>≈ $47 a day · 17 days left</span></div></div>
+<div id="b2" class="beat abs"><div class="cap"><div class="n">02 / 05</div><div class="h">Every paycheck<br><em>gets a plan.</em></div></div>
+  <div class="lap"><div class="screen"><img src="../build/shots/paycheck.png"></div><div class="base"></div></div></div>
+<div id="b3" class="beat abs"><div class="cap"><div class="n">03 / 05</div><div class="h">See the day you're<br><em>debt-free.</em></div></div>
+  <div class="lap"><div class="screen"><img src="../build/shots/debt.png"></div><div class="base"></div></div></div>
+<div id="b4" class="beat abs"><div class="cap"><div class="n">04 / 05</div><div class="h">Pause the<br><em>impulse buy.</em></div></div>
+  <div class="phone" style="left:600px;top:280px"><img src="../build/shots/m-impulse.png"></div>
+  <div class="note" style="left:90px;top:560px;width:420px"><span>Saved by pausing</span><b>$187.00</b><span>Decide with a calm brain</span></div></div>
+<div id="b5" class="beat abs"><div class="cap"><div class="n">05 / 05</div><div class="h">Eight themes.<br><em>Day or night.</em></div></div>
+  <div class="lap"><div class="screen"><img src="../build/shots/home.png"><img id="dark" src="../build/shots/home-dark.png"></div><div class="base"></div></div></div>
+
+<div id="end" class="abs"><div class="w">lumi <em>budget</em></div><div class="l"></div><div class="tag">Online + offline · No subscription</div><div class="cta">Try the free demo</div><div class="shop">tidyplannercoart.etsy.com</div></div>
+<div id="bar" class="abs"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+<div class="frame abs"></div>
+<script src="common.js"></script>
+<script>
+window.DURATION = 15;
+const BEATS = [1.9, 4.3, 6.7, 9.1, 11.5]; // start of each feature, 2.4 s each
+window.render = (t) => {
+  const iin = p(t, .2, 1.1, easeOut);
+  set($("intro"), { o: iin * (1 - p(t, 1.5, 2.0)), y: lerp(30, 0, iin) - 40 * p(t, 1.5, 2.0), blur: lerp(8, 0, iin) });
+  BEATS.forEach((s, i) => {
+    const el = $(`b${i + 1}`);
+    const a = p(t, s, s + .55, easeOut), b = p(t, s + 2.0, s + 2.4, ease);
+    const media = el.querySelector(".lap, .phone"), cap = el.querySelector(".cap"), note = el.querySelector(".note");
+    el.style.opacity = a * (1 - b);
+    set(cap, { o: 1, x: lerp(60, 0, a) - 60 * b, blur: lerp(6, 0, a) });
+    set(media, { o: 1, x: lerp(140, 0, a) - 140 * b, y: Math.sin((t - s) * 1.6) * 5, s: lerp(.96, 1, a) + .02 * p(t, s, s + 2.4, (x) => x) });
+    if (note) set(note, { o: p(t, s + .35, s + .9, easeOut), y: lerp(30, 0, p(t, s + .35, s + .9, easeOut)) });
+    const fill = $("bar").children[i].firstChild;
+    fill.style.width = `${100 * clamp01((t - s) / 2.4)}%`;
+  });
+  $("dark").style.opacity = p(t, BEATS[4] + .8, BEATS[4] + 1.4);
+  const ein = p(t, 13.9, 14.6, easeOut);
+  set($("end"), { o: ein, y: lerp(30, 0, ein), blur: lerp(8, 0, ein) });
+  $("bar").style.opacity = 1 - p(t, 13.7, 14.1);
+};
+</script></body></html>
