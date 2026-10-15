@@ -1,6 +1,6 @@
 # Etsy listing — Lumi Budget
 
-Copy-paste ready. Replace `YOUR-SHOP-NAME`, the domain and prices before publishing.
+Copy-paste ready. The shop and demo links are already filled in; adjust prices if you like.
 
 ---
 

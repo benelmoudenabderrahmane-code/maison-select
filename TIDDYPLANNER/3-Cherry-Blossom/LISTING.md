@@ -1,6 +1,6 @@
 # Etsy listing — Cherry Blossom
 
-Copy-paste ready. Make your own listing images (see the shot list at the bottom), and replace `YOUR-SHOP-NAME` and prices before publishing.
+Copy-paste ready. Make your own listing images (see the shot list at the bottom). The shop and demo links are already filled in; adjust prices if you like.
 
 ---
 

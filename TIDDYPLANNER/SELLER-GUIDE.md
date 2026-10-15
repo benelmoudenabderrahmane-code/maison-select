@@ -8,8 +8,8 @@ Open `budget-planner/config.json` in the project:
 
 ```json
 {
-  "shopUrl": "https://www.etsy.com/shop/YOUR-SHOP-NAME",
-  "publicUrl": "https://YOUR-SITE.netlify.app",
+  "shopUrl": "https://tidyplannercoart.etsy.com",
+  "publicUrl": "https://tiddyplanner.netlify.app",
   "editions": [ { "appName": "Lumi Budget", "hostedDir": "lumi/planner-…", … }, … ]
 }
 ```
