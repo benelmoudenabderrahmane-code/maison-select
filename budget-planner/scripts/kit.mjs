@@ -63,6 +63,16 @@ async function listingImages(ed) {
     await shot(page, "home", "home-dark", { dark: true });
     await shot(page, "today", "today-dark", { dark: true });
     await shot(page, "debt", "debt-dark", { dark: true });
+    // A few colour themes, for the "themes" listing image.
+    for (const pal of ["sage", "lavender", "ocean", "honey"]) {
+      await page.evaluate(() => { location.hash = "settings"; });
+      await page.waitForTimeout(150);
+      await page.click(`[data-action=palette][data-id=${pal}]`);
+      await shot(page, "home", `home-${pal}`);
+    }
+    await page.evaluate(() => { location.hash = "settings"; });
+    await page.waitForTimeout(150);
+    await page.click("[data-action=palette] >> nth=0");
     await ctx.close();
   }
   {
@@ -70,6 +80,8 @@ async function listingImages(ed) {
     await shot(page, "today", "m-today");
     await shot(page, "home", "m-home");
     await shot(page, "impulse", "m-impulse");
+    await shot(page, "paycheck", "m-paycheck");
+    await shot(page, "rewards", "m-rewards");
     await ctx.close();
   }
   const dir = join(out, ed.folder, "images");
