@@ -99,6 +99,7 @@ Use it ONLINE on any device or OFFLINE with the downloadable HTML file. No subsc
 ━━━━━━━━━━━━━━━━━━
 • DIGITAL product — nothing is shipped.
 • Data is saved in your browser on your device. Use Settings → Back up to keep a copy or move devices (no automatic sync).
+• On iPhone/iPad, add the planner to your Home Screen — Safari may clear website data after 7 days without a visit.
 • Not a spreadsheet: no Excel, Google Sheets, Notion or GoodNotes needed.
 • Personal use only — please don't share or resell.
 • Digital downloads can't be refunded, but message me and I'll help with anything.

@@ -20,8 +20,9 @@
   --surface: hsl(var(--h) 60% 99.4%);
   --surface-2: hsl(var(--h) 45% 97.6%);
   --ink: hsl(var(--h) 25% 14%);
+  --head: var(--ink); /* headings; editions may give them their own colour */
   --ink-2: hsl(var(--h) 10% 40%);
-  --ink-3: hsl(var(--h) 8% 58%);
+  --ink-3: hsl(var(--h) 8% 45%);
   --line: hsl(var(--h) 25% 90%);
   --line-2: hsl(var(--h) 22% 84%);
   --accent: hsl(var(--h) var(--s) 56%);
@@ -29,7 +30,8 @@
   --accent-ink: #fff;
   --accent-soft: hsl(var(--h) calc(var(--s) * .9) 92%);
   --accent-softer: hsl(var(--h) calc(var(--s) * .9) 95.5%);
-  --good: hsl(150 45% 34%);
+  --accent-btn: var(--accent-strong); /* filled buttons: dark enough for white text */
+  --good: hsl(150 45% 29%);
   --good-soft: hsl(150 40% 92%);
   --warn: hsl(35 85% 38%);
   --warn-soft: hsl(40 90% 91%);
@@ -48,12 +50,13 @@
   --surface-2: hsl(var(--h) 11% 15%);
   --ink: hsl(var(--h) 25% 94%);
   --ink-2: hsl(var(--h) 10% 70%);
-  --ink-3: hsl(var(--h) 8% 52%);
+  --ink-3: hsl(var(--h) 8% 60%);
   --line: hsl(var(--h) 10% 20%);
   --line-2: hsl(var(--h) 10% 27%);
   --accent: hsl(var(--h) var(--s) 68%);
   --accent-strong: hsl(var(--h) var(--s) 74%);
   --accent-ink: hsl(var(--h) 30% 10%);
+  --accent-btn: var(--accent);
   --accent-soft: hsl(var(--h) calc(var(--s) * .5) 22%);
   --accent-softer: hsl(var(--h) calc(var(--s) * .4) 16%);
   --good: hsl(150 45% 62%);
@@ -136,7 +139,7 @@ small, .muted { color: var(--ink-2); }
 .nav a:hover { background: var(--surface-2); color: var(--ink); }
 .nav a.active { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 .nav a.active::before { content: ""; position: absolute; left: -16px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--accent); }
-.nav .badge-dot { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
+.nav .badge-dot { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent-btn); color: var(--accent-ink); font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
 .sidebar-foot { margin-top: auto; padding-top: 14px; display: flex; gap: 6px; }
 .side-art { margin-top: auto; }
 
@@ -195,8 +198,8 @@ body.privacy .m:hover { filter: none; }
 .btn:hover { background: var(--surface-2); border-color: var(--accent); }
 .btn:active { transform: scale(.97); }
 .btn svg { width: 17px; height: 17px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 6px 18px -8px var(--accent); }
-.btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.btn.primary { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--accent-ink); box-shadow: 0 6px 18px -8px var(--accent); }
+.btn.primary:hover { background: var(--accent-btn); border-color: var(--accent-btn); filter: brightness(.92); }
 .btn.ghost { border-color: transparent; background: transparent; }
 .btn.ghost:hover { background: var(--surface-2); }
 .btn.danger { color: var(--bad); }
@@ -232,7 +235,7 @@ textarea.input { min-height: 84px; resize: vertical; }
 .months { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
 .months button { border: 1px solid var(--line); background: var(--surface); padding: 5px 13px; border-radius: 999px; cursor: pointer; font-size: .84rem; color: var(--ink-2); }
 .months button:hover { border-color: var(--accent); }
-.months button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.months button.on { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--accent-ink); font-weight: 600; }
 .months .yr { font-family: var(--font-head); font-weight: 600; margin-right: 4px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -425,7 +428,7 @@ input[type="range"] { accent-color: var(--accent); width: 100%; }
 .banner.demo .btn { background: var(--surface); color: var(--ink); border: 0; }
 
 /* ---------- Modal, sheet, toast ---------- */
-.overlay { position: fixed; inset: 0; background: var(--overlay); display: grid; place-items: center; z-index: 60; padding: 16px; animation: fade .18s var(--ease); backdrop-filter: blur(3px); }
+.overlay { position: fixed; inset: 0; background: var(--overlay); display: grid; place-items: center; z-index: 60; padding: 16px; animation: fade .18s var(--ease); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .modal { background: var(--surface); border-radius: 24px; width: min(540px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: var(--shadow-lg); padding: 24px; animation: pop .22s var(--ease); border: 1px solid var(--line); }
 .modal.wide { width: min(760px, 100%); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
@@ -577,7 +580,7 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .li .tools { opacity: 1; }
   .tabbar {
     display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
-    background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(14px);
+    background: var(--surface); background: color-mix(in srgb, var(--surface) 92%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
     border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
   }
   .tabbar a, .tabbar button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .68rem; color: var(--ink-2); text-decoration: none; padding: 6px 0; background: none; border: 0; cursor: pointer; }
@@ -593,6 +596,10 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .months button { flex: none; }
   .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cat-grid .chip { overflow-wrap: anywhere; font-size: .78rem; padding: 8px; }
+}
+/* iPhone zooms the page when a focused field's text is under 16px */
+@media (hover: none), (max-width: 900px) {
+  .input, select.input, textarea.input { font-size: 16px; }
 }
 @media (max-width: 520px) {
   .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }

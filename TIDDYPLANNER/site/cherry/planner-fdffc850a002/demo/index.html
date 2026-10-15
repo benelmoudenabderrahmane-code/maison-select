@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#e0526f">
 <meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cherry Blossom">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23fff6f1%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23fbdfe5%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22120%22%20fill%3D%22url(%23g)%22%2F%3E%3Cg%20transform%3D%22translate(64%2050)%20scale(6)%22%3E%3Cpath%20d%3D%22M31%209C25%2019%2019%2028%2016%2037M31%209c2%2011%206%2020%2013%2028%22%20stroke%3D%22%236b8a52%22%20stroke-width%3D%222.6%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M31%209c8-6.5%2018-5%2022%201.5-8.5%204.5-16%203.5-22-1.5Z%22%20fill%3D%22%238fb26c%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2246%22%20r%3D%2211.5%22%20fill%3D%22%23e0526f%22%2F%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2245%22%20r%3D%2211.5%22%20fill%3D%22%23c93a58%22%2F%3E%3Cellipse%20cx%3D%2212%22%20cy%3D%2241%22%20rx%3D%223%22%20ry%3D%222.2%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%2240%22%20rx%3D%223%22%20ry%3D%222.2%22%20fill%3D%22%23fff%22%20opacity%3D%22.55%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A">
 
@@ -37,8 +38,9 @@
   --surface: hsl(var(--h) 60% 99.4%);
   --surface-2: hsl(var(--h) 45% 97.6%);
   --ink: hsl(var(--h) 25% 14%);
+  --head: var(--ink); /* headings; editions may give them their own colour */
   --ink-2: hsl(var(--h) 10% 40%);
-  --ink-3: hsl(var(--h) 8% 58%);
+  --ink-3: hsl(var(--h) 8% 45%);
   --line: hsl(var(--h) 25% 90%);
   --line-2: hsl(var(--h) 22% 84%);
   --accent: hsl(var(--h) var(--s) 56%);
@@ -46,7 +48,8 @@
   --accent-ink: #fff;
   --accent-soft: hsl(var(--h) calc(var(--s) * .9) 92%);
   --accent-softer: hsl(var(--h) calc(var(--s) * .9) 95.5%);
-  --good: hsl(150 45% 34%);
+  --accent-btn: var(--accent-strong); /* filled buttons: dark enough for white text */
+  --good: hsl(150 45% 29%);
   --good-soft: hsl(150 40% 92%);
   --warn: hsl(35 85% 38%);
   --warn-soft: hsl(40 90% 91%);
@@ -65,12 +68,13 @@
   --surface-2: hsl(var(--h) 11% 15%);
   --ink: hsl(var(--h) 25% 94%);
   --ink-2: hsl(var(--h) 10% 70%);
-  --ink-3: hsl(var(--h) 8% 52%);
+  --ink-3: hsl(var(--h) 8% 60%);
   --line: hsl(var(--h) 10% 20%);
   --line-2: hsl(var(--h) 10% 27%);
   --accent: hsl(var(--h) var(--s) 68%);
   --accent-strong: hsl(var(--h) var(--s) 74%);
   --accent-ink: hsl(var(--h) 30% 10%);
+  --accent-btn: var(--accent);
   --accent-soft: hsl(var(--h) calc(var(--s) * .5) 22%);
   --accent-softer: hsl(var(--h) calc(var(--s) * .4) 16%);
   --good: hsl(150 45% 62%);
@@ -153,7 +157,7 @@ small, .muted { color: var(--ink-2); }
 .nav a:hover { background: var(--surface-2); color: var(--ink); }
 .nav a.active { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 .nav a.active::before { content: ""; position: absolute; left: -16px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--accent); }
-.nav .badge-dot { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
+.nav .badge-dot { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent-btn); color: var(--accent-ink); font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
 .sidebar-foot { margin-top: auto; padding-top: 14px; display: flex; gap: 6px; }
 .side-art { margin-top: auto; }
 
@@ -212,8 +216,8 @@ body.privacy .m:hover { filter: none; }
 .btn:hover { background: var(--surface-2); border-color: var(--accent); }
 .btn:active { transform: scale(.97); }
 .btn svg { width: 17px; height: 17px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 6px 18px -8px var(--accent); }
-.btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.btn.primary { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--accent-ink); box-shadow: 0 6px 18px -8px var(--accent); }
+.btn.primary:hover { background: var(--accent-btn); border-color: var(--accent-btn); filter: brightness(.92); }
 .btn.ghost { border-color: transparent; background: transparent; }
 .btn.ghost:hover { background: var(--surface-2); }
 .btn.danger { color: var(--bad); }
@@ -249,7 +253,7 @@ textarea.input { min-height: 84px; resize: vertical; }
 .months { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
 .months button { border: 1px solid var(--line); background: var(--surface); padding: 5px 13px; border-radius: 999px; cursor: pointer; font-size: .84rem; color: var(--ink-2); }
 .months button:hover { border-color: var(--accent); }
-.months button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.months button.on { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--accent-ink); font-weight: 600; }
 .months .yr { font-family: var(--font-head); font-weight: 600; margin-right: 4px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -442,7 +446,7 @@ input[type="range"] { accent-color: var(--accent); width: 100%; }
 .banner.demo .btn { background: var(--surface); color: var(--ink); border: 0; }
 
 /* ---------- Modal, sheet, toast ---------- */
-.overlay { position: fixed; inset: 0; background: var(--overlay); display: grid; place-items: center; z-index: 60; padding: 16px; animation: fade .18s var(--ease); backdrop-filter: blur(3px); }
+.overlay { position: fixed; inset: 0; background: var(--overlay); display: grid; place-items: center; z-index: 60; padding: 16px; animation: fade .18s var(--ease); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .modal { background: var(--surface); border-radius: 24px; width: min(540px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: var(--shadow-lg); padding: 24px; animation: pop .22s var(--ease); border: 1px solid var(--line); }
 .modal.wide { width: min(760px, 100%); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
@@ -594,7 +598,7 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .li .tools { opacity: 1; }
   .tabbar {
     display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
-    background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(14px);
+    background: var(--surface); background: color-mix(in srgb, var(--surface) 92%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
     border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
   }
   .tabbar a, .tabbar button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .68rem; color: var(--ink-2); text-decoration: none; padding: 6px 0; background: none; border: 0; cursor: pointer; }
@@ -610,6 +614,10 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .months button { flex: none; }
   .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cat-grid .chip { overflow-wrap: anywhere; font-size: .78rem; padding: 8px; }
+}
+/* iPhone zooms the page when a focused field's text is under 16px */
+@media (hover: none), (max-width: 900px) {
+  .input, select.input, textarea.input { font-size: 16px; }
 }
 @media (max-width: 520px) {
   .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -640,7 +648,7 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   --ink: hsl(345 32% 18%);
   --head: hsl(var(--h) 72% 31%);
   --ink-2: hsl(345 10% 42%);
-  --ink-3: hsl(345 8% 60%);
+  --ink-3: hsl(345 8% 45%);
   --line: hsl(10 50% 90.5%);
   --line-2: hsl(10 38% 84%);
   --accent: hsl(var(--h) var(--s) 60%);
@@ -684,7 +692,7 @@ h2 { font-size: 1.45rem; }
 .brand span { text-transform: uppercase; letter-spacing: .26em; font-size: .62rem; margin-top: 4px; }
 .nav a { font-size: 1rem; padding: 10px 14px; color: var(--ink); }
 .nav a svg { color: var(--ink-2); }
-.nav a.active { background: var(--accent); color: var(--accent-ink); font-weight: 650; box-shadow: 0 10px 22px -14px var(--accent-strong); }
+.nav a.active { background: var(--accent-btn); color: var(--accent-ink); font-weight: 650; box-shadow: 0 10px 22px -14px var(--accent-strong); }
 .nav a.active svg { color: var(--accent-ink); }
 .nav a.active::before { display: none; }
 .btn { border-radius: 10px; }
@@ -1561,7 +1569,7 @@ function celebrate(emoji, title, sub = "") {
   confetti();
   const el = document.createElement("div");
   el.className = "celebrate";
-  el.innerHTML = `<div><div class="e">${emoji}</div><h2 class="mt-s">${esc(title)}</h2>${sub ? `<p class="muted mt-s">${esc(sub)}</p>` : ""}</div>`;
+  el.innerHTML = `<div><div class="e">${esc(emoji)}</div><h2 class="mt-s">${esc(title)}</h2>${sub ? `<p class="muted mt-s">${esc(sub)}</p>` : ""}</div>`;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2400);
 }
@@ -2991,6 +2999,10 @@ function exportCSV() {
   toast("Transactions exported");
 }
 function parseCSV(text) {
+  text = text.replace(/^\uFEFF/, "");
+  // Use the delimiter the header line actually uses, so "1.234,56" survives in ;-separated files.
+  const head = text.slice(0, text.search(/\r?\n|$/));
+  const delim = [";", "\t", ","].map((d) => [d, head.split(d).length]).sort((a, b) => b[1] - a[1])[0][0];
   const rows = [];
   let row = [], cur = "", q = false;
   for (let i = 0; i < text.length; i++) {
@@ -2998,7 +3010,7 @@ function parseCSV(text) {
     if (q) {
       if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch;
     } else if (ch === '"') q = true;
-    else if (ch === "," || ch === ";" || ch === "\t") { row.push(cur); cur = ""; }
+    else if (ch === delim) { row.push(cur); cur = ""; }
     else if (ch === "\n" || ch === "\r") {
       if (ch === "\r" && text[i + 1] === "\n") i++;
       row.push(cur); rows.push(row); row = []; cur = "";
@@ -3007,15 +3019,42 @@ function parseCSV(text) {
   if (cur || row.length) { row.push(cur); rows.push(row); }
   return rows.filter((r) => r.some((c) => c.trim()));
 }
-function normDate(s) {
+/** Bank amounts: "1,234.56", "1.234,56", "-12,5", "(45.00)", "€ 12" … → number. */
+function parseAmount(raw) {
+  let s = String(raw ?? "").trim();
+  if (!s) return 0;
+  const negative = /^\(.*\)$/.test(s) || /^-|-$|^−/.test(s.replace(/[^\d\-−().,]/g, ""));
+  s = s.replace(/[^\d.,]/g, "");
+  const lastDot = s.lastIndexOf("."), lastComma = s.lastIndexOf(",");
+  if (lastDot >= 0 && lastComma >= 0) s = lastComma > lastDot ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  else if (lastComma >= 0) s = /,\d{3}$/.test(s) && s.indexOf(",") === lastComma && s.length > 4 ? s.replace(",", "") : s.replace(/,/g, ".");
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? (negative ? -n : n) : 0;
+}
+const DATE_RE = /^(\d{1,2})([\/.-])(\d{1,2})\2(\d{2,4})/;
+/** Work out whether a file writes dates day-first (most of the world) or month-first (US). */
+function dateOrder(values) {
+  let dmy = 0, mdy = 0, dots = 0;
+  for (const v of values) {
+    const m = String(v).trim().match(DATE_RE);
+    if (!m) continue;
+    if (Number(m[1]) > 12) dmy++;
+    if (Number(m[3]) > 12) mdy++;
+    if (m[2] === "." || m[2] === "-") dots++;
+  }
+  if (dmy && !mdy) return "dmy";
+  if (mdy && !dmy) return "mdy";
+  return dots ? "dmy" : "mdy";
+}
+function normDate(s, order = "mdy") {
   s = s.trim();
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-  const m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  const m = s.match(DATE_RE);
   if (m) {
-    let [, a, b, y] = m;
+    let [, a, , b, y] = m;
     if (y.length === 2) y = "20" + y;
-    // Assume month/day unless the first number can't be a month.
-    const [mo, d] = Number(a) > 12 ? [b, a] : [a, b];
+    const [mo, d] = order === "dmy" ? [b, a] : [a, b];
+    if (Number(mo) > 12 || Number(d) > 31) return "";
     return `${y}-${pad(mo)}-${pad(d)}`;
   }
   const d = new Date(s);
@@ -3024,21 +3063,30 @@ function normDate(s) {
 function importCSV(text) {
   const rows = parseCSV(text);
   if (rows.length < 2) return toast("That file looks empty");
-  const head = rows[0].map((h) => h.trim().toLowerCase());
+  const head = rows[0].map((h) => h.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
   const col = (...names) => head.findIndex((h) => names.some((n) => h.includes(n)));
-  const ci = { date: col("date"), name: col("name", "description", "payee", "merchant", "memo"), amount: col("amount", "value", "sum"), cat: col("category"), type: col("type"), note: col("note") };
-  const debit = col("debit", "withdrawal"), credit = col("credit", "deposit");
+  // English first, then common bank-export headers in French, Spanish, German, Dutch, Italian and Portuguese.
+  const ci = {
+    date: col("date", "datum", "fecha", "data"),
+    name: col("name", "description", "payee", "merchant", "memo", "details", "libelle", "omschrijving", "concepto", "beschreibung", "verwendungszweck", "descrizione", "descricao"),
+    amount: col("amount", "value", "sum", "montant", "bedrag", "importe", "betrag", "importo", "valor"),
+    cat: col("category", "categorie", "kategorie", "categoria"),
+    type: col("type"),
+    note: col("note", "notiz", "nota"),
+  };
+  const debit = col("debit", "withdrawal", "soll", "cargo"), credit = col("credit", "deposit", "haben", "abono");
   if (ci.date < 0 || (ci.amount < 0 && debit < 0)) return toast("Couldn't find Date and Amount columns");
   const body = rows.slice(1);
   // If the file uses signed amounts (bank style), negative = money out, positive = money in.
   // If every amount is positive, treat them all as spending.
-  const signed = ci.amount >= 0 && body.some((r) => num(r[ci.amount]) < 0);
+  const signed = ci.amount >= 0 && body.some((r) => parseAmount(r[ci.amount]) < 0);
+  const order = dateOrder(body.map((r) => r[ci.date]));
   const undo = snapshot();
   let n = 0;
   for (const r of body) {
-    const date = normDate(r[ci.date] || "");
+    const date = normDate(r[ci.date] || "", order);
     if (!date) continue;
-    let amount = ci.amount >= 0 ? num(r[ci.amount]) : num(r[credit]) - num(r[debit]);
+    let amount = ci.amount >= 0 ? parseAmount(r[ci.amount]) : parseAmount(r[credit]) - parseAmount(r[debit]);
     let type = (r[ci.type] || "").trim().toLowerCase();
     if (!["expense", "income", "saving"].includes(type)) type = (ci.amount < 0 || signed) && amount > 0 ? "income" : "expense";
     amount = Math.abs(amount);
@@ -3525,6 +3573,7 @@ function boot() {
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") saveNow(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") return closeModal();
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[role="button"][data-action]')) { e.preventDefault(); e.target.click(); return; }
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
     if (typing || e.metaKey || e.ctrlKey || e.altKey || $(".overlay")) return;
     const k = e.key.toLowerCase();
@@ -3541,6 +3590,8 @@ function boot() {
     if (ui.view === "impulse" && !$(".overlay") && !document.activeElement?.closest("form")) render();
   }, 60000);
   window.addEventListener("storage", (e) => { if (e.key === STORE_KEY && e.newValue) { S = migrate(JSON.parse(e.newValue)); applyTheme(); render(); } });
+  // Ask the browser to keep this planner's data even when the device is low on space.
+  if (!IS_DEMO) navigator.storage?.persist?.().catch(() => {});
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !IS_DEMO) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }

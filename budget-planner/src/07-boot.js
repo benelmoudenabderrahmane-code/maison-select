@@ -117,6 +117,7 @@ function boot() {
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") saveNow(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") return closeModal();
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[role="button"][data-action]')) { e.preventDefault(); e.target.click(); return; }
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
     if (typing || e.metaKey || e.ctrlKey || e.altKey || $(".overlay")) return;
     const k = e.key.toLowerCase();
@@ -133,6 +134,8 @@ function boot() {
     if (ui.view === "impulse" && !$(".overlay") && !document.activeElement?.closest("form")) render();
   }, 60000);
   window.addEventListener("storage", (e) => { if (e.key === STORE_KEY && e.newValue) { S = migrate(JSON.parse(e.newValue)); applyTheme(); render(); } });
+  // Ask the browser to keep this planner's data even when the device is low on space.
+  if (!IS_DEMO) navigator.storage?.persist?.().catch(() => {});
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !IS_DEMO) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }

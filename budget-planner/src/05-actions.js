@@ -360,6 +360,10 @@ function exportCSV() {
   toast("Transactions exported");
 }
 function parseCSV(text) {
+  text = text.replace(/^\uFEFF/, "");
+  // Use the delimiter the header line actually uses, so "1.234,56" survives in ;-separated files.
+  const head = text.slice(0, text.search(/\r?\n|$/));
+  const delim = [";", "\t", ","].map((d) => [d, head.split(d).length]).sort((a, b) => b[1] - a[1])[0][0];
   const rows = [];
   let row = [], cur = "", q = false;
   for (let i = 0; i < text.length; i++) {
@@ -367,7 +371,7 @@ function parseCSV(text) {
     if (q) {
       if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch;
     } else if (ch === '"') q = true;
-    else if (ch === "," || ch === ";" || ch === "\t") { row.push(cur); cur = ""; }
+    else if (ch === delim) { row.push(cur); cur = ""; }
     else if (ch === "\n" || ch === "\r") {
       if (ch === "\r" && text[i + 1] === "\n") i++;
       row.push(cur); rows.push(row); row = []; cur = "";
@@ -376,15 +380,42 @@ function parseCSV(text) {
   if (cur || row.length) { row.push(cur); rows.push(row); }
   return rows.filter((r) => r.some((c) => c.trim()));
 }
-function normDate(s) {
+/** Bank amounts: "1,234.56", "1.234,56", "-12,5", "(45.00)", "€ 12" … → number. */
+function parseAmount(raw) {
+  let s = String(raw ?? "").trim();
+  if (!s) return 0;
+  const negative = /^\(.*\)$/.test(s) || /^-|-$|^−/.test(s.replace(/[^\d\-−().,]/g, ""));
+  s = s.replace(/[^\d.,]/g, "");
+  const lastDot = s.lastIndexOf("."), lastComma = s.lastIndexOf(",");
+  if (lastDot >= 0 && lastComma >= 0) s = lastComma > lastDot ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  else if (lastComma >= 0) s = /,\d{3}$/.test(s) && s.indexOf(",") === lastComma && s.length > 4 ? s.replace(",", "") : s.replace(/,/g, ".");
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? (negative ? -n : n) : 0;
+}
+const DATE_RE = /^(\d{1,2})([\/.-])(\d{1,2})\2(\d{2,4})/;
+/** Work out whether a file writes dates day-first (most of the world) or month-first (US). */
+function dateOrder(values) {
+  let dmy = 0, mdy = 0, dots = 0;
+  for (const v of values) {
+    const m = String(v).trim().match(DATE_RE);
+    if (!m) continue;
+    if (Number(m[1]) > 12) dmy++;
+    if (Number(m[3]) > 12) mdy++;
+    if (m[2] === "." || m[2] === "-") dots++;
+  }
+  if (dmy && !mdy) return "dmy";
+  if (mdy && !dmy) return "mdy";
+  return dots ? "dmy" : "mdy";
+}
+function normDate(s, order = "mdy") {
   s = s.trim();
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-  const m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  const m = s.match(DATE_RE);
   if (m) {
-    let [, a, b, y] = m;
+    let [, a, , b, y] = m;
     if (y.length === 2) y = "20" + y;
-    // Assume month/day unless the first number can't be a month.
-    const [mo, d] = Number(a) > 12 ? [b, a] : [a, b];
+    const [mo, d] = order === "dmy" ? [b, a] : [a, b];
+    if (Number(mo) > 12 || Number(d) > 31) return "";
     return `${y}-${pad(mo)}-${pad(d)}`;
   }
   const d = new Date(s);
@@ -393,21 +424,30 @@ function normDate(s) {
 function importCSV(text) {
   const rows = parseCSV(text);
   if (rows.length < 2) return toast("That file looks empty");
-  const head = rows[0].map((h) => h.trim().toLowerCase());
+  const head = rows[0].map((h) => h.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
   const col = (...names) => head.findIndex((h) => names.some((n) => h.includes(n)));
-  const ci = { date: col("date"), name: col("name", "description", "payee", "merchant", "memo"), amount: col("amount", "value", "sum"), cat: col("category"), type: col("type"), note: col("note") };
-  const debit = col("debit", "withdrawal"), credit = col("credit", "deposit");
+  // English first, then common bank-export headers in French, Spanish, German, Dutch, Italian and Portuguese.
+  const ci = {
+    date: col("date", "datum", "fecha", "data"),
+    name: col("name", "description", "payee", "merchant", "memo", "details", "libelle", "omschrijving", "concepto", "beschreibung", "verwendungszweck", "descrizione", "descricao"),
+    amount: col("amount", "value", "sum", "montant", "bedrag", "importe", "betrag", "importo", "valor"),
+    cat: col("category", "categorie", "kategorie", "categoria"),
+    type: col("type"),
+    note: col("note", "notiz", "nota"),
+  };
+  const debit = col("debit", "withdrawal", "soll", "cargo"), credit = col("credit", "deposit", "haben", "abono");
   if (ci.date < 0 || (ci.amount < 0 && debit < 0)) return toast("Couldn't find Date and Amount columns");
   const body = rows.slice(1);
   // If the file uses signed amounts (bank style), negative = money out, positive = money in.
   // If every amount is positive, treat them all as spending.
-  const signed = ci.amount >= 0 && body.some((r) => num(r[ci.amount]) < 0);
+  const signed = ci.amount >= 0 && body.some((r) => parseAmount(r[ci.amount]) < 0);
+  const order = dateOrder(body.map((r) => r[ci.date]));
   const undo = snapshot();
   let n = 0;
   for (const r of body) {
-    const date = normDate(r[ci.date] || "");
+    const date = normDate(r[ci.date] || "", order);
     if (!date) continue;
-    let amount = ci.amount >= 0 ? num(r[ci.amount]) : num(r[credit]) - num(r[debit]);
+    let amount = ci.amount >= 0 ? parseAmount(r[ci.amount]) : parseAmount(r[credit]) - parseAmount(r[debit]);
     let type = (r[ci.type] || "").trim().toLowerCase();
     if (!["expense", "income", "saving"].includes(type)) type = (ci.amount < 0 || signed) && amount > 0 ? "income" : "expense";
     amount = Math.abs(amount);

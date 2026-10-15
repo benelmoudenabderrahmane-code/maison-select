@@ -12,14 +12,14 @@
   --ink: hsl(var(--h) 48% 17%);
   --head: hsl(var(--h) 52% 19%);
   --ink-2: hsl(var(--h) 12% 42%);
-  --ink-3: hsl(var(--h) 10% 60%);
+  --ink-3: hsl(var(--h) 10% 46%);
   --line: hsl(var(--h) 40% 92.5%);
   --line-2: hsl(var(--h) 30% 86%);
   --accent: hsl(var(--h) var(--s) 50%);
   --accent-strong: hsl(var(--h) var(--s) 41%);
   --accent-soft: hsl(var(--h) 72% 94%);
   --accent-softer: hsl(var(--h) 72% 96.6%);
-  --good: hsl(150 32% 38%);
+  --good: hsl(150 34% 31%);
   --good-soft: hsl(145 35% 93%);
   --warn: hsl(18 70% 48%);
   --warn-soft: hsl(18 90% 94%);

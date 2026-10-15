@@ -83,7 +83,7 @@ Open a demo file (`<Name>-Demo.html`) in Chrome. It's already filled with realis
 
 ## 6. Support answers (copy & paste)
 
-**"My data disappeared."** It's saved in the browser on that device. Opening the planner in another browser or device, using private mode, or clearing browsing data starts fresh. Restore from **Settings → Restore backup** if you saved one.
+**"My data disappeared."** It's saved in the browser on that device. On iPhone, Safari can clear a website's data after 7 days without a visit, unless the planner is added to the Home Screen. Opening the planner in another browser or device, using private mode, or clearing browsing data starts fresh. Restore from **Settings → Restore backup** if you saved one.
 
 **"How do I use it on my phone and computer?"** Back up on one device (Settings → Back up), send yourself the file, then use Restore backup on the other one. Data doesn't sync automatically.
 

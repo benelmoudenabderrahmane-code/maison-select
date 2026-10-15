@@ -225,7 +225,7 @@ function celebrate(emoji, title, sub = "") {
   confetti();
   const el = document.createElement("div");
   el.className = "celebrate";
-  el.innerHTML = `<div><div class="e">${emoji}</div><h2 class="mt-s">${esc(title)}</h2>${sub ? `<p class="muted mt-s">${esc(sub)}</p>` : ""}</div>`;
+  el.innerHTML = `<div><div class="e">${esc(emoji)}</div><h2 class="mt-s">${esc(title)}</h2>${sub ? `<p class="muted mt-s">${esc(sub)}</p>` : ""}</div>`;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2400);
 }

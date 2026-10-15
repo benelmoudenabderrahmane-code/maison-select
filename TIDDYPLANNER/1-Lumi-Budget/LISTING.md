@@ -134,6 +134,7 @@ Use it ONLINE on any device (phone, tablet, computer) or OFFLINE with the downlo
 ━━━━━━━━━━━━━━━━━━
 • This is a DIGITAL product. Nothing will be shipped.
 • Your data is saved in your browser on your device. Use Settings → Back up to save a copy or move to another device. Data does not sync automatically between devices.
+• On iPhone/iPad, add the planner to your Home Screen — Safari may clear website data after 7 days without a visit.
 • Clearing your browser data can erase your planner — back up first.
 • Not compatible with Excel, Google Sheets, Notion or GoodNotes (it's a standalone app — no extra software needed).
 • For personal use only. Please don't share or resell.

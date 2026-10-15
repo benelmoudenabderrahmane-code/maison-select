@@ -277,6 +277,169 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await c2.close();
   });
 }
+
+/* ===================== Advanced audit ===================== */
+const http = await import("node:http");
+const { readFile } = await import("node:fs/promises");
+const { extname } = await import("node:path");
+const site = join(out, "site");
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".json": "application/json", ".webmanifest": "application/manifest+json", ".svg": "image/svg+xml", ".png": "image/png" };
+const server = http.createServer(async (req, res) => {
+  let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+  if (p.endsWith("/")) p += "index.html";
+  try { const body = await readFile(join(site, p)); res.writeHead(200, { "Content-Type": TYPES[extname(p)] || "application/octet-stream" }); res.end(body); }
+  catch { res.writeHead(404); res.end("not found"); }
+});
+await new Promise((r) => server.listen(0, "127.0.0.1", r));
+const base = `http://127.0.0.1:${server.address().port}`;
+const lum = ([r, g, b]) => { const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+
+for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === process.argv[2])) {
+  console.log(`\n${ed.appName} — advanced`);
+  const full = pathToFileURL(join(out, ed.folder, `${fileBase(ed)}-Planner.html`)).href;
+
+  await step("empty planner: every screen works with no data", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(250);
+    await page.keyboard.press("Escape");
+    for (const v of VIEWS) await go(page, v);
+    check("no errors on empty screens", page.errors.length === 0, page.errors.slice(0, 2).join(" | "));
+    await ctx.close();
+  });
+
+  await step("hostile data cannot run code (XSS)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(250);
+    await page.evaluate(() => {
+      const bad = `<img src=x onerror="window.__xss=1">`;
+      const S = window.__planner.state;
+      const today = new Date().toISOString().slice(0, 10);
+      S.onboarded = true;
+      S.profile.name = bad;
+      S.categories[0].name = bad; S.categories[0].emoji = bad;
+      S.transactions.push({ id: "x1", type: "expense", catId: S.categories[0].id, name: bad, note: bad, amount: 5, date: today, createdAt: 1 });
+      S.bills.push({ id: "x2", name: bad, emoji: bad, amount: 9, freq: "monthly", anchor: today, catId: S.categories[0].id });
+      S.funds.push({ id: "x3", name: bad, emoji: bad, target: 100, saved: 10, monthly: 5, freq: "monthly", anchor: today, hue: 10 });
+      S.goals.push({ id: "x4", name: bad, emoji: bad, why: bad, status: "progress", steps: [{ text: bad, done: false }] });
+      S.wishlist.push({ id: "x5", name: bad, price: 3, link: "javascript:window.__xss=1", addedAt: Date.now(), readyAt: Date.now() - 1 });
+      S.notes = `</textarea>${bad}`;
+      window.__planner.render();
+    });
+    for (const v of VIEWS) await go(page, v);
+    await page.click("[data-action=goal-status]").catch(() => {});
+    await page.click("[data-action=goal-status]").catch(() => {});
+    await page.waitForTimeout(300);
+    check("no injected script ran", (await page.evaluate(() => window.__xss)) === undefined);
+    check("unsafe link not rendered", (await page.$$("a[href^='javascript:']")).length === 0);
+    await ctx.close();
+  });
+
+  await step("currencies format correctly", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(200);
+    await page.keyboard.press("Escape");
+    for (const [cur, sym] of [["JPY", "¥"], ["EUR", "€"], ["GBP", "£"], ["MAD", "MAD"], ["USD", "$"]]) {
+      await go(page, "settings");
+      await page.selectOption("select[data-input=currency]", cur);
+      await go(page, "home");
+      const txt = await page.textContent(".main");
+      check(`${cur} shows ${sym}`, txt.includes(sym));
+    }
+    await ctx.close();
+  });
+
+  await step("5 years / 10,000 transactions stays fast", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(200);
+    await page.click("[data-ob=sample]");
+    await page.evaluate(() => {
+      const S = window.__planner.state;
+      const cats = S.categories.map((c) => c.id);
+      const now = Date.now();
+      for (let i = 0; i < 10000; i++) {
+        const d = new Date(now - (i % 1825) * 86400000);
+        S.transactions.push({ id: "p" + i, type: "expense", catId: cats[i % cats.length], name: "Shop " + (i % 50), note: "", amount: 5 + (i % 90), date: d.toISOString().slice(0, 10), createdAt: i });
+      }
+    });
+    const times = {};
+    for (const v of VIEWS) {
+      times[v] = await page.evaluate((v) => { location.hash = v; const t = performance.now(); window.__planner.render(); return performance.now() - t; }, v);
+    }
+    const slow = Object.entries(times).filter(([, t]) => t > 400);
+    check("every screen renders in < 400 ms", slow.length === 0, slow.map(([v, t]) => `${v} ${Math.round(t)}ms`).join(", "));
+    const size = await page.evaluate((k) => { window.__planner.render(); return (localStorage.getItem(k) || "").length; }, ed.storeKey);
+    check("data fits browser storage (< 4 MB)", size < 4e6, `${Math.round(size / 1024)} KB`);
+    await ctx.close();
+  });
+
+  await step("European bank CSV", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(200);
+    await page.keyboard.press("Escape");
+    await go(page, "transactions");
+    const csv = join(tmp, `eu-${ed.id}.csv`);
+    writeFileSync(csv, "Datum;Omschrijving;Bedrag\n03.10.2026;Albert Heijn;-1.234,56\n05.10.2026;Salaris;2.100,00\n");
+    const [chooser] = await Promise.all([page.waitForEvent("filechooser"), page.click("[data-action=import-csv]")]);
+    await chooser.setFiles(csv);
+    await page.waitForTimeout(200);
+    const r = await state(page, (S) => S.transactions.map((t) => `${t.type}:${t.amount}:${t.date}`).sort().join(" "));
+    check("1.234,56 and dd.mm.yyyy understood", r === "expense:1234.56:2026-10-03 income:2100:2026-10-05", r);
+    await ctx.close();
+  });
+
+  await step("installed app works offline (PWA)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    const url = `${base}/${ed.hostedDir}/`;
+    await page.goto(url);
+    await page.waitForTimeout(300);
+    const man = await page.evaluate(async () => { const r = await fetch("manifest.webmanifest"); const m = await r.json(); const icons = await Promise.all(m.icons.map((i) => fetch(i.src).then((x) => x.status))); return { ok: r.ok, name: m.name, icons }; });
+    check("manifest + icons", man.ok && man.name === ed.appName && man.icons.every((s) => s === 200), JSON.stringify(man));
+    check("apple touch icon", (await page.evaluate(async () => (await fetch(document.querySelector("link[rel=apple-touch-icon]").href)).status)) === 200);
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.reload();
+    await page.waitForTimeout(300);
+    await page.keyboard.press("Escape");
+    await page.evaluate(() => { window.__planner.state.profile.name = "Offline"; window.__planner.state.onboarded = true; });
+    await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
+    await ctx.setOffline(true);
+    await page.reload();
+    await page.waitForTimeout(400);
+    check("opens with no internet", !!(await page.$("#sidebar .nav")));
+    check("data still there offline", (await state(page, (S) => S.profile.name)) === "Offline");
+    await ctx.setOffline(false);
+    await ctx.close();
+  });
+
+  await step("colour contrast (WCAG AA)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(200);
+    await page.keyboard.press("Escape");
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((t) => { if (document.documentElement.dataset.theme !== t) document.querySelector("[data-action=toggle-theme]").click(); }, theme);
+      const pairs = await page.evaluate(() => {
+        const v = (n) => { const d = document.createElement("div"); d.style.color = `var(${n})`; document.body.appendChild(d); const c = getComputedStyle(d).color; d.remove(); return c.match(/[\d.]+/g).slice(0, 3).map(Number); };
+        return [["text", "--ink", "--bg"], ["secondary text", "--ink-2", "--surface"], ["hint text", "--ink-3", "--surface"], ["headings", "--head", "--bg"], ["button text", "--accent-ink", "--accent-btn"], ["links", "--accent-strong", "--surface"], ["green on green", "--good", "--good-soft"], ["red", "--bad", "--surface"]].map(([k, a, b]) => [k, v(a), v(b)]);
+      });
+      for (const [k, a, b] of pairs) { const r = contrast(a, b); check(`${theme}: ${k} ≥ 4.5`, r >= 4.5, r.toFixed(2)); }
+    }
+    await ctx.close();
+  });
+}
+server.close();
 await browser.close();
 console.log(`\n${passes} checks passed, ${failures} failed${failures ? ` (screenshots in ${tmp})` : ""}`);
 process.exit(failures ? 1 : 0);
