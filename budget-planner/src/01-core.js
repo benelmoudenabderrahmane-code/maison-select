@@ -97,6 +97,8 @@ function fmtFor(cur) {
 }
 /** Plain-text money, e.g. "$1,250.00". */
 const money = (n) => fmtFor(S.profile.currency).format(round2(n));
+/** Whole amounts without trailing zero cents, e.g. "$2,000" or "1.250 €" (cents kept when present). */
+const moneyRound = (n) => money(n).replace(/[.,]00(?!\d)/, "");
 /** Money as HTML with small cents, like "$9,000<small>.00</small>". */
 function moneyHTML(n, opts = {}) {
   const v = round2(n);

@@ -106,8 +106,39 @@ function chartPlanVsActual(items) {
       <text x="${x + bw + 1}" y="${H - bottom + 22}" text-anchor="middle" style="font-size:16px">${esc(it.emoji || "")}</text>
       <text x="${x + bw + 1}" y="${H - bottom + 42}" text-anchor="middle" style="font-weight:600;fill:var(--ink)">${esc(trunc(it.short || it.label, 11))}</text>`;
   });
-  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${W}px" role="img" aria-label="Budget versus actual by category">${g}</svg></div>
+  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="--minw:${W}px" role="img" aria-label="Budget versus actual by category">${g}</svg></div>
     <div class="legend"><span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Planned</span><span><i style="background:var(--accent)"></i>Actual</span><span><i style="background:var(--bad)"></i>Over budget</span></div>`;
+}
+/** Budget vs. actual per month: soft budget bar, solid actual bar. Fits its card; scrolls on phones. */
+function chartMonthly(rows, selected) {
+  if (!rows.some((r) => r.plan > 0 || r.actual > 0)) return empty("📊", "Nothing to chart yet", "Add a budget or track a few spends and this fills in.");
+  const H = 292, top = 14, bottom = 36, left = 70, colW = 66;
+  const W = left + rows.length * colW + 6;
+  // Axis tops that split into four round steps (…, 2,000 · 4,000 · 5,000 · 8,000 …).
+  const hi = Math.max(...rows.map((r) => Math.max(r.plan, r.actual)), 1), e = Math.pow(10, Math.floor(Math.log10(hi)));
+  const max = [1, 2, 4, 5, 8, 10].map((n) => n * e).find((v) => v >= hi);
+  const y = (v) => top + (H - top - bottom) * (1 - v / max);
+  let g = "";
+  for (let k = 0; k <= 4; k++) {
+    const v = (max / 4) * k;
+    g += `<line class="grid-line" x1="${left - 6}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${left - 16}" y="${y(v) + 5}" text-anchor="end">${esc(moneyRound(v))}</text>`;
+  }
+  rows.forEach((r, i) => {
+    const x = left + i * colW + 12, bw = 19;
+    const tip = `${MONTHS[Number(r.mk.slice(5)) - 1]}: spent ${money(r.actual)} of ${money(r.plan)} budget`;
+    g += `<g data-tip="${esc(tip)}" class="${r.mk === selected ? "sel" : ""}">
+      <path class="mb-plan" d="${barPath(x, y(r.plan), bw, y(0) - y(r.plan))}"/>
+      <path class="mb-act" d="${barPath(x + bw + 2, y(r.actual), bw, y(0) - y(r.actual))}"/>
+      <rect x="${x - 10}" y="${top}" width="${colW - 6}" height="${H - top}" fill="transparent"/></g>
+      <text class="mlabel ${r.mk === selected ? "sel" : ""}" x="${x + bw + 1}" y="${H - 8}" text-anchor="middle">${esc(r.label)}</text>`;
+  });
+  return `<div class="chart-scroll" data-drag-scroll data-scroll-end><svg class="chart mchart" viewBox="0 0 ${W} ${H}" style="--minw:${Math.max(520, W * 0.8)}px" role="img" aria-label="Budget versus actual by month">${g}</svg></div>`;
+}
+/** A bar with rounded top corners only. */
+function barPath(x, yTop, w, h) {
+  if (h <= 0) return "";
+  const r = Math.min(4, w / 2, h);
+  return `M${x} ${yTop + h}V${yTop + r}Q${x} ${yTop} ${x + r} ${yTop}H${x + w - r}Q${x + w} ${yTop} ${x + w} ${yTop + r}V${yTop + h}Z`;
 }
 /** Income vs money out, one pair per month. */
 function chartInOut(rows) {
@@ -128,7 +159,7 @@ function chartInOut(rows) {
       <rect x="${x - 6}" y="${top}" width="${colW - 6}" height="${H - top}" fill="transparent"/></g>
       <text x="${x + bw}" y="${H - 10}" text-anchor="middle">${esc(r.label)}</text>`;
   });
-  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${W}px" role="img" aria-label="Income versus spending per month">${g}</svg></div>
+  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="--minw:${W}px" role="img" aria-label="Income versus spending per month">${g}</svg></div>
     <div class="legend"><span><i style="background:var(--good)"></i>Money in</span><span><i style="background:var(--accent)"></i>Money out (spent + saved)</span></div>`;
 }
 /** Simple line chart; `series` = [{values, cls}] sharing x positions; labels at a few ticks. */

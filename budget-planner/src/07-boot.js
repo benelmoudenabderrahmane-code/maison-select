@@ -24,20 +24,20 @@ function sidebarHTML() {
   const counts = { impulse: ready };
   let html = "";
   for (const n of NAV) {
-    if (n.group) { html += `<div class="nav-label ${n.nf ? "nf" : ""}">${n.group}</div>`; continue; }
+    if (n.group) { html += SKIN.navStyle === "lines" ? (html ? `<hr class="nav-sep ${n.nf ? "nf" : ""}">` : "") : `<div class="nav-label ${n.nf ? "nf" : ""}">${n.group}</div>`; continue; }
     html += `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""} ${n.nf ? "nf" : ""}" ${ui.view === n.id ? 'aria-current="page"' : ""}>${icon(n.icon)}<span>${n.label}</span>${counts[n.id] ? `<span class="badge-dot">${counts[n.id]}</span>` : ""}</a>`;
   }
   return `
     <div class="brand">${SKIN.logo ? `<div class="brand-logo">${SKIN.logo}</div>` : `<div class="brand-mark">${icon("logo")}</div>`}<div><b>${SKIN.logo ? APP_NAME.replace(" ", "<br>") : APP_NAME}</b><span>${SKIN.logo ? APP_TAGLINE : S.profile.name ? `${esc(S.profile.name)}'s money plan` : APP_TAGLINE}</span></div></div>
-    <button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>
+    ${SKIN.headTools ? "" : `<button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>`}
     <nav class="nav" aria-label="Main">${html}</nav>
     ${SKIN.sideArt ? `<div class="side-art">${SKIN.sideArt}</div>` : ""}
-    <div class="sidebar-foot">
+    ${SKIN.headTools ? "" : `<div class="sidebar-foot">
       <button class="btn icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
       <button class="btn icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
       <button class="btn icon-btn ${S.settings.focus ? "primary" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode">${icon("focus")}</button>
     </div>
-    <a class="user-chip" href="#settings"><span class="avatar">${esc((S.profile.name || "You").trim()[0].toUpperCase())}</span><span class="grow">${esc(S.profile.name || "Your profile")}</span>${icon("chevR", 16)}</a>`;
+    <a class="user-chip" href="#settings"><span class="avatar">${esc((S.profile.name || "You").trim()[0].toUpperCase())}</span><span class="grow">${esc(S.profile.name || "Your profile")}</span>${icon("chevR", 16)}</a>`}`;
 }
 function tabbarHTML() {
   const t = (id, ic, label) => `<a href="#${id}" class="${ui.view === id ? "active" : ""}">${icon(ic)}<span>${label}</span></a>`;
@@ -54,12 +54,62 @@ function render() {
     ? `<div class="banner demo"><b>✨ Free demo</b><span>Explore every feature with sample data. Changes reset when you close the tab.</span><a class="btn sm" href="${SHOP_URL}" target="_blank" rel="noopener" style="margin-left:auto">Get the full planner</a></div>`
     : !storage ? `<div class="banner">⚠️ Your browser is blocking storage (private mode?), so changes won't be kept after you close this page.</div>` : "";
   main.innerHTML = banner + VIEWS[ui.view]();
-  $("#sidebar").innerHTML = sidebarHTML();
+  const side = $("#sidebar"), sideTop = side.scrollTop; // keep the sidebar where the user scrolled it
+  side.innerHTML = sidebarHTML();
+  side.scrollTop = sideTop;
+  settleScrollers(main);
   $("#tabbar").innerHTML = tabbarHTML();
   const label = NAV.find((n) => n.id === ui.view)?.label || "";
   document.title = `${label} · ${APP_NAME}`;
 }
 
+/** Horizontal strips start at the useful end: charts at the latest month, month chips at the selected one. */
+const H_STRIPS = ".chart-scroll, [data-drag-scroll], .chip-scroll, .months";
+function settleScrollers(root) {
+  for (const el of root.querySelectorAll("[data-scroll-end]")) el.scrollLeft = el.scrollWidth;
+  for (const el of root.querySelectorAll(".month-chips, .months")) {
+    const on = el.querySelector(".on");
+    if (on && el.scrollWidth > el.clientWidth) el.scrollLeft = on.offsetLeft - el.offsetLeft - (el.clientWidth - on.offsetWidth) / 2;
+  }
+  for (const el of root.querySelectorAll(H_STRIPS)) edgeFade(el);
+}
+/** Soft fade on the side of a strip that has more to swipe to. */
+function edgeFade(el) {
+  const max = el.scrollWidth - el.clientWidth;
+  el.classList.toggle("fade-l", max > 1 && el.scrollLeft > 2);
+  el.classList.toggle("fade-r", max > 1 && el.scrollLeft < max - 2);
+}
+/** Mouse users can drag horizontal strips (charts, month chips) like on a phone. */
+function enableDragScroll() {
+  let drag = null;
+  document.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    if (e.target.closest("input, textarea, select")) return;
+    const el = e.target.closest(H_STRIPS);
+    if (!el || el.scrollWidth <= el.clientWidth + 1) return;
+    drag = { el, x: e.clientX, left: el.scrollLeft, moved: false };
+  });
+  document.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 5) return;
+    drag.moved = true;
+    drag.el.classList.add("dragging");
+    drag.el.scrollLeft = drag.left - dx;
+  });
+  document.addEventListener("pointerup", () => {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    d.el.classList.remove("dragging");
+    // A drag is not a click on whatever was under the mouse.
+    if (d.moved) {
+      const stop = (e) => { e.stopPropagation(); e.preventDefault(); };
+      document.addEventListener("click", stop, { capture: true, once: true });
+      setTimeout(() => document.removeEventListener("click", stop, { capture: true }), 0);
+    }
+  });
+}
 function go(view) {
   if (location.hash !== `#${view}`) location.hash = view;
   else route();
@@ -83,6 +133,9 @@ function boot() {
   saveNow();
   if (!S.onboarded && !IS_DEMO) openOnboarding();
 
+  enableDragScroll();
+  document.addEventListener("scroll", (e) => { if (e.target.matches?.(H_STRIPS)) edgeFade(e.target); }, { capture: true, passive: true });
+  window.addEventListener("resize", () => { for (const el of document.querySelectorAll(H_STRIPS)) edgeFade(el); });
   document.addEventListener("click", (e) => {
     const el = e.target.closest("[data-action]");
     if (!el || el.disabled) return;

@@ -356,7 +356,13 @@ button.pill { border: 0; cursor: pointer; }
 .chart .line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
 .chart .line.alt { stroke: var(--ink-3); stroke-dasharray: 5 5; stroke-width: 2; }
 .chart .area { fill: url(#areaGrad); }
-.chart-scroll { overflow-x: auto; margin: 0 -6px; padding: 0 6px; }
+.chart-scroll { overflow-x: auto; margin: 0 -6px; padding: 0 6px; overscroll-behavior-x: contain; }
+.chart-scroll .chart { min-width: var(--minw, 0); }
+.dragging { cursor: grabbing; user-select: none; }
+.fade-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+.fade-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px); mask-image: linear-gradient(90deg, transparent, #000 44px); }
+.fade-l.fade-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); }
+.nav-sep { border: 0; border-top: 1px solid var(--line); margin: 8px 12px; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .8rem; color: var(--ink-2); margin-top: 10px; }
 .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .donut-wrap { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
@@ -636,31 +642,35 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 .fund .chart .line { stroke: var(--c, var(--accent)); }
 
 /* ==========================================================================
-   Cherry Blossom — warm cream, crimson serif, blush & sage, blossom art
+   Cherry Blossom — warm cream, deep crimson serif, blush & sage, blossom branch
    ========================================================================== */
 :root {
   --font-head: "Playfair Display", Georgia, "Times New Roman", serif;
-  --radius: 16px;
+  --radius: 18px;
   --radius-sm: 12px;
-  --bg: hsl(24 75% 97.3%);
-  --bg-2: hsl(12 65% 95.6%);
-  --surface: hsl(30 80% 99.3%);
-  --surface-2: hsl(18 70% 97%);
-  --ink: hsl(345 32% 18%);
-  --head: hsl(var(--h) 72% 31%);
-  --ink-2: hsl(345 10% 42%);
-  --ink-3: hsl(345 8% 45%);
-  --line: hsl(10 50% 90.5%);
-  --line-2: hsl(10 38% 84%);
-  --accent: hsl(var(--h) var(--s) 60%);
-  --accent-strong: hsl(var(--h) var(--s) 49%);
+  --bg: hsl(22 75% 97.4%);
+  --bg-2: hsl(4 70% 96%);
+  --surface: hsl(30 100% 99.4%);
+  --surface-2: hsl(14 70% 97%);
+  --ink: hsl(345 18% 20%);
+  --head: hsl(var(--h) 80% 30%);
+  --ink-2: hsl(345 8% 40%);
+  --ink-3: hsl(345 7% 44%);
+  --line: hsl(4 55% 91%);
+  --line-2: hsl(4 38% 85%);
+  --accent: hsl(var(--h) var(--s) 66%);
+  --accent-strong: hsl(var(--h) var(--s) 41%);
   --accent-soft: hsl(var(--h) 88% 94.5%);
-  --accent-softer: hsl(var(--h) 88% 96.8%);
+  --accent-softer: hsl(var(--h) 88% 97%);
   --good: hsl(100 26% 34%);
   --good-soft: hsl(92 32% 92%);
   --info: hsl(100 22% 38%);
   --info-soft: hsl(80 28% 93%);
-  --shadow: 0 1px 2px hsl(345 40% 40% / .04), 0 12px 30px -20px hsl(345 50% 35% / .3);
+  --sage: hsl(100 20% 52%);
+  --olive: hsl(62 16% 56%);
+  --track: hsl(40 18% 89%);
+  --blue: hsl(212 62% 56%);
+  --shadow: 0 1px 2px hsl(345 40% 40% / .04), 0 14px 32px -24px hsl(345 50% 35% / .32);
 }
 :root[data-theme="dark"] {
   --bg: hsl(345 24% 8%);
@@ -680,24 +690,142 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   --good: hsl(95 30% 64%);
   --good-soft: hsl(95 18% 17%);
   --info-soft: hsl(80 16% 17%);
+  --sage: hsl(100 24% 58%);
+  --olive: hsl(62 18% 56%);
+  --track: hsl(345 10% 22%);
+  --blue: hsl(212 62% 66%);
 }
-h1 { font-size: clamp(2rem, 4vw, 2.9rem); font-weight: 700; letter-spacing: -.005em; }
+h1 { font-size: clamp(2.2rem, 4.2vw, 3.3rem); font-weight: 700; letter-spacing: -.01em; }
 h2 { font-size: 1.45rem; }
-.sidebar { background: var(--bg-2); border-right: 1px solid var(--line); position: sticky; overflow: hidden; }
+.page-head h1 .flourish { display: none; }
+.page-head p { font-size: 1.12rem; }
+.btn { border-radius: 999px; }
+.chip, .months button, .seg, .seg button { border-radius: 999px; }
+
+/* ---------- Sidebar: brand, lined groups, blossom branch in the corner ---------- */
+@media (min-width: 901px) { .app { grid-template-columns: 272px minmax(0, 1fr); } }
+/* Lining figures: Playfair's default old-style digits look uneven in money. */
+h1, h2, h3, .bkpi-value, .bsave-amt, .big-pct, .month-pill b, .sh-value, .fund-amt, .tile .value, .kpi .value, .serif-msg, .money-input .input { font-variant-numeric: lining-nums tabular-nums; }
+.sidebar {
+  background: linear-gradient(180deg, hsl(10 80% 97.4%), hsl(4 70% 95.6%));
+  border-right: 1px solid var(--line); padding: 26px 12px 0; gap: 0;
+  overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: hsl(var(--h) 40% 80%) transparent;
+}
 .sidebar > * { position: relative; z-index: 1; }
-.side-art { margin: 18px -16px -8px -18px; width: calc(100% + 34px); opacity: .95; pointer-events: none; }
-.side-art + .sidebar-foot { margin-top: 0; }
-.brand { flex-direction: column; text-align: center; gap: 4px; padding-bottom: 18px; }
-.brand-logo { width: 58px; height: 58px; }
-.brand b { font-size: 1.6rem; color: var(--head); font-weight: 700; line-height: 1; }
-.brand span { text-transform: uppercase; letter-spacing: .26em; font-size: .62rem; margin-top: 4px; }
-.nav a { font-size: 1rem; padding: 10px 14px; color: var(--ink); }
-.nav a svg { color: var(--ink-2); }
-.nav a.active { background: var(--accent-btn); color: var(--accent-ink); font-weight: 650; box-shadow: 0 10px 22px -14px var(--accent-strong); }
+.brand { flex-direction: column; text-align: center; gap: 4px; padding: 0 0 14px; align-items: center; }
+.brand-logo { width: 78px; height: 66px; }
+.brand b { font-size: 1.72rem; color: var(--head); font-weight: 500; line-height: 1.12; text-transform: uppercase; letter-spacing: .2em; margin-right: -.2em; }
+.brand span { text-transform: uppercase; letter-spacing: .3em; font-size: .7rem; margin-top: 8px; color: var(--ink-2); display: block; }
+.nav { gap: 2px; margin-top: 4px; }
+.nav-sep { border: 0; border-top: 1px solid hsl(4 40% 87%); margin: 9px 18px 9px 22px; }
+.nav a { font-size: 1.04rem; padding: 10px 14px 10px 22px; gap: 16px; color: var(--ink); border-radius: 14px; }
+.nav a svg { width: 22px; height: 22px; color: var(--accent-strong); opacity: 1; }
+.nav a:hover { background: hsl(var(--h) 70% 94%); }
+.nav a.active { background: var(--accent-btn); color: var(--accent-ink); font-weight: 600; box-shadow: 0 12px 24px -14px var(--accent-strong); }
 .nav a.active svg { color: var(--accent-ink); }
 .nav a.active::before { display: none; }
-.btn { border-radius: 10px; }
-.chip, .months button, .seg, .seg button { border-radius: 999px; }
+.side-art { margin: -96px -12px 0; width: calc(100% + 24px); pointer-events: none; z-index: 0; flex: none; }
+.sidebar .nav { flex: none; }
+.sidebar::after { content: ""; flex: 1 0 0; order: 2; }
+.side-art { order: 3; }
+:root[data-theme="dark"] .side-art { opacity: .5; }
+:root[data-theme="dark"] .sidebar { background: var(--bg-2); }
+
+/* ---------- Header: big greeting, month pill + chips ---------- */
+.head-tools { display: inline-flex; gap: 2px; align-self: center; }
+.head-tools .btn { color: var(--ink-2); }
+.head-tools .btn.on { color: var(--accent-strong); background: var(--accent-soft); }
+.page-head { align-items: flex-start; margin-bottom: 18px; }
+.page-head .actions { align-items: center; padding-top: 6px; }
+.add-spend { font-size: 1.15rem; padding: 14px 34px 14px 28px; gap: 12px; box-shadow: 0 14px 26px -14px var(--accent-strong); }
+.bloom-months { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; min-width: 0; }
+.month-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; flex: none; box-shadow: var(--shadow); }
+.month-pill b { font-family: var(--font-head); color: var(--head); font-size: 1.32rem; font-weight: 600; min-width: 150px; text-align: center; padding: 0 6px; }
+.month-pill button { width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: var(--accent-strong); display: grid; place-items: center; cursor: pointer; }
+.month-pill button:hover { background: var(--accent-soft); }
+.month-chips { display: flex; gap: 8px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
+.month-chips::-webkit-scrollbar { display: none; }
+.month-chips button { flex: 1 1 0; min-width: 46px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 9px 4px; font-size: 1rem; cursor: pointer; }
+.month-chips button:hover { border-color: var(--accent); }
+.month-chips button.on { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--accent-ink); font-weight: 600; box-shadow: 0 8px 18px -10px var(--accent-strong); }
+
+/* ---------- Bloom home ---------- */
+.bloom .card { border-radius: var(--radius); border-color: var(--line); }
+.bkpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.bkpi { padding: 22px 24px 22px; display: flex; flex-direction: column; }
+.bkpi-head { display: flex; align-items: center; gap: 12px; }
+.bkpi-head h3 { font-size: clamp(1.12rem, 1.55vw, 1.36rem); font-weight: 600; color: var(--head); display: flex; align-items: center; gap: 6px; }
+.bkpi-head .tip-i { color: var(--ink-3); display: inline-flex; }
+.bic { width: 34px; height: 34px; flex: none; display: inline-grid; }
+.bic svg { width: 100%; height: 100%; }
+.bic.sm { width: 30px; height: 30px; vertical-align: middle; }
+.bkpi-value { font-family: var(--font-head); font-weight: 700; color: var(--head); font-size: clamp(2rem, 3.3vw, 2.95rem); letter-spacing: -.01em; line-height: 1; margin: 22px 0 14px; }
+.bkpi-value .m small { font-size: .62em; opacity: 1; margin-left: 0; }
+.bkpi-sub { color: var(--ink-2); font-size: 1.02rem; line-height: 1.4; flex: 1; }
+.bbar { height: 12px; border-radius: 99px; background: hsl(4 60% 94%); overflow: hidden; margin-top: 18px; }
+.bbar i { display: block; height: 100%; border-radius: 99px; min-width: 6px; }
+.bbar.sage i { background: linear-gradient(90deg, hsl(100 18% 58%), hsl(100 22% 50%)); }
+.bbar.mix i { background: linear-gradient(90deg, hsl(352 66% 80%), hsl(60 22% 66%) 60%, hsl(100 22% 52%)); }
+.bbar.crimson i { background: linear-gradient(90deg, hsl(var(--h) var(--s) 52%), var(--accent-strong)); }
+.bbar.olive i { background: linear-gradient(90deg, hsl(62 14% 62%), var(--olive)); }
+:root[data-theme="dark"] .bbar { background: var(--track); }
+
+.bloom-row { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; }
+.bloom-row.two { grid-template-columns: minmax(0, 1.14fr) minmax(0, 1fr); }
+.bcard { padding: 22px 24px; }
+.bcard-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.bcard-head h2 { font-size: clamp(1.3rem, 1.9vw, 1.62rem); font-weight: 600; color: var(--head); display: flex; align-items: center; gap: 14px; }
+.bcard-head h2 > svg { color: var(--accent-strong); flex: none; }
+.blegend { display: flex; gap: 22px; color: var(--ink); font-size: 1.02rem; }
+.blegend span { display: inline-flex; align-items: center; gap: 9px; }
+.blegend i { width: 16px; height: 16px; border-radius: 50%; }
+.blegend .plan { background: var(--accent); }
+.blegend .act { background: var(--accent-strong); }
+.view-all { color: var(--accent-strong); border-color: var(--line-2); background: var(--surface); padding: 8px 26px; font-size: 1.04rem; font-weight: 500; }
+.view-all:hover { background: var(--accent-softer); }
+
+.chart-scroll .mchart { min-width: 0; }
+.mchart text { font-size: 17px; fill: var(--ink-2); }
+.mchart .ax { font-size: 17px; }
+.mchart .mlabel { fill: var(--ink); }
+.mchart .mlabel.sel { font-weight: 700; fill: var(--head); }
+.mchart .mb-plan { fill: var(--accent); }
+.mchart .mb-act { fill: var(--accent-strong); }
+.mchart g:hover path { filter: brightness(1.06); }
+
+.bsave { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bsave .bcard-head { align-self: stretch; }
+.bsave .ring circle:first-child { stroke: var(--track); }
+.bsave .big-pct { font-size: 3.3rem; color: var(--head); letter-spacing: -.02em; }
+.bsave-amt { font-family: var(--font-head); font-weight: 700; color: var(--head); font-size: 1.8rem; margin-top: 10px; line-height: 1.1; }
+.bsave-amt .m small { font-size: .8em; opacity: 1; }
+.bsave-of { color: var(--ink-2); font-size: 1.08rem; margin-top: 2px; }
+
+.blist { display: flex; flex-direction: column; }
+.bpay { display: flex; align-items: center; gap: 16px; padding: 14px 2px; border-top: 1px solid var(--line); min-width: 0; }
+.bpay .bdate { width: 60px; flex: none; color: var(--ink-2); font-size: 1.08rem; }
+.bpay .tick { width: 26px; height: 26px; border-radius: 7px; }
+.bdot { width: 13px; height: 13px; border-radius: 50%; flex: none; }
+.bdot.blue { background: var(--blue); }
+.bdot.crimson { background: var(--accent-strong); }
+.bdot.blush { background: var(--accent); }
+.bname { flex: 1; min-width: 0; font-size: 1.08rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bname small { display: block; color: var(--ink-2); font-size: .92rem; margin-top: 2px; }
+.bamt { font-size: 1.14rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bpay.done .bname, .bpay.done .bamt { opacity: .55; text-decoration: line-through; }
+.bgoal { display: flex; align-items: center; gap: 22px; padding: 14px 2px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.bgoal:first-child, .bpay:first-child { border-top-color: var(--line); }
+.bgoal-ic { width: 38px; flex: none; display: grid; place-items: center; color: var(--accent-strong); }
+.bgoal-emoji { font-size: 1.4rem; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); }
+.bgoal-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-right: 44px; }
+.bgoal-top b { font-weight: 500; font-size: 1.1rem; }
+.bgoal-top span { color: var(--ink-2); font-size: .98rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bgoal-bar { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.bgoal-bar .bbar { flex: 1; margin: 0; height: 13px; background: var(--track); }
+.bgoal-bar span { width: 36px; text-align: right; color: var(--ink-2); font-size: 1rem; font-variant-numeric: tabular-nums; }
+.bloom-row.two .bcard:last-child .bgoal:nth-child(2) .bbar i { background: linear-gradient(90deg, hsl(62 14% 64%), var(--olive)); }
+
+/* Other screens keep the same feel */
 .tile.accent { background: var(--surface); border: 1px solid var(--line); }
 .tile.good { background: var(--good-soft); border: 1px solid hsl(92 30% 84%); }
 .tile .value { color: var(--head); }
@@ -705,7 +833,43 @@ h2 { font-size: 1.45rem; }
 .kpi-hero .value { color: var(--head); }
 .hero-split { background: linear-gradient(120deg, var(--accent-softer), var(--good-soft)); }
 .savings-hero { background: linear-gradient(110deg, var(--good-soft), var(--surface) 60%, var(--accent-softer)); }
-:root[data-theme="dark"] .side-art { opacity: .55; }
+
+@media (max-width: 1240px) {
+  .bkpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bloom-row { grid-template-columns: minmax(0, 1fr); }
+  .bloom-row.two { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 1100px) {
+  .bloom-row.two { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .bloom-months { flex-direction: column; align-items: stretch; gap: 10px; }
+  .month-pill { justify-content: space-between; }
+  .month-chips { margin: 0 -16px; padding: 4px 16px; }
+  .month-chips button { flex: none; padding: 9px 14px; }
+  .chart-scroll .mchart { min-width: var(--minw); }
+  .add-spend { font-size: 1rem; padding: 11px 22px; }
+  .page-head .actions { justify-content: space-between; }
+}
+@media (max-width: 520px) {
+  .bkpis { gap: 10px; }
+  .bkpi { padding: 16px; }
+  .bkpi-head { gap: 8px; }
+  .bkpi-head h3 { font-size: 1.05rem; }
+  .bic { width: 26px; height: 26px; }
+  .bkpi-value { font-size: 1.55rem; margin: 14px 0 8px; }
+  .bkpi-sub { font-size: .84rem; }
+  .bcard { padding: 18px 16px; }
+  .bcard-head h2 { font-size: 1.3rem; gap: 10px; }
+  .bcard-head h2 > svg { width: 24px; height: 24px; }
+  .bpay { gap: 10px; }
+  .bpay .bdate { width: 48px; font-size: .92rem; }
+  .bname { font-size: .98rem; }
+  .bgoal { gap: 14px; }
+  .bgoal-top { flex-direction: column; gap: 0; padding-right: 0; }
+}
+.m { font-variant-numeric: lining-nums tabular-nums; }
+:root[data-theme="dark"] .mchart .mb-plan, :root[data-theme="dark"] .blegend .plan { fill: hsl(var(--h) 38% 40%); background: hsl(var(--h) 38% 40%); }
 </style>
 </head>
 <body>
@@ -713,7 +877,7 @@ h2 { font-size: 1.45rem; }
 <script>
 "use strict";
 (() => {
-const __BUILD__ = {"appName":"Cherry Blossom","tagline":"Money in full bloom","storeKey":"cherry-blossom-v1","edition":"full","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"cherry","monthNav":"compact","homeLayout":"tiles","palette":"cherry","chartMono":true,"logo":"<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M31 9C25 19 19 28 16 37M31 9c2 11 6 20 13 28\" stroke=\"#6b8a52\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M31 9c8-6.5 18-5 22 1.5-8.5 4.5-16 3.5-22-1.5Z\" fill=\"#8fb26c\"/><circle cx=\"16\" cy=\"46\" r=\"11.5\" fill=\"var(--accent)\"/><circle cx=\"44\" cy=\"45\" r=\"11.5\" fill=\"var(--accent-strong)\"/><ellipse cx=\"12\" cy=\"41\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/><ellipse cx=\"40\" cy=\"40\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/></svg>","flourish":"<svg viewBox=\"-10 -10 20 20\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1\"><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(288)\"/></g><circle r=\"1.4\" fill=\"var(--accent)\"/></svg>","sideArt":"<svg viewBox=\"0 0 260 200\" aria-hidden=\"true\"><path d=\"M-6 196C40 186 78 168 112 140S170 84 196 58 232 22 252 12\" stroke=\"#8a5a4a\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M112 140c18 2 34-4 46-16M150 98c-4-14-2-28 6-40M196 58c14 4 28 2 40-6M70 168c-2-14 4-26 14-34\" stroke=\"#8a5a4a\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M0 0c4-5 11-6 16-3-4 5-11 6-16 3Z\" fill=\"#9dbb7e\" transform=\"translate(104 146) rotate(-30) scale(1.1)\"/><path d=\"M0 0c4-5 11-6 16-3-4 5-11 6-16 3Z\" fill=\"#9dbb7e\" transform=\"translate(170 80) rotate(-60) scale(0.9)\"/><path d=\"M0 0c4-5 11-6 16-3-4 5-11 6-16 3Z\" fill=\"#9dbb7e\" transform=\"translate(222 30) rotate(-20) scale(1)\"/><path d=\"M0 0c4-5 11-6 16-3-4 5-11 6-16 3Z\" fill=\"#9dbb7e\" transform=\"translate(60 172) rotate(-10) scale(0.9)\"/><path d=\"M0 0c4-5 11-6 16-3-4 5-11 6-16 3Z\" fill=\"#9dbb7e\" transform=\"translate(140 96) rotate(-120) scale(0.8)\"/><g transform=\"translate(160 122) scale(1.5) rotate(10)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(156 56) scale(1.25) rotate(30)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(238 50) scale(1.4) rotate(0)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(84 132) scale(1.3) rotate(20)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(200 58) scale(1.1) rotate(50)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(130 140) scale(1) rotate(5)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(252 14) scale(1.2) rotate(15)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(40 182) scale(1.1) rotate(40)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(176 88) scale(0.9) rotate(0)\" opacity=\"1\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(120 40) scale(0.55) rotate(0)\" opacity=\"0.8\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(30 120) scale(0.55) rotate(0)\" opacity=\"0.8\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g><g transform=\"translate(220 120) scale(0.55) rotate(0)\" opacity=\"0.8\"><g fill=\"#f7c1cf\" stroke=\"#ea93ab\" stroke-width=\".55\"><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-5.6\" rx=\"4.1\" ry=\"5.8\" transform=\"rotate(288)\"/></g><circle r=\"2\" fill=\"#e8708f\"/><g fill=\"#c94a6c\"><circle cx=\"2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"0.00\" cy=\"2.60\" r=\".55\"/><circle cx=\"-1.84\" cy=\"1.84\" r=\".55\"/><circle cx=\"-2.60\" cy=\"0.00\" r=\".55\"/><circle cx=\"-1.84\" cy=\"-1.84\" r=\".55\"/><circle cx=\"-0.00\" cy=\"-2.60\" r=\".55\"/><circle cx=\"1.84\" cy=\"-1.84\" r=\".55\"/></g></g></svg>"}};
+const __BUILD__ = {"appName":"Cherry Blossom","tagline":"Money in full bloom","storeKey":"cherry-blossom-v1","edition":"full","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"cherry","monthNav":"bloom","homeLayout":"bloom","navStyle":"lines","headTools":true,"palette":"cherry","chartMono":true,"logo":"<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M31 9C25 19 19 28 16 37M31 9c2 11 6 20 13 28\" stroke=\"#6b8a52\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M31 9c8-6.5 18-5 22 1.5-8.5 4.5-16 3.5-22-1.5Z\" fill=\"#8fb26c\"/><circle cx=\"16\" cy=\"46\" r=\"11.5\" fill=\"var(--accent)\"/><circle cx=\"44\" cy=\"45\" r=\"11.5\" fill=\"var(--accent-strong)\"/><ellipse cx=\"12\" cy=\"41\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/><ellipse cx=\"40\" cy=\"40\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/></svg>","flourish":"<svg viewBox=\"-10 -10 20 20\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1\"><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(288)\"/></g><circle r=\"1.4\" fill=\"var(--accent)\"/></svg>","sideArt":"<svg viewBox=\"0 0 280 240\" aria-hidden=\"true\"><defs>\n<linearGradient id=\"cbP\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e57594\"/><stop offset=\".38\" stop-color=\"#f4b3c4\"/><stop offset=\"1\" stop-color=\"#fff1f4\"/></linearGradient>\n<linearGradient id=\"cbP2\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e98aa3\"/><stop offset=\".45\" stop-color=\"#f8c9d5\"/><stop offset=\"1\" stop-color=\"#fff6f8\"/></linearGradient>\n<linearGradient id=\"cbL\" x1=\"0\" y1=\".5\" x2=\"1\" y2=\".5\"><stop offset=\"0\" stop-color=\"#5f8a45\"/><stop offset=\"1\" stop-color=\"#a7c886\"/></linearGradient>\n<linearGradient id=\"cbB\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8b5642\"/><stop offset=\"1\" stop-color=\"#5e3528\"/></linearGradient>\n<radialGradient id=\"cbBud\" cx=\".4\" cy=\".35\" r=\".7\"><stop offset=\"0\" stop-color=\"#fbd3dd\"/><stop offset=\"1\" stop-color=\"#e2718f\"/></radialGradient>\n</defs>\n<path d=\"M-8 238C30 222 62 214 96 198S160 160 192 128 246 70 288 46\" stroke=\"url(#cbB)\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M190 130C206 128 222 120 236 108\" stroke=\"url(#cbB)\" stroke-width=\"3.6\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M150 168C150 150 156 136 166 124\" stroke=\"url(#cbB)\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M96 198C112 204 132 204 148 196\" stroke=\"url(#cbB)\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M40 222C40 208 46 196 56 188\" stroke=\"url(#cbB)\" stroke-width=\"2.8\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M246 74C258 76 268 72 276 64\" stroke=\"url(#cbB)\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><g transform=\"translate(52 214) rotate(-150)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(100 196) rotate(25)\"><path d=\"M0 0C7.5 -9 21 -9 30 0C21 7.8 7.5 7.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L27.6 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(140 172) rotate(-120)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(168 150) rotate(-35)\"><path d=\"M0 0C7 -8.4 19.6 -8.4 28 0C19.6 7.3 7 7.3 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L25.8 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(210 118) rotate(-160)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(236 96) rotate(-60)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(258 66) rotate(-140)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(120 204) rotate(60)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(18 232) rotate(-20)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(56 186) rotate(15) scale(1.1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(166 122) rotate(25) scale(1.2)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(278 62) rotate(40) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(150 196) rotate(100) scale(0.95)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(222 82) rotate(-10) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(24 212) rotate(10)\"><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.8\" fill=\"#c43d63\"/><path d=\"M0 0L6.9 2.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"2.1\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L4.5 7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.5\" cy=\"7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.2 9.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.2\" cy=\"9.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 4.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"4.9\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.3 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.3\" cy=\"0.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.6 -5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.6\" cy=\"-5.7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.6 -7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.6\" cy=\"-7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 -7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"-7.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L8.8 -3.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8.8\" cy=\"-3.7\" r=\"1\" fill=\"#f2c45a\"/></g><g transform=\"translate(92 224) rotate(-20)\"><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.2\" fill=\"#c43d63\"/><path d=\"M0 0L5.8 1.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.8\" cy=\"1.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 7.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"7.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.5 4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.5\" cy=\"4.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7\" cy=\"0.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.4 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.4\" cy=\"-4.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.2 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.2\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.4 -3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.4\" cy=\"-3.1\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(124 188) rotate(30)\"><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.4\" fill=\"#c43d63\"/><path d=\"M0 0L8 2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8\" cy=\"2.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5.2 8.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.2\" cy=\"8.1\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 10.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"10.9\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.1 5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.1\" cy=\"5.7\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.7 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.7\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.8 -6.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.8\" cy=\"-6.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.9 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.9\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.4 -8.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"-8.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L10.1 -4.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"10.1\" cy=\"-4.3\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(188 156) rotate(-10)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(206 106) rotate(15)\"><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.2\" fill=\"#c43d63\"/><path d=\"M0 0L7.6 2.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.6\" cy=\"2.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5 7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5\" cy=\"7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 10.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"10.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.9 5.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.9\" cy=\"5.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.2 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.2\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.4\" cy=\"-6.3\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.8 -7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.8\" cy=\"-7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.2 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.2\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L9.7 -4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"9.7\" cy=\"-4.1\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(252 92) rotate(40)\"><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3\" fill=\"#c43d63\"/><path d=\"M0 0L5.4 1.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.4\" cy=\"1.7\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3.6 5.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.6\" cy=\"5.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.9 7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.9\" cy=\"7.4\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.2 3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.2\" cy=\"3.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.6 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.6\" cy=\"0.3\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6 -4.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6\" cy=\"-4.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.6\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3\" cy=\"-5.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L6.9 -2.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"-2.9\" r=\"0.8\" fill=\"#f2c45a\"/></g><g transform=\"translate(262 40) rotate(-25)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(72 194) rotate(50)\"><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.6\" fill=\"#c43d63\"/><path d=\"M0 0L4.7 1.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.7\" cy=\"1.5\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L3.1 4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.1\" cy=\"4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.6 3.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.6\" cy=\"3.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.7\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.2 -3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.2\" cy=\"-3.9\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"-4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.6 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.6\" cy=\"-5.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L6 -2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6\" cy=\"-2.5\" r=\"0.7\" fill=\"#f2c45a\"/></g><g transform=\"translate(236 134) rotate(0)\"><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.4\" fill=\"#c43d63\"/><path d=\"M0 0L4.4 1.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"1.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.9 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.9\" cy=\"4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.3 3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.3\" cy=\"3.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.8 -3.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.8\" cy=\"-3.6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 -4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"-4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.4 -4.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.4\" cy=\"-4.7\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L5.5 -2.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.5\" cy=\"-2.3\" r=\"0.7\" fill=\"#f2c45a\"/></g><path d=\"M0 0C-4.3 -1.5 -4.9 -6 -1.4 -7L0 -5.9L1.4 -7C4.9 -6 4.3 -1.5 0 0Z\" transform=\"translate(150 224) rotate(120)\" fill=\"url(#cbP2)\" opacity=\".9\"/><path d=\"M0 0C-3.7 -1.3 -4.2 -5.2 -1.2 -6L0 -5L1.2 -6C4.2 -5.2 3.7 -1.3 0 0Z\" transform=\"translate(196 210) rotate(-40)\" fill=\"url(#cbP2)\" opacity=\".8\"/></svg>"}};
 /* 01-core.js */
 /* ==========================================================================
    Lumi Budget — core: constants, utilities, dates, money, storage
@@ -814,6 +978,8 @@ function fmtFor(cur) {
 }
 /** Plain-text money, e.g. "$1,250.00". */
 const money = (n) => fmtFor(S.profile.currency).format(round2(n));
+/** Whole amounts without trailing zero cents, e.g. "$2,000" or "1.250 €" (cents kept when present). */
+const moneyRound = (n) => money(n).replace(/[.,]00(?!\d)/, "");
 /** Money as HTML with small cents, like "$9,000<small>.00</small>". */
 function moneyHTML(n, opts = {}) {
   const v = round2(n);
@@ -1451,8 +1617,39 @@ function chartPlanVsActual(items) {
       <text x="${x + bw + 1}" y="${H - bottom + 22}" text-anchor="middle" style="font-size:16px">${esc(it.emoji || "")}</text>
       <text x="${x + bw + 1}" y="${H - bottom + 42}" text-anchor="middle" style="font-weight:600;fill:var(--ink)">${esc(trunc(it.short || it.label, 11))}</text>`;
   });
-  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${W}px" role="img" aria-label="Budget versus actual by category">${g}</svg></div>
+  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="--minw:${W}px" role="img" aria-label="Budget versus actual by category">${g}</svg></div>
     <div class="legend"><span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Planned</span><span><i style="background:var(--accent)"></i>Actual</span><span><i style="background:var(--bad)"></i>Over budget</span></div>`;
+}
+/** Budget vs. actual per month: soft budget bar, solid actual bar. Fits its card; scrolls on phones. */
+function chartMonthly(rows, selected) {
+  if (!rows.some((r) => r.plan > 0 || r.actual > 0)) return empty("📊", "Nothing to chart yet", "Add a budget or track a few spends and this fills in.");
+  const H = 292, top = 14, bottom = 36, left = 70, colW = 66;
+  const W = left + rows.length * colW + 6;
+  // Axis tops that split into four round steps (…, 2,000 · 4,000 · 5,000 · 8,000 …).
+  const hi = Math.max(...rows.map((r) => Math.max(r.plan, r.actual)), 1), e = Math.pow(10, Math.floor(Math.log10(hi)));
+  const max = [1, 2, 4, 5, 8, 10].map((n) => n * e).find((v) => v >= hi);
+  const y = (v) => top + (H - top - bottom) * (1 - v / max);
+  let g = "";
+  for (let k = 0; k <= 4; k++) {
+    const v = (max / 4) * k;
+    g += `<line class="grid-line" x1="${left - 6}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${left - 16}" y="${y(v) + 5}" text-anchor="end">${esc(moneyRound(v))}</text>`;
+  }
+  rows.forEach((r, i) => {
+    const x = left + i * colW + 12, bw = 19;
+    const tip = `${MONTHS[Number(r.mk.slice(5)) - 1]}: spent ${money(r.actual)} of ${money(r.plan)} budget`;
+    g += `<g data-tip="${esc(tip)}" class="${r.mk === selected ? "sel" : ""}">
+      <path class="mb-plan" d="${barPath(x, y(r.plan), bw, y(0) - y(r.plan))}"/>
+      <path class="mb-act" d="${barPath(x + bw + 2, y(r.actual), bw, y(0) - y(r.actual))}"/>
+      <rect x="${x - 10}" y="${top}" width="${colW - 6}" height="${H - top}" fill="transparent"/></g>
+      <text class="mlabel ${r.mk === selected ? "sel" : ""}" x="${x + bw + 1}" y="${H - 8}" text-anchor="middle">${esc(r.label)}</text>`;
+  });
+  return `<div class="chart-scroll" data-drag-scroll data-scroll-end><svg class="chart mchart" viewBox="0 0 ${W} ${H}" style="--minw:${Math.max(520, W * 0.8)}px" role="img" aria-label="Budget versus actual by month">${g}</svg></div>`;
+}
+/** A bar with rounded top corners only. */
+function barPath(x, yTop, w, h) {
+  if (h <= 0) return "";
+  const r = Math.min(4, w / 2, h);
+  return `M${x} ${yTop + h}V${yTop + r}Q${x} ${yTop} ${x + r} ${yTop}H${x + w - r}Q${x + w} ${yTop} ${x + w} ${yTop + r}V${yTop + h}Z`;
 }
 /** Income vs money out, one pair per month. */
 function chartInOut(rows) {
@@ -1473,7 +1670,7 @@ function chartInOut(rows) {
       <rect x="${x - 6}" y="${top}" width="${colW - 6}" height="${H - top}" fill="transparent"/></g>
       <text x="${x + bw}" y="${H - 10}" text-anchor="middle">${esc(r.label)}</text>`;
   });
-  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${W}px" role="img" aria-label="Income versus spending per month">${g}</svg></div>
+  return `<div class="chart-scroll"><svg class="chart" viewBox="0 0 ${W} ${H}" style="--minw:${W}px" role="img" aria-label="Income versus spending per month">${g}</svg></div>
     <div class="legend"><span><i style="background:var(--good)"></i>Money in</span><span><i style="background:var(--accent)"></i>Money out (spent + saved)</span></div>`;
 }
 /** Simple line chart; `series` = [{values, cls}] sharing x positions; labels at a few ticks. */
@@ -1700,7 +1897,16 @@ const NAV = [
 function pageHead(title, sub, actions = "", { month } = {}) {
   const fl = SKIN.flourish ? `<span class="flourish">${SKIN.flourish}</span>` : "";
   const nav = month && SKIN.monthNav === "compact" ? monthNav(month) : "";
-  return `<div class="page-head"><div><h1>${title}${fl}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${nav || actions ? `<div class="actions">${nav}${actions}</div>` : ""}</div>`;
+  const tools = SKIN.headTools ? headTools() : "";
+  return `<div class="page-head"><div><h1>${title}${fl}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${nav || actions || tools ? `<div class="actions">${tools}${nav}${actions}</div>` : ""}</div>`;
+}
+/** Night mode, privacy blur and focus mode, for skins that keep the sidebar to navigation only. */
+function headTools() {
+  return `<div class="head-tools">
+    <button class="btn ghost icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
+    <button class="btn ghost icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
+    <button class="btn ghost icon-btn ${S.settings.focus ? "on" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode" aria-pressed="${!!S.settings.focus}">${icon("focus")}</button>
+  </div>`;
 }
 function monthNav(mk, action = "set-month") {
   return `<div class="month-nav" role="group" aria-label="Choose month">
@@ -1711,6 +1917,17 @@ function monthNav(mk, action = "set-month") {
 }
 function monthsBar(selected, action = "set-month") {
   if (SKIN.monthNav === "compact") return "";
+  if (SKIN.monthNav === "bloom") {
+    const y = selected.slice(0, 4);
+    return `<div class="bloom-months">
+      <div class="month-pill" role="group" aria-label="Choose month">
+        <button data-action="${action}" data-mk="${addMonths(selected, -1)}" aria-label="Previous month">${icon("chevL", 18)}</button>
+        <b>${monthLabel(selected)}</b>
+        <button data-action="${action}" data-mk="${addMonths(selected, 1)}" aria-label="Next month">${icon("chevR", 18)}</button>
+      </div>
+      <div class="month-chips" data-drag-scroll role="group" aria-label="Months of ${y}">${MONTHS_S.map((m, i) => { const mk = `${y}-${pad(i + 1)}`; return `<button class="${mk === selected ? "on" : ""}" data-action="${action}" data-mk="${mk}" ${mk === selected ? 'aria-current="true"' : ""}>${m}</button>`; }).join("")}</div>
+    </div>`;
+  }
   const y = selected.slice(0, 4);
   return `<div class="months" role="group" aria-label="Choose month">
     <button data-action="${action}" data-mk="${addMonths(selected, -12)}" aria-label="Previous year">${icon("chevL", 14)}</button>
@@ -1838,6 +2055,7 @@ function viewHome() {
     ${chartPlanVsActual(catItems)}
   </div>`;
 
+  if (SKIN.homeLayout === "bloom") return homeBloom({ today, mk, m, isCur, ft, dt, goalsActive, hello, greetingSub, t });
   if (SKIN.homeLayout === "tiles") {
     const prevMk = addMonths(mk, -1);
     const day = isCur ? Number(today.slice(8)) : 31;
@@ -1915,6 +2133,108 @@ function viewHome() {
       <div class="card-head"><h2>Bills this month</h2><span class="pill muted">${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").filter((o) => o.done).length}/${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").length} paid</span></div>
       ${(() => { const b = m.sched.filter((o) => o.kind === "bill" || o.kind === "debt"); return b.length ? `<div class="list">${b.map((o) => schedRow(o)).join("")}</div>` : empty("🧾", "No bills yet", "Add rent, phone, subscriptions…", `<button class="btn" data-action="add-bill">Add a bill</button>`); })()}
     </div>
+  </div>`;
+}
+/* ---------- Home, "bloom" layout (Cherry Blossom) ---------- */
+const BLOOM_IC = {
+  sprout: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 36V19" stroke="#6f8f55" stroke-width="2.4" stroke-linecap="round"/><path d="M20 22C19 12 11 7 3 8c0 9 7 15 17 14Z" fill="#9fbf7f"/><path d="M20 22C9 15 6 11 4 9" stroke="#6f8f55" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M20 18c1-8 8-13 16-12 0 8-6 13-16 12Z" fill="#7fa45f"/><path d="M20 18c6-5 10-8 14-10" stroke="#5d7f45" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>`,
+  house: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 19 20 6l15 13" stroke="#6f8f63" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 17v17h22V17" fill="#e7efe0" stroke="#6f8f63" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 34v-8a4 4 0 0 1 8 0v8" fill="#f3b6c4" stroke="#c0405f" stroke-width="2"/><rect x="25" y="20" width="4" height="4" rx="1" fill="#9fbf8f"/><rect x="11" y="20" width="4" height="4" rx="1" fill="#9fbf8f"/></svg>`,
+  cart: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 7h5l4 19h19l4-14H10" stroke="var(--accent-strong)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 12h23l-3.4 11H13.4Z" fill="var(--accent-soft)"/><path d="M17 12l1 11M24 12l-.3 11M12 17.5h21" stroke="var(--accent-strong)" stroke-width="1.5" opacity=".7"/><circle cx="14" cy="32" r="2.8" fill="var(--accent-strong)"/><circle cx="29" cy="32" r="2.8" fill="var(--accent-strong)"/></svg>`,
+  piggy: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 21c0-7 6-12 14-12 3 0 6 .8 8 2.2l4-2.2-.8 5.2c1.6 1.6 2.6 3.6 3 5.8H37v6h-2.6c-1 2-2.6 3.6-4.6 4.8V34h-5v-2.6c-1.2.2-2.6.3-4 .2V34h-5v-3.6C10 28.6 7 25 7 21Z" fill="#8fae7c"/><circle cx="29" cy="18" r="1.6" fill="#3f5a33"/><path d="M15 13.5c2-1 5-1.4 8-.8" stroke="#e8f1df" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M7 20c-2.6 0-4-1.6-4-3.4" stroke="#8fae7c" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="17" y="6" width="7" height="3" rx="1.5" fill="#c0405f"/></svg>`,
+  leaf: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 33C6 18 16 7 34 6c1 18-9 28-27 27Z" fill="#8fb27a"/><path d="M8 32C15 24 21 18 30 10M15 25l-1-7M21 19l6 1M18 22l-6-1" stroke="#eef5e6" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+};
+/** Solid crimson glyphs for common savings-fund emojis; anything else keeps its emoji. */
+const GOAL_GLYPH = {
+  "🛟": `<circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v5.2M12 16v5.2M2.8 12H8M16 12h5.2" stroke="currentColor" stroke-width="4.6" opacity=".9"/>`,
+  "✈️": `<path d="M21.5 4.2c.9-.9.6-2.1-.4-2.4-.8-.2-1.7.1-2.4.8l-3.8 3.8L4.6 3.6 2.8 5.4l8.4 4.4-4 4-3.2-.6L2.6 14.6l3.9 2 2 3.9 1.4-1.4-.6-3.2 4-4 4.4 8.4 1.8-1.8L16.6 8Z" fill="currentColor"/>`,
+  "💻": `<rect x="4" y="4.5" width="16" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M1.5 18.2h21l-1.2 1.8H2.7Z" fill="currentColor"/>`,
+  "🏠": `<path d="M12 3 2.5 11h2.7v9.5h5.3v-6h3v6h5.3V11h2.7Z" fill="currentColor"/>`,
+  "🏡": `<path d="M12 3 2.5 11h2.7v9.5h5.3v-6h3v6h5.3V11h2.7Z" fill="currentColor"/>`,
+  "🚗": `<path d="M5 11 6.8 6.2A2 2 0 0 1 8.7 5h6.6a2 2 0 0 1 1.9 1.2L19 11a2 2 0 0 1 2 2v4h-2v2h-3v-2H8v2H5v-2H3v-4a2 2 0 0 1 2-2Zm2.2 0h9.6l-1.3-3.6H8.5ZM6.5 15.2a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Zm11 0a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Z" fill="currentColor"/>`,
+  "🎁": `<path d="M3 8h18v4H3Zm1.5 4h15v9h-15Z" fill="currentColor"/><path d="M12 8v13" stroke="var(--surface)" stroke-width="2"/><path d="M12 8C9 8 7 7 7 5.4S9 3 12 8Zm0 0c3 0 5-1 5-2.6S15 3 12 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/>`,
+  "🐷": `<path d="M4 12c0-4.2 3.6-7 8-7 1.8 0 3.4.4 4.7 1.2L19 5l-.4 3c1 1 1.6 2.1 1.8 3.4H22V15h-1.6c-.6 1.2-1.6 2.2-2.8 2.9V20h-3v-1.5a12 12 0 0 1-2.6.1V20H9v-2.1C6 16.8 4 14.7 4 12Z" fill="currentColor"/>`,
+  "🎓": `<path d="M12 4 1.5 9 12 14l8.5-4v5.5h2V9Z" fill="currentColor"/><path d="M6 12.3v4c0 1.6 2.7 3 6 3s6-1.4 6-3v-4l-6 2.9Z" fill="currentColor"/>`,
+  "💍": `<path d="M9 2.5h6l2 3-5 4-5-4Z" fill="currentColor"/><circle cx="12" cy="15" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/>`,
+};
+const goalGlyph = (emoji) => (GOAL_GLYPH[emoji] ? `<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">${GOAL_GLYPH[emoji]}</svg>` : `<span class="bgoal-emoji">${esc(emoji || "🐷")}</span>`);
+/** Budget vs. actual, one pair of bars per month (Jan → the month you're looking at). */
+function monthlyChartRows(mk) {
+  let from = `${mk.slice(0, 4)}-01`;
+  if (monthsBetween(from, mk) < 5) from = addMonths(mk, -5);
+  const rows = [];
+  for (let k = from; k <= mk; k = addMonths(k, 1)) {
+    rows.push({ mk: k, label: MONTHS_S[Number(k.slice(5)) - 1], plan: sum(S.categories, (c) => budgetFor(c, k)), actual: sum(txInMonth(k).filter((t) => t.type === "expense"), (t) => t.amount) });
+  }
+  return rows;
+}
+function bloomKpi(ic, title, value, sub, bar, opts = "") {
+  return `<div class="card bkpi" ${opts}>
+    <div class="bkpi-head"><span class="bic">${BLOOM_IC[ic]}</span><h3>${title}</h3></div>
+    <div class="bkpi-value">${value}</div>
+    <div class="bkpi-sub">${sub}</div>
+    ${bar}
+  </div>`;
+}
+const bloomBar = (p, cls) => `<div class="bbar ${cls}" role="progressbar" aria-valuenow="${Math.round(clamp(p, 0, 1) * 100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(clamp(p, 0, 1) * 100)}%"></i></div>`;
+function homeBloom({ today, mk, m, isCur, ft, dt, goalsActive, hello, greetingSub, t }) {
+  const totalIn = m.income + m.expected;
+  const expenses = m.txs.filter((x) => x.type === "expense").length;
+  const planned = m.sched.filter((o) => o.kind === "fund");
+  const savedM = Math.max(0, m.saved), goalM = sum(planned, (o) => o.amount);
+  const sp = goalM > 0 ? savedM / goalM : savedM > 0 ? 1 : 0;
+  const upcoming = scheduleIn(isCur ? today : monthStart(mk), addDays(isCur ? today : monthStart(mk), 31)).filter((o) => o.kind !== "income" && !o.done).slice(0, 3);
+  const funds = S.funds.slice(0, 3);
+  const dotFor = (o) => (o.kind === "debt" ? "blue" : o.kind === "fund" ? "crimson" : "blush");
+  const sub = (o) => (o.kind === "fund" ? "Savings transfer" : o.kind === "debt" ? "Debt minimum" : `${o.isSub ? "Subscription" : "Bill"}${o.autopay ? " · autopay" : ""}`);
+  return `
+  <div class="bloom">
+  ${pageHead(hello, greetingSub, `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 22)}Add a spend</button>`, { month: mk })}
+  ${monthsBar(mk)}
+  <div class="bkpis">
+    ${bloomKpi("sprout", `Safe to spend <span class="tip-i" data-tip="Money in − spent − bills, savings &amp; debt still due">${icon("info", 15)}</span>`, `<span class="${m.safe < 0 ? "neg" : ""}">${moneyHTML(m.safe)}</span>`,
+      isCur ? `About ${money(t.allowance)} a day<br>for the rest of the month` : `Left after everything<br>in ${monthName(mk)}`, bloomBar(totalIn > 0 ? m.safe / totalIn : 0, "sage"), `data-action="go" data-view="today" style="cursor:pointer"`)}
+    ${bloomKpi("house", "Income", moneyHTML(totalIn), `Received ${money(m.income)}<br>Expected ${money(m.expected)}`, bloomBar(totalIn > 0 ? m.income / totalIn : 0, "mix"))}
+    ${bloomKpi("cart", "Spent", moneyHTML(m.spent), `${plural(expenses, "transaction")}<br>&nbsp;`, bloomBar(m.planned > 0 ? m.spent / m.planned : 0, "crimson"))}
+    ${bloomKpi("piggy", "Total saved", moneyHTML(ft.saved), `Across ${plural(S.funds.length, "fund")}<br>&nbsp;`, bloomBar(ft.target > 0 ? ft.saved / ft.target : 0, "olive"))}
+  </div>
+  <div class="bloom-row">
+    <div class="card bcard focus-hide">
+      <div class="bcard-head"><h2>${icon("chart", 30)} Budget vs. actual</h2><div class="blegend"><span><i class="plan"></i>Budget</span><span><i class="act"></i>Actual</span></div></div>
+      ${chartMonthly(monthlyChartRows(mk), mk)}
+    </div>
+    <div class="card bcard bsave" data-action="go" data-view="savings" style="cursor:pointer">
+      <div class="bcard-head"><h2><span class="bic sm">${BLOOM_IC.leaf}</span> Savings this month</h2></div>
+      <div class="ring-center">${ring(sp, { size: 196, stroke: 15, label: `<span class="big-pct">${Math.round(sp * 100)}%</span>`, color: "var(--sage)" })}</div>
+      <div class="bsave-amt">${moneyHTML(savedM)}</div>
+      <div class="bsave-of">${goalM > 0 ? `of ${money(goalM)} goal` : "Add an automatic transfer to set a goal"}</div>
+    </div>
+  </div>
+  <div class="bloom-row two">
+    <div class="card bcard">
+      <div class="bcard-head"><h2>${icon("calendar", 30)} Upcoming payments</h2><a class="btn view-all" href="#calendar">View all</a></div>
+      ${upcoming.length ? `<div class="blist">${upcoming.map((o) => `<div class="bpay ${o.done ? "done" : ""}">
+        <span class="bdate">${fmtDay(o.date)}</span>
+        ${tick(o.done, `data-action="toggle-occ" data-key="${esc(o.key)}"`)}
+        <span class="bdot ${dotFor(o)}"></span>
+        <div class="bname">${esc(o.name)}<small>${sub(o)}</small></div>
+        <div class="bamt">${esc(money(o.amount))}</div>
+      </div>`).join("")}</div>` : empty("🌤️", "Nothing due soon", "Add your bills and they'll show up here with a checkbox.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
+    </div>
+    <div class="card bcard">
+      <div class="bcard-head"><h2>${icon("target", 30)} My savings goals</h2><a class="btn view-all" href="#savings">View all</a></div>
+      ${funds.length ? `<div class="blist">${funds.map((f) => { const p = f.target > 0 ? f.saved / f.target : 0; return `<a class="bgoal" href="#savings">
+        <span class="bgoal-ic" aria-hidden="true">${goalGlyph(f.emoji)}</span>
+        <div class="grow"><div class="bgoal-top"><b>${esc(f.name)}</b><span>${esc(moneyRound(f.saved))} / ${esc(moneyRound(f.target))}</span></div>
+        <div class="bgoal-bar">${bloomBar(p, "sage")}<span>${Math.round(p * 100)}%</span></div></div>
+      </a>`; }).join("")}</div>`
+        : empty("🌱", "No goals yet", "A trip, a cushion, a new laptop… start a savings fund.", `<button class="btn primary" data-action="add-fund">New fund</button>`)}
+    </div>
+  </div>
+  <div class="grid g2 mt focus-hide">
+    <div class="card"><div class="card-head"><h2>Where it went</h2></div>${spendingDonut(m.txs)}</div>
+    <div class="card"><div class="card-head"><h3>${icon("info", 18)} How safe to spend works</h3></div>${formulaHTML(m)}
+      <div class="formula mt"><span>Still owed on debts</span><b class="m">${money(dt.owed)}</b><span>Goals in progress</span><b>${goalsActive}</b></div></div>
+  </div>
   </div>`;
 }
 function formulaHTML(m) {
@@ -3351,7 +3671,9 @@ function loadSample() {
   const between = (a, b) => round2(a + rnd() * (b - a));
   const today = todayISO();
   const thisMk = monthKey(today);
-  const startMk = addMonths(thisMk, -3);
+  const recentMk = addMonths(thisMk, -3);
+  // History from January (at least 3 months), so monthly charts and the year review fill in.
+  const startMk = `${thisMk.slice(0, 4)}-01` < recentMk ? `${thisMk.slice(0, 4)}-01` : recentMk;
   S.createdAt = monthStart(startMk);
   S.onboarded = true;
   S.profile = { ...S.profile, name: "Alex", currency: S.profile.currency || "USD", buffer: 100 };
@@ -3362,7 +3684,7 @@ function loadSample() {
   // Biweekly paycheck on Fridays, aligned so one lands in the next two weeks.
   let friday = today;
   while (fromISO(friday).getDay() !== 5) friday = addDays(friday, -1);
-  const payAnchor = addDays(friday, -14 * 8);
+  const payAnchor = addDays(friday, -14 * 30);
   S.incomes = [
     { id: uid(), name: "Paycheck", emoji: "💰", amount: 2100, freq: "biweekly", anchor: payAnchor, endDate: "" },
     { id: uid(), name: "Etsy shop sales", emoji: "🧶", amount: 320, freq: "monthly", anchor: day(25), endDate: "" },
@@ -3425,8 +3747,13 @@ function loadSample() {
   // A one-off and a note, for realism.
   S.transactions.push({ id: uid(), createdAt: Date.now(), type: "expense", catId: cat("Shopping"), name: "Winter coat", amount: 96, date: addDays(today, -9), note: "On sale!" });
 
-  // Check off everything scheduled before today, and today's paycheck if any.
-  for (const o of scheduleIn(S.createdAt, today)) if (o.date < today || o.kind === "income") toggleOccurrence(o);
+  // Check off everything scheduled before today, and today's paycheck if any. Older months are
+  // recorded too, but balances are kept as if the planner started 3 months ago.
+  const early = { debts: S.debts.map((d) => d.balance), funds: S.funds.map((f) => f.saved) };
+  for (const o of scheduleIn(S.createdAt, addDays(monthStart(recentMk), -1))) toggleOccurrence(o);
+  S.debts.forEach((d, i) => { d.balance = early.debts[i]; });
+  S.funds.forEach((f, i) => { f.saved = early.funds[i]; });
+  for (const o of scheduleIn(monthStart(recentMk), today)) if (o.date < today || o.kind === "income") toggleOccurrence(o);
 
   // Habits: a solid recent streak plus scattered earlier check-ins.
   for (let i = 0; i < 90; i++) {
@@ -3481,20 +3808,20 @@ function sidebarHTML() {
   const counts = { impulse: ready };
   let html = "";
   for (const n of NAV) {
-    if (n.group) { html += `<div class="nav-label ${n.nf ? "nf" : ""}">${n.group}</div>`; continue; }
+    if (n.group) { html += SKIN.navStyle === "lines" ? (html ? `<hr class="nav-sep ${n.nf ? "nf" : ""}">` : "") : `<div class="nav-label ${n.nf ? "nf" : ""}">${n.group}</div>`; continue; }
     html += `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""} ${n.nf ? "nf" : ""}" ${ui.view === n.id ? 'aria-current="page"' : ""}>${icon(n.icon)}<span>${n.label}</span>${counts[n.id] ? `<span class="badge-dot">${counts[n.id]}</span>` : ""}</a>`;
   }
   return `
     <div class="brand">${SKIN.logo ? `<div class="brand-logo">${SKIN.logo}</div>` : `<div class="brand-mark">${icon("logo")}</div>`}<div><b>${SKIN.logo ? APP_NAME.replace(" ", "<br>") : APP_NAME}</b><span>${SKIN.logo ? APP_TAGLINE : S.profile.name ? `${esc(S.profile.name)}'s money plan` : APP_TAGLINE}</span></div></div>
-    <button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>
+    ${SKIN.headTools ? "" : `<button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>`}
     <nav class="nav" aria-label="Main">${html}</nav>
     ${SKIN.sideArt ? `<div class="side-art">${SKIN.sideArt}</div>` : ""}
-    <div class="sidebar-foot">
+    ${SKIN.headTools ? "" : `<div class="sidebar-foot">
       <button class="btn icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
       <button class="btn icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
       <button class="btn icon-btn ${S.settings.focus ? "primary" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode">${icon("focus")}</button>
     </div>
-    <a class="user-chip" href="#settings"><span class="avatar">${esc((S.profile.name || "You").trim()[0].toUpperCase())}</span><span class="grow">${esc(S.profile.name || "Your profile")}</span>${icon("chevR", 16)}</a>`;
+    <a class="user-chip" href="#settings"><span class="avatar">${esc((S.profile.name || "You").trim()[0].toUpperCase())}</span><span class="grow">${esc(S.profile.name || "Your profile")}</span>${icon("chevR", 16)}</a>`}`;
 }
 function tabbarHTML() {
   const t = (id, ic, label) => `<a href="#${id}" class="${ui.view === id ? "active" : ""}">${icon(ic)}<span>${label}</span></a>`;
@@ -3511,12 +3838,62 @@ function render() {
     ? `<div class="banner demo"><b>✨ Free demo</b><span>Explore every feature with sample data. Changes reset when you close the tab.</span><a class="btn sm" href="${SHOP_URL}" target="_blank" rel="noopener" style="margin-left:auto">Get the full planner</a></div>`
     : !storage ? `<div class="banner">⚠️ Your browser is blocking storage (private mode?), so changes won't be kept after you close this page.</div>` : "";
   main.innerHTML = banner + VIEWS[ui.view]();
-  $("#sidebar").innerHTML = sidebarHTML();
+  const side = $("#sidebar"), sideTop = side.scrollTop; // keep the sidebar where the user scrolled it
+  side.innerHTML = sidebarHTML();
+  side.scrollTop = sideTop;
+  settleScrollers(main);
   $("#tabbar").innerHTML = tabbarHTML();
   const label = NAV.find((n) => n.id === ui.view)?.label || "";
   document.title = `${label} · ${APP_NAME}`;
 }
 
+/** Horizontal strips start at the useful end: charts at the latest month, month chips at the selected one. */
+const H_STRIPS = ".chart-scroll, [data-drag-scroll], .chip-scroll, .months";
+function settleScrollers(root) {
+  for (const el of root.querySelectorAll("[data-scroll-end]")) el.scrollLeft = el.scrollWidth;
+  for (const el of root.querySelectorAll(".month-chips, .months")) {
+    const on = el.querySelector(".on");
+    if (on && el.scrollWidth > el.clientWidth) el.scrollLeft = on.offsetLeft - el.offsetLeft - (el.clientWidth - on.offsetWidth) / 2;
+  }
+  for (const el of root.querySelectorAll(H_STRIPS)) edgeFade(el);
+}
+/** Soft fade on the side of a strip that has more to swipe to. */
+function edgeFade(el) {
+  const max = el.scrollWidth - el.clientWidth;
+  el.classList.toggle("fade-l", max > 1 && el.scrollLeft > 2);
+  el.classList.toggle("fade-r", max > 1 && el.scrollLeft < max - 2);
+}
+/** Mouse users can drag horizontal strips (charts, month chips) like on a phone. */
+function enableDragScroll() {
+  let drag = null;
+  document.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    if (e.target.closest("input, textarea, select")) return;
+    const el = e.target.closest(H_STRIPS);
+    if (!el || el.scrollWidth <= el.clientWidth + 1) return;
+    drag = { el, x: e.clientX, left: el.scrollLeft, moved: false };
+  });
+  document.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 5) return;
+    drag.moved = true;
+    drag.el.classList.add("dragging");
+    drag.el.scrollLeft = drag.left - dx;
+  });
+  document.addEventListener("pointerup", () => {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    d.el.classList.remove("dragging");
+    // A drag is not a click on whatever was under the mouse.
+    if (d.moved) {
+      const stop = (e) => { e.stopPropagation(); e.preventDefault(); };
+      document.addEventListener("click", stop, { capture: true, once: true });
+      setTimeout(() => document.removeEventListener("click", stop, { capture: true }), 0);
+    }
+  });
+}
 function go(view) {
   if (location.hash !== `#${view}`) location.hash = view;
   else route();
@@ -3540,6 +3917,9 @@ function boot() {
   saveNow();
   if (!S.onboarded && !IS_DEMO) openOnboarding();
 
+  enableDragScroll();
+  document.addEventListener("scroll", (e) => { if (e.target.matches?.(H_STRIPS)) edgeFade(e.target); }, { capture: true, passive: true });
+  window.addEventListener("resize", () => { for (const el of document.querySelectorAll(H_STRIPS)) edgeFade(el); });
   document.addEventListener("click", (e) => {
     const el = e.target.closest("[data-action]");
     if (!el || el.disabled) return;

@@ -67,8 +67,10 @@
       "fonts": "family=Playfair+Display:wght@500..800&family=Inter:wght@400..800&family=Lexend:wght@300..700",
       "themeColor": "#e0526f",
       "skin": {
-        "monthNav": "compact",
-        "homeLayout": "tiles",
+        "monthNav": "bloom",
+        "homeLayout": "bloom",
+        "navStyle": "lines",
+        "headTools": true,
         "palette": "cherry",
         "chartMono": true
       },

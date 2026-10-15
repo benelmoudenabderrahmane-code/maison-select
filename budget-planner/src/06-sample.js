@@ -20,7 +20,9 @@ function loadSample() {
   const between = (a, b) => round2(a + rnd() * (b - a));
   const today = todayISO();
   const thisMk = monthKey(today);
-  const startMk = addMonths(thisMk, -3);
+  const recentMk = addMonths(thisMk, -3);
+  // History from January (at least 3 months), so monthly charts and the year review fill in.
+  const startMk = `${thisMk.slice(0, 4)}-01` < recentMk ? `${thisMk.slice(0, 4)}-01` : recentMk;
   S.createdAt = monthStart(startMk);
   S.onboarded = true;
   S.profile = { ...S.profile, name: "Alex", currency: S.profile.currency || "USD", buffer: 100 };
@@ -31,7 +33,7 @@ function loadSample() {
   // Biweekly paycheck on Fridays, aligned so one lands in the next two weeks.
   let friday = today;
   while (fromISO(friday).getDay() !== 5) friday = addDays(friday, -1);
-  const payAnchor = addDays(friday, -14 * 8);
+  const payAnchor = addDays(friday, -14 * 30);
   S.incomes = [
     { id: uid(), name: "Paycheck", emoji: "💰", amount: 2100, freq: "biweekly", anchor: payAnchor, endDate: "" },
     { id: uid(), name: "Etsy shop sales", emoji: "🧶", amount: 320, freq: "monthly", anchor: day(25), endDate: "" },
@@ -94,8 +96,13 @@ function loadSample() {
   // A one-off and a note, for realism.
   S.transactions.push({ id: uid(), createdAt: Date.now(), type: "expense", catId: cat("Shopping"), name: "Winter coat", amount: 96, date: addDays(today, -9), note: "On sale!" });
 
-  // Check off everything scheduled before today, and today's paycheck if any.
-  for (const o of scheduleIn(S.createdAt, today)) if (o.date < today || o.kind === "income") toggleOccurrence(o);
+  // Check off everything scheduled before today, and today's paycheck if any. Older months are
+  // recorded too, but balances are kept as if the planner started 3 months ago.
+  const early = { debts: S.debts.map((d) => d.balance), funds: S.funds.map((f) => f.saved) };
+  for (const o of scheduleIn(S.createdAt, addDays(monthStart(recentMk), -1))) toggleOccurrence(o);
+  S.debts.forEach((d, i) => { d.balance = early.debts[i]; });
+  S.funds.forEach((f, i) => { f.saved = early.funds[i]; });
+  for (const o of scheduleIn(monthStart(recentMk), today)) if (o.date < today || o.kind === "income") toggleOccurrence(o);
 
   // Habits: a solid recent streak plus scattered earlier check-ins.
   for (let i = 0; i < 90; i++) {

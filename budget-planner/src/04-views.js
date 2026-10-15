@@ -43,7 +43,16 @@ const NAV = [
 function pageHead(title, sub, actions = "", { month } = {}) {
   const fl = SKIN.flourish ? `<span class="flourish">${SKIN.flourish}</span>` : "";
   const nav = month && SKIN.monthNav === "compact" ? monthNav(month) : "";
-  return `<div class="page-head"><div><h1>${title}${fl}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${nav || actions ? `<div class="actions">${nav}${actions}</div>` : ""}</div>`;
+  const tools = SKIN.headTools ? headTools() : "";
+  return `<div class="page-head"><div><h1>${title}${fl}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${nav || actions || tools ? `<div class="actions">${tools}${nav}${actions}</div>` : ""}</div>`;
+}
+/** Night mode, privacy blur and focus mode, for skins that keep the sidebar to navigation only. */
+function headTools() {
+  return `<div class="head-tools">
+    <button class="btn ghost icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
+    <button class="btn ghost icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
+    <button class="btn ghost icon-btn ${S.settings.focus ? "on" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode" aria-pressed="${!!S.settings.focus}">${icon("focus")}</button>
+  </div>`;
 }
 function monthNav(mk, action = "set-month") {
   return `<div class="month-nav" role="group" aria-label="Choose month">
@@ -54,6 +63,17 @@ function monthNav(mk, action = "set-month") {
 }
 function monthsBar(selected, action = "set-month") {
   if (SKIN.monthNav === "compact") return "";
+  if (SKIN.monthNav === "bloom") {
+    const y = selected.slice(0, 4);
+    return `<div class="bloom-months">
+      <div class="month-pill" role="group" aria-label="Choose month">
+        <button data-action="${action}" data-mk="${addMonths(selected, -1)}" aria-label="Previous month">${icon("chevL", 18)}</button>
+        <b>${monthLabel(selected)}</b>
+        <button data-action="${action}" data-mk="${addMonths(selected, 1)}" aria-label="Next month">${icon("chevR", 18)}</button>
+      </div>
+      <div class="month-chips" data-drag-scroll role="group" aria-label="Months of ${y}">${MONTHS_S.map((m, i) => { const mk = `${y}-${pad(i + 1)}`; return `<button class="${mk === selected ? "on" : ""}" data-action="${action}" data-mk="${mk}" ${mk === selected ? 'aria-current="true"' : ""}>${m}</button>`; }).join("")}</div>
+    </div>`;
+  }
   const y = selected.slice(0, 4);
   return `<div class="months" role="group" aria-label="Choose month">
     <button data-action="${action}" data-mk="${addMonths(selected, -12)}" aria-label="Previous year">${icon("chevL", 14)}</button>
@@ -181,6 +201,7 @@ function viewHome() {
     ${chartPlanVsActual(catItems)}
   </div>`;
 
+  if (SKIN.homeLayout === "bloom") return homeBloom({ today, mk, m, isCur, ft, dt, goalsActive, hello, greetingSub, t });
   if (SKIN.homeLayout === "tiles") {
     const prevMk = addMonths(mk, -1);
     const day = isCur ? Number(today.slice(8)) : 31;
@@ -258,6 +279,108 @@ function viewHome() {
       <div class="card-head"><h2>Bills this month</h2><span class="pill muted">${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").filter((o) => o.done).length}/${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").length} paid</span></div>
       ${(() => { const b = m.sched.filter((o) => o.kind === "bill" || o.kind === "debt"); return b.length ? `<div class="list">${b.map((o) => schedRow(o)).join("")}</div>` : empty("🧾", "No bills yet", "Add rent, phone, subscriptions…", `<button class="btn" data-action="add-bill">Add a bill</button>`); })()}
     </div>
+  </div>`;
+}
+/* ---------- Home, "bloom" layout (Cherry Blossom) ---------- */
+const BLOOM_IC = {
+  sprout: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 36V19" stroke="#6f8f55" stroke-width="2.4" stroke-linecap="round"/><path d="M20 22C19 12 11 7 3 8c0 9 7 15 17 14Z" fill="#9fbf7f"/><path d="M20 22C9 15 6 11 4 9" stroke="#6f8f55" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M20 18c1-8 8-13 16-12 0 8-6 13-16 12Z" fill="#7fa45f"/><path d="M20 18c6-5 10-8 14-10" stroke="#5d7f45" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>`,
+  house: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 19 20 6l15 13" stroke="#6f8f63" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 17v17h22V17" fill="#e7efe0" stroke="#6f8f63" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 34v-8a4 4 0 0 1 8 0v8" fill="#f3b6c4" stroke="#c0405f" stroke-width="2"/><rect x="25" y="20" width="4" height="4" rx="1" fill="#9fbf8f"/><rect x="11" y="20" width="4" height="4" rx="1" fill="#9fbf8f"/></svg>`,
+  cart: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 7h5l4 19h19l4-14H10" stroke="var(--accent-strong)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 12h23l-3.4 11H13.4Z" fill="var(--accent-soft)"/><path d="M17 12l1 11M24 12l-.3 11M12 17.5h21" stroke="var(--accent-strong)" stroke-width="1.5" opacity=".7"/><circle cx="14" cy="32" r="2.8" fill="var(--accent-strong)"/><circle cx="29" cy="32" r="2.8" fill="var(--accent-strong)"/></svg>`,
+  piggy: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 21c0-7 6-12 14-12 3 0 6 .8 8 2.2l4-2.2-.8 5.2c1.6 1.6 2.6 3.6 3 5.8H37v6h-2.6c-1 2-2.6 3.6-4.6 4.8V34h-5v-2.6c-1.2.2-2.6.3-4 .2V34h-5v-3.6C10 28.6 7 25 7 21Z" fill="#8fae7c"/><circle cx="29" cy="18" r="1.6" fill="#3f5a33"/><path d="M15 13.5c2-1 5-1.4 8-.8" stroke="#e8f1df" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M7 20c-2.6 0-4-1.6-4-3.4" stroke="#8fae7c" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="17" y="6" width="7" height="3" rx="1.5" fill="#c0405f"/></svg>`,
+  leaf: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 33C6 18 16 7 34 6c1 18-9 28-27 27Z" fill="#8fb27a"/><path d="M8 32C15 24 21 18 30 10M15 25l-1-7M21 19l6 1M18 22l-6-1" stroke="#eef5e6" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+};
+/** Solid crimson glyphs for common savings-fund emojis; anything else keeps its emoji. */
+const GOAL_GLYPH = {
+  "🛟": `<circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v5.2M12 16v5.2M2.8 12H8M16 12h5.2" stroke="currentColor" stroke-width="4.6" opacity=".9"/>`,
+  "✈️": `<path d="M21.5 4.2c.9-.9.6-2.1-.4-2.4-.8-.2-1.7.1-2.4.8l-3.8 3.8L4.6 3.6 2.8 5.4l8.4 4.4-4 4-3.2-.6L2.6 14.6l3.9 2 2 3.9 1.4-1.4-.6-3.2 4-4 4.4 8.4 1.8-1.8L16.6 8Z" fill="currentColor"/>`,
+  "💻": `<rect x="4" y="4.5" width="16" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M1.5 18.2h21l-1.2 1.8H2.7Z" fill="currentColor"/>`,
+  "🏠": `<path d="M12 3 2.5 11h2.7v9.5h5.3v-6h3v6h5.3V11h2.7Z" fill="currentColor"/>`,
+  "🏡": `<path d="M12 3 2.5 11h2.7v9.5h5.3v-6h3v6h5.3V11h2.7Z" fill="currentColor"/>`,
+  "🚗": `<path d="M5 11 6.8 6.2A2 2 0 0 1 8.7 5h6.6a2 2 0 0 1 1.9 1.2L19 11a2 2 0 0 1 2 2v4h-2v2h-3v-2H8v2H5v-2H3v-4a2 2 0 0 1 2-2Zm2.2 0h9.6l-1.3-3.6H8.5ZM6.5 15.2a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Zm11 0a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Z" fill="currentColor"/>`,
+  "🎁": `<path d="M3 8h18v4H3Zm1.5 4h15v9h-15Z" fill="currentColor"/><path d="M12 8v13" stroke="var(--surface)" stroke-width="2"/><path d="M12 8C9 8 7 7 7 5.4S9 3 12 8Zm0 0c3 0 5-1 5-2.6S15 3 12 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/>`,
+  "🐷": `<path d="M4 12c0-4.2 3.6-7 8-7 1.8 0 3.4.4 4.7 1.2L19 5l-.4 3c1 1 1.6 2.1 1.8 3.4H22V15h-1.6c-.6 1.2-1.6 2.2-2.8 2.9V20h-3v-1.5a12 12 0 0 1-2.6.1V20H9v-2.1C6 16.8 4 14.7 4 12Z" fill="currentColor"/>`,
+  "🎓": `<path d="M12 4 1.5 9 12 14l8.5-4v5.5h2V9Z" fill="currentColor"/><path d="M6 12.3v4c0 1.6 2.7 3 6 3s6-1.4 6-3v-4l-6 2.9Z" fill="currentColor"/>`,
+  "💍": `<path d="M9 2.5h6l2 3-5 4-5-4Z" fill="currentColor"/><circle cx="12" cy="15" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/>`,
+};
+const goalGlyph = (emoji) => (GOAL_GLYPH[emoji] ? `<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">${GOAL_GLYPH[emoji]}</svg>` : `<span class="bgoal-emoji">${esc(emoji || "🐷")}</span>`);
+/** Budget vs. actual, one pair of bars per month (Jan → the month you're looking at). */
+function monthlyChartRows(mk) {
+  let from = `${mk.slice(0, 4)}-01`;
+  if (monthsBetween(from, mk) < 5) from = addMonths(mk, -5);
+  const rows = [];
+  for (let k = from; k <= mk; k = addMonths(k, 1)) {
+    rows.push({ mk: k, label: MONTHS_S[Number(k.slice(5)) - 1], plan: sum(S.categories, (c) => budgetFor(c, k)), actual: sum(txInMonth(k).filter((t) => t.type === "expense"), (t) => t.amount) });
+  }
+  return rows;
+}
+function bloomKpi(ic, title, value, sub, bar, opts = "") {
+  return `<div class="card bkpi" ${opts}>
+    <div class="bkpi-head"><span class="bic">${BLOOM_IC[ic]}</span><h3>${title}</h3></div>
+    <div class="bkpi-value">${value}</div>
+    <div class="bkpi-sub">${sub}</div>
+    ${bar}
+  </div>`;
+}
+const bloomBar = (p, cls) => `<div class="bbar ${cls}" role="progressbar" aria-valuenow="${Math.round(clamp(p, 0, 1) * 100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(clamp(p, 0, 1) * 100)}%"></i></div>`;
+function homeBloom({ today, mk, m, isCur, ft, dt, goalsActive, hello, greetingSub, t }) {
+  const totalIn = m.income + m.expected;
+  const expenses = m.txs.filter((x) => x.type === "expense").length;
+  const planned = m.sched.filter((o) => o.kind === "fund");
+  const savedM = Math.max(0, m.saved), goalM = sum(planned, (o) => o.amount);
+  const sp = goalM > 0 ? savedM / goalM : savedM > 0 ? 1 : 0;
+  const upcoming = scheduleIn(isCur ? today : monthStart(mk), addDays(isCur ? today : monthStart(mk), 31)).filter((o) => o.kind !== "income" && !o.done).slice(0, 3);
+  const funds = S.funds.slice(0, 3);
+  const dotFor = (o) => (o.kind === "debt" ? "blue" : o.kind === "fund" ? "crimson" : "blush");
+  const sub = (o) => (o.kind === "fund" ? "Savings transfer" : o.kind === "debt" ? "Debt minimum" : `${o.isSub ? "Subscription" : "Bill"}${o.autopay ? " · autopay" : ""}`);
+  return `
+  <div class="bloom">
+  ${pageHead(hello, greetingSub, `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 22)}Add a spend</button>`, { month: mk })}
+  ${monthsBar(mk)}
+  <div class="bkpis">
+    ${bloomKpi("sprout", `Safe to spend <span class="tip-i" data-tip="Money in − spent − bills, savings &amp; debt still due">${icon("info", 15)}</span>`, `<span class="${m.safe < 0 ? "neg" : ""}">${moneyHTML(m.safe)}</span>`,
+      isCur ? `About ${money(t.allowance)} a day<br>for the rest of the month` : `Left after everything<br>in ${monthName(mk)}`, bloomBar(totalIn > 0 ? m.safe / totalIn : 0, "sage"), `data-action="go" data-view="today" style="cursor:pointer"`)}
+    ${bloomKpi("house", "Income", moneyHTML(totalIn), `Received ${money(m.income)}<br>Expected ${money(m.expected)}`, bloomBar(totalIn > 0 ? m.income / totalIn : 0, "mix"))}
+    ${bloomKpi("cart", "Spent", moneyHTML(m.spent), `${plural(expenses, "transaction")}<br>&nbsp;`, bloomBar(m.planned > 0 ? m.spent / m.planned : 0, "crimson"))}
+    ${bloomKpi("piggy", "Total saved", moneyHTML(ft.saved), `Across ${plural(S.funds.length, "fund")}<br>&nbsp;`, bloomBar(ft.target > 0 ? ft.saved / ft.target : 0, "olive"))}
+  </div>
+  <div class="bloom-row">
+    <div class="card bcard focus-hide">
+      <div class="bcard-head"><h2>${icon("chart", 30)} Budget vs. actual</h2><div class="blegend"><span><i class="plan"></i>Budget</span><span><i class="act"></i>Actual</span></div></div>
+      ${chartMonthly(monthlyChartRows(mk), mk)}
+    </div>
+    <div class="card bcard bsave" data-action="go" data-view="savings" style="cursor:pointer">
+      <div class="bcard-head"><h2><span class="bic sm">${BLOOM_IC.leaf}</span> Savings this month</h2></div>
+      <div class="ring-center">${ring(sp, { size: 196, stroke: 15, label: `<span class="big-pct">${Math.round(sp * 100)}%</span>`, color: "var(--sage)" })}</div>
+      <div class="bsave-amt">${moneyHTML(savedM)}</div>
+      <div class="bsave-of">${goalM > 0 ? `of ${money(goalM)} goal` : "Add an automatic transfer to set a goal"}</div>
+    </div>
+  </div>
+  <div class="bloom-row two">
+    <div class="card bcard">
+      <div class="bcard-head"><h2>${icon("calendar", 30)} Upcoming payments</h2><a class="btn view-all" href="#calendar">View all</a></div>
+      ${upcoming.length ? `<div class="blist">${upcoming.map((o) => `<div class="bpay ${o.done ? "done" : ""}">
+        <span class="bdate">${fmtDay(o.date)}</span>
+        ${tick(o.done, `data-action="toggle-occ" data-key="${esc(o.key)}"`)}
+        <span class="bdot ${dotFor(o)}"></span>
+        <div class="bname">${esc(o.name)}<small>${sub(o)}</small></div>
+        <div class="bamt">${esc(money(o.amount))}</div>
+      </div>`).join("")}</div>` : empty("🌤️", "Nothing due soon", "Add your bills and they'll show up here with a checkbox.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
+    </div>
+    <div class="card bcard">
+      <div class="bcard-head"><h2>${icon("target", 30)} My savings goals</h2><a class="btn view-all" href="#savings">View all</a></div>
+      ${funds.length ? `<div class="blist">${funds.map((f) => { const p = f.target > 0 ? f.saved / f.target : 0; return `<a class="bgoal" href="#savings">
+        <span class="bgoal-ic" aria-hidden="true">${goalGlyph(f.emoji)}</span>
+        <div class="grow"><div class="bgoal-top"><b>${esc(f.name)}</b><span>${esc(moneyRound(f.saved))} / ${esc(moneyRound(f.target))}</span></div>
+        <div class="bgoal-bar">${bloomBar(p, "sage")}<span>${Math.round(p * 100)}%</span></div></div>
+      </a>`; }).join("")}</div>`
+        : empty("🌱", "No goals yet", "A trip, a cushion, a new laptop… start a savings fund.", `<button class="btn primary" data-action="add-fund">New fund</button>`)}
+    </div>
+  </div>
+  <div class="grid g2 mt focus-hide">
+    <div class="card"><div class="card-head"><h2>Where it went</h2></div>${spendingDonut(m.txs)}</div>
+    <div class="card"><div class="card-head"><h3>${icon("info", 18)} How safe to spend works</h3></div>${formulaHTML(m)}
+      <div class="formula mt"><span>Still owed on debts</span><b class="m">${money(dt.owed)}</b><span>Goals in progress</span><b>${goalsActive}</b></div></div>
+  </div>
   </div>`;
 }
 function formulaHTML(m) {

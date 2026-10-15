@@ -28,6 +28,12 @@ const CURSOR = `(() => {
   addEventListener("mousemove", (e) => { c.style.left = e.clientX + "px"; c.style.top = e.clientY + "px"; }, true);
   addEventListener("mousedown", (e) => { c.classList.add("down"); const r = document.createElement("div"); r.className = "__rip"; r.style.left = e.clientX + "px"; r.style.top = e.clientY + "px"; document.body.appendChild(r); setTimeout(() => r.remove(), 600); }, true);
   addEventListener("mouseup", () => c.classList.remove("down"), true);
+  // A 1px pixel that changes every frame keeps the recorder writing frames, so video time matches real time.
+  const tick = document.createElement("i");
+  tick.style.cssText = "position:fixed;right:0;bottom:0;width:1px;height:1px;z-index:2147483647;pointer-events:none";
+  document.body.appendChild(tick);
+  let n = 0;
+  (function f() { tick.style.background = n++ % 2 ? "rgba(0,0,0,.02)" : "rgba(0,0,0,.03)"; requestAnimationFrame(f); })();
 })()`;
 
 async function record(ed) {
@@ -55,10 +61,16 @@ async function record(ed) {
   const moveTo = async (sel, steps = 18) => { const [x, y] = await center(sel); await page.mouse.move(x, y, { steps }); return [x, y]; };
   // Glide the visible cursor there, then let Playwright perform a real, actionable click.
   const click = async (sel, steps) => { await moveTo(sel, steps); await page.waitForTimeout(110); await page.locator(sel).first().click(); await page.waitForTimeout(240); };
-  const nav = (id) => click(`#sidebar a[href='#${id}']`, 14);
+  // The sidebar scrolls on short screens: bring the link into view first, like a person would.
+  const nav = async (id) => {
+    const sel = `#sidebar a[href='#${id}']`;
+    await page.locator(sel).first().evaluate((el) => el.scrollIntoView({ block: "nearest", behavior: "smooth" }));
+    await page.waitForTimeout(260);
+    await click(sel, 14);
+  };
 
   await page.waitForTimeout(700);                                  // Today
-  await click("#sidebar .track-btn");                              // Track a spend
+  await click("#sidebar .track-btn, .today-hero [data-action=quick-add]"); // Track a spend
   await page.waitForTimeout(250);
   await page.keyboard.type("24.00", { delay: 90 });
   await click(".modal [data-cat]:has-text('Dining')", 14);
@@ -96,18 +108,24 @@ async function record(ed) {
   await click("[data-action=set][data-key=theme][data-v=dark]", 14);
   await page.waitForTimeout(400);
   await nav("home");
-  await page.waitForTimeout(1700);
+  await page.waitForTimeout(2000);
   const end = (Date.now() - t0) / 1000;
+  await page.waitForTimeout(300);
+  const closedAt = (Date.now() - t0) / 1000;
   await ctx.close();
 
   const webm = join(tmp, readdirSync(tmp).find((f) => f.endsWith(".webm")));
+  // The recorder starts before our clock does; line the two up using the file's length.
+  const webmDur = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", webm]).toString().trim());
+  const offset = Number.isFinite(webmDur) ? Math.max(0, webmDur - closedAt) : 0;
   const length = end - start;
   const speed = Math.max(1, length / TARGET); // keep it within Etsy's 15 s limit
   const mp4 = join(dir, `${fileBase(ed)}-Walkthrough.mp4`);
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", start.toFixed(2), "-t", length.toFixed(2), "-i", webm,
-    "-vf", `setpts=PTS/${speed.toFixed(3)},fps=30`, "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]);
+  // Chromium only records frames when something changes, so the still final screen is padded by repeating its last frame.
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", (start + offset).toFixed(2), "-i", webm,
+    "-vf", `tpad=stop_mode=clone:stop_duration=4,setpts=PTS/${speed.toFixed(3)},fps=30`, "-t", Math.min(TARGET, length / speed).toFixed(2), "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]);
   const dur = execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4]).toString().trim();
-  console.log(`${ed.appName}: ${mp4.split("/").slice(-3).join("/")} — ${Number(dur).toFixed(1)} s (recorded ${length.toFixed(1)} s, ×${speed.toFixed(2)})`);
+  console.log(`${ed.appName}: ${mp4.split("/").slice(-3).join("/")} — ${Number(dur).toFixed(1)} s (recorded ${length.toFixed(1)} s, ×${speed.toFixed(2)}, sync ${offset.toFixed(2)} s)`);
 }
 
 for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === process.argv[2])) await record(ed);

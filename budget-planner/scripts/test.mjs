@@ -422,6 +422,79 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await ctx.close();
   });
 
+  await step("small laptop: every menu reachable, strips swipe", async () => {
+    const { ctx, page } = await newPage({ width: 1280, height: 660 });
+    current = page;
+    await page.goto(full);
+    await page.waitForSelector("[data-ob=sample]");
+    await page.click("[data-ob=sample]");
+    await page.waitForTimeout(300);
+    const side = await page.evaluate(() => { const s = document.querySelector("#sidebar"); return { sh: s.scrollHeight, ch: s.clientHeight, ov: getComputedStyle(s).overflowY }; });
+    check("sidebar scrolls when taller than the screen", side.sh <= side.ch || /auto|scroll/.test(side.ov), JSON.stringify(side));
+    await page.mouse.move(120, 400);
+    await page.mouse.wheel(0, 800);
+    await page.waitForTimeout(200);
+    const top = await page.evaluate(() => document.querySelector("#sidebar").scrollTop);
+    check("mouse wheel scrolls the sidebar", side.sh <= side.ch || top > 0, top);
+    const links = await page.$$eval("#sidebar .nav a", (as) => as.map((a) => a.getAttribute("href")));
+    let reached = 0;
+    for (const href of links) {
+      const a = page.locator(`#sidebar .nav a[href='${href}']`);
+      await a.scrollIntoViewIfNeeded();
+      const b = await a.boundingBox();
+      if (b && b.y >= 0 && b.y + b.height <= 662) { await a.click(); await page.waitForTimeout(150); await page.keyboard.press("Escape"); if ((await page.evaluate(() => location.hash)) === href) reached++; }
+    }
+    check("every sidebar menu can be reached and opened", reached === links.length, `${reached}/${links.length}`);
+    const keep = await page.evaluate(() => document.querySelector("#sidebar").scrollTop);
+    check("sidebar keeps its scroll after opening a page", side.sh <= side.ch || keep > 0, keep);
+    // Horizontal strips: drag with the mouse, and a drag never counts as a click.
+    await page.evaluate(() => { location.hash = "transactions"; });
+    await page.waitForTimeout(250);
+    const strip = page.locator(".chip-scroll").first();
+    const info = await strip.evaluate((el) => ({ over: el.scrollWidth > el.clientWidth + 1, left: el.scrollLeft, fade: el.classList.contains("fade-r") }));
+    if (info.over) {
+      check("strip shows a fade where there's more", info.fade);
+      const b = await strip.boundingBox();
+      await page.mouse.move(b.x + b.width - 30, b.y + b.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(b.x + 40, b.y + b.height / 2, { steps: 12 });
+      await page.mouse.up();
+      await page.waitForTimeout(100);
+      const after = await strip.evaluate((el) => el.scrollLeft);
+      check("drag scrolls the filter chips", after > info.left, `${info.left} → ${after}`);
+      check("drag doesn't pick a filter", (await page.locator(".chip-scroll .chip.on").first().textContent()).trim() === "All");
+    }
+    await page.evaluate(() => { location.hash = "home"; });
+    await page.waitForTimeout(250);
+    for (const el of await page.$$(".chart-scroll")) {
+      const r = await el.evaluate((x) => ({ over: x.scrollWidth > x.clientWidth + 1, monthly: !!x.querySelector(".mchart") }));
+      if (r.monthly) check("monthly chart fits its card", !r.over);
+    }
+    if (await page.$(".month-chips")) {
+      const vis = await page.$$eval(".month-chips button", (bs) => { const p = bs[0].parentElement.getBoundingClientRect(); return bs.filter((b) => { const r = b.getBoundingClientRect(); return r.left >= p.left - 1 && r.right <= p.right + 1; }).length; });
+      check("all 12 month chips visible on a laptop", vis === 12, vis);
+    }
+    check("no JavaScript errors (laptop)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await ctx.close();
+  });
+
+  await step("phone: month strip swipes to the selected month", async () => {
+    const { ctx, page } = await newPage({ width: 390, height: 844 });
+    current = page;
+    await page.goto(full);
+    await page.waitForSelector("[data-ob=sample]");
+    await page.click("[data-ob=sample]");
+    await page.waitForTimeout(300);
+    const sel = (await page.$(".month-chips")) ? ".month-chips" : (await page.$(".months")) ? ".months" : "";
+    if (sel) {
+      const r = await page.$eval(sel, (el) => { const on = el.querySelector(".on").getBoundingClientRect(), p = el.getBoundingClientRect(); return { scrollable: /auto|scroll/.test(getComputedStyle(el).overflowX), seen: on.left >= p.left - 1 && on.right <= p.right + 1 }; });
+      check("month strip scrolls sideways", r.scrollable);
+      check("selected month is in view", r.seen);
+    }
+    for (const el of await page.$$(".chart-scroll")) check("charts scroll sideways on a phone", /auto|scroll/.test(await el.evaluate((x) => getComputedStyle(x).overflowX)));
+    await ctx.close();
+  });
+
   await step("colour contrast (WCAG AA)", async () => {
     const { ctx, page } = await newPage();
     current = page;
