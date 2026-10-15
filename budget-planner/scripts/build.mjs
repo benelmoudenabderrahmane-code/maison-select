@@ -80,6 +80,17 @@ self.addEventListener("fetch", (e) => {
 `);
 }
 
+/** Hosting extras: a landing page that only links the demos, no-index headers, Netlify config. */
+function writeSiteRoot() {
+  const site = join(out, "site");
+  const cards = config.editions.map((ed) => `<a href="${ed.hostedDir}/demo/" style="--c:${ed.themeColor}"><b>${ed.appName}</b><span>${ed.tagline} · try the free demo →</span></a>`).join("");
+  writeFileSync(join(site, "index.html"), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Budget planner demos</title>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:#fbf7f5;color:#2a1a20;display:grid;place-items:center;min-height:100vh;padding:24px;box-sizing:border-box}main{max-width:560px;width:100%}h1{font-family:Georgia,serif;font-size:2rem;margin:0 0 6px}p{color:#6e5a61;margin:0 0 22px}a{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #eadfe2;border-left:6px solid var(--c);border-radius:16px;padding:16px 18px;margin-bottom:12px}a:hover{border-color:var(--c)}b{display:block;font-size:1.1rem}span{color:#6e5a61;font-size:.92rem}footer{margin-top:18px;font-size:.85rem}footer a{display:inline;border:0;padding:0;background:none;color:#b0425f;text-decoration:underline}</style></head>
+<body><main><h1>Budget planner demos</h1><p>Calm, ADHD-friendly budget planners that work online and offline.</p>${cards}<footer>Get the full planners on <a href="${config.shopUrl}">Etsy</a>.</footer></main></body></html>`);
+  writeFileSync(join(site, "_headers"), config.editions.map((ed) => `/${ed.hostedDir.split("/")[0]}/*\n  X-Robots-Tag: noindex, nofollow\n`).join(""));
+  writeFileSync(join(site, "netlify.toml"), `[build]\n  publish = "."\n  command = ""\n`);
+}
+
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   rmSync(join(out, "site"), { recursive: true, force: true });
@@ -96,6 +107,7 @@ if (isMain) {
     const kb = Math.round(readFileSync(join(dir, `${fileBase(ed)}-Planner.html`)).length / 1024);
     console.log(`Built ${ed.appName} (${kb} KB) → ${ed.folder}/ and site/${ed.hostedDir}/`);
   }
+  writeSiteRoot();
   for (const f of ["README.md", "SELLER-GUIDE.md"]) {
     if (existsSync(join(root, "package", f))) copyFileSync(join(root, "package", f), join(out, f));
   }

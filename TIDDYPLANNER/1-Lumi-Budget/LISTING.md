@@ -85,7 +85,7 @@ Tired of spreadsheets you abandon after a week? Lumi Budget is a calm, beginner-
 
 Use it ONLINE on any device (phone, tablet, computer) or OFFLINE with the downloadable HTML file. No subscription. No account. Your data stays private on your device.
 
-🎁 TRY THE FREE DEMO FIRST: https://YOUR-SITE.netlify.app/lumi/planner-ec98eebc3064/demo/
+🎁 TRY THE FREE DEMO FIRST: https://tiddyplanner.netlify.app/lumi/planner-ec98eebc3064/demo/
 
 ━━━━━━━━━━━━━━━━━━
 💗 WHAT'S INSIDE — 15 TOOLS

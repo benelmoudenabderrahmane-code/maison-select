@@ -1,6 +1,6 @@
 {
   "shopUrl": "https://www.etsy.com/shop/YOUR-SHOP-NAME",
-  "publicUrl": "https://YOUR-SITE.netlify.app",
+  "publicUrl": "https://tiddyplanner.netlify.app",
   "outDir": "../TIDDYPLANNER",
   "editions": [
     {

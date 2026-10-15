@@ -1,4 +1,4 @@
-const CACHE = "lumi-v1792059806568";
+const CACHE = "lumi-v1792060810314";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith("lumi-") && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

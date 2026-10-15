@@ -31,7 +31,9 @@ Rendering the PDFs, icons and images needs Playwright (`npm i -D playwright`).
 
 ## 2. Put the apps online (free)
 
-Use **Netlify Drop** or **Cloudflare Pages**. Both have free plans; check their terms for commercial use.
+Your site is **https://tiddyplanner.netlify.app** (Netlify project `tiddyplanner`). To publish or update it, open <https://app.netlify.com/projects/tiddyplanner/deploys> and drag and drop the **`site`** folder onto the page. Always use that page, so the address stays the same.
+
+To host somewhere else instead, use **Netlify Drop** or **Cloudflare Pages**. Both have free plans; check their terms for commercial use.
 
 1. Go to <https://app.netlify.com/drop>.
 2. Drag and drop the **`site`** folder.

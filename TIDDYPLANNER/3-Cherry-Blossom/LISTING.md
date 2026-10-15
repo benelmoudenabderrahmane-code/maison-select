@@ -54,7 +54,7 @@ Let your money bloom. Cherry Blossom is a calm, beautiful budget app with soft b
 
 Use it ONLINE on any device or OFFLINE with the downloadable HTML file. No subscription. No account. Your data stays private on your device.
 
-🎁 TRY THE FREE DEMO FIRST: https://YOUR-SITE.netlify.app/cherry/planner-fdffc850a002/demo/
+🎁 TRY THE FREE DEMO FIRST: https://tiddyplanner.netlify.app/cherry/planner-fdffc850a002/demo/
 
 ━━━━━━━━━━━━━━━━━━
 🌸 WHAT'S INSIDE

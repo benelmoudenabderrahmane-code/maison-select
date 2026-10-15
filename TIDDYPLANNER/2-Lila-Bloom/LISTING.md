@@ -54,7 +54,7 @@ Open it, see one number — what's SAFE TO SPEND — and get on with your day. L
 
 Use it ONLINE on any device or OFFLINE with the downloadable HTML file. Your data stays private on your own device.
 
-🎁 TRY THE FREE DEMO FIRST: https://YOUR-SITE.netlify.app/lila/planner-391614a831f8/demo/
+🎁 TRY THE FREE DEMO FIRST: https://tiddyplanner.netlify.app/lila/planner-391614a831f8/demo/
 
 ━━━━━━━━━━━━━━━━━━
 🌸 WHAT'S INSIDE
