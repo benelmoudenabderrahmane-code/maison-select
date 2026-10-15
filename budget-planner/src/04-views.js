@@ -1,0 +1,853 @@
+/* ==========================================================================
+   Views — each returns the HTML for the main area
+   ========================================================================== */
+
+const ui = {
+  view: "home",
+  month: monthKey(todayISO()),
+  calMonth: monthKey(todayISO()),
+  calSel: todayISO(),
+  txQuery: "",
+  txType: "all",
+  txCat: "",
+  budgetScope: "all",
+  debtStrategy: "avalanche",
+  debtExtra: 100,
+  year: Number(todayISO().slice(0, 4)),
+};
+
+const NAV = [
+  { group: "Plan" },
+  { id: "setup", label: "Getting started", icon: "compass", nf: true },
+  { id: "home", label: "Home", icon: "home" },
+  { id: "today", label: "Today", icon: "sun" },
+  { id: "calendar", label: "Calendar", icon: "calendar" },
+  { id: "paycheck", label: "Paycheck plan", icon: "wallet", nf: true },
+  { group: "Track" },
+  { id: "transactions", label: "Transactions", icon: "list" },
+  { id: "budget", label: "Budget", icon: "envelope" },
+  { id: "bills", label: "Bills & subscriptions", icon: "receipt", nf: true },
+  { group: "Grow", nf: true },
+  { id: "savings", label: "Savings", icon: "piggy", nf: true },
+  { id: "debt", label: "Debt payoff", icon: "card", nf: true },
+  { id: "goals", label: "Goals", icon: "target", nf: true },
+  { id: "impulse", label: "Impulse Pause", icon: "pause" },
+  { id: "rewards", label: "Streaks & rewards", icon: "trophy", nf: true },
+  { group: "Review", nf: true },
+  { id: "year", label: "Year in review", icon: "chart", nf: true },
+  { id: "settings", label: "Settings", icon: "settings" },
+];
+
+/* ---------- Shared pieces ---------- */
+function pageHead(title, sub, actions = "") {
+  return `<div class="page-head"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>`;
+}
+function monthsBar(selected, action = "set-month") {
+  const y = selected.slice(0, 4);
+  return `<div class="months" role="group" aria-label="Choose month">
+    <button data-action="${action}" data-mk="${addMonths(selected, -12)}" aria-label="Previous year">${icon("chevL", 14)}</button>
+    <span class="yr">${y}</span>
+    <button data-action="${action}" data-mk="${addMonths(selected, 12)}" aria-label="Next year">${icon("chevR", 14)}</button>
+    ${MONTHS_S.map((m, i) => { const mk = `${y}-${pad(i + 1)}`; return `<button class="${mk === selected ? "on" : ""}" data-action="${action}" data-mk="${mk}">${m}</button>`; }).join("")}
+  </div>`;
+}
+function schedRow(o, { showDate = true } = {}) {
+  const cls = o.kind === "income" ? "good" : o.kind === "fund" ? "info" : o.kind === "debt" ? "warn" : "";
+  const sub = o.kind === "income" ? "Income" : o.kind === "fund" ? "Savings transfer" : o.kind === "debt" ? "Debt minimum" : `${o.isSub ? "Subscription" : "Bill"}${o.autopay ? " · autopay" : ""}`;
+  return `<div class="li ${o.done ? "done" : ""}">
+    ${showDate ? `<div class="when">${relDay(o.date)}</div>` : ""}
+    ${tick(o.done, `data-action="toggle-occ" data-key="${esc(o.key)}"`, o.kind === "income" ? "good" : "")}
+    <span class="dot ${cls}"></span>
+    <div class="name">${esc(o.emoji || "")} ${esc(o.name)}<small>${sub}</small></div>
+    <div class="amt ${o.kind === "income" ? "pos" : ""}">${o.kind === "income" ? "+" : ""}${moneyHTML(o.amount)}</div>
+  </div>`;
+}
+function txRow(t, { showDate = false } = {}) {
+  const cat = catById(t.catId);
+  const isIn = t.type === "income" || (t.type === "saving" && t.amount < 0);
+  const amount = t.type === "saving" && t.amount < 0 ? -t.amount : t.amount;
+  return `<div class="li" data-action="edit-tx" data-id="${t.id}" style="cursor:pointer">
+    ${showDate ? `<div class="when">${fmtDay(t.date)}</div>` : ""}
+    <span class="emoji-badge" style="${catStyle(cat)}">${esc(cat?.emoji || "•")}</span>
+    <div class="name">${esc(t.name || cat?.name || "Untitled")}<small>${esc(cat?.name || "Uncategorised")}${t.note ? " · " + esc(t.note) : ""}${t.link ? " · scheduled" : ""}</small></div>
+    <div class="amt ${isIn ? "pos" : ""}">${isIn ? "+" : ""}${moneyHTML(amount)}</div>
+  </div>`;
+}
+function occByKey(key) {
+  const date = key.slice(key.lastIndexOf(":") + 1);
+  return scheduleIn(date, date).find((o) => o.key === key);
+}
+function frequentSpends() {
+  const since = addDays(todayISO(), -90);
+  const map = {};
+  for (const t of S.transactions) {
+    if (t.type !== "expense" || t.link || t.date < since) continue;
+    const k = `${(t.name || "").toLowerCase()}|${t.catId}`;
+    const m = (map[k] ||= { name: t.name, catId: t.catId, amount: t.amount, n: 0, last: "" });
+    m.n++;
+    if (t.date >= m.last) { m.last = t.date; m.amount = t.amount; }
+  }
+  return Object.values(map).filter((x) => x.n >= 2).sort((a, b) => b.n - a.n).slice(0, 6);
+}
+const fundTotals = () => ({ saved: sum(S.funds, (f) => f.saved), target: sum(S.funds, (f) => f.target) });
+const debtTotals = () => {
+  const open = S.debts.filter((d) => d.balance > 0);
+  return { owed: sum(open, (d) => d.balance), minimums: sum(open, (d) => d.minimum), count: open.length };
+};
+
+/* ---------- Home ---------- */
+function viewHome() {
+  const today = todayISO();
+  const mk = ui.month;
+  const m = monthSummary(mk);
+  const isCur = mk === monthKey(today);
+  const ft = fundTotals(), dt = debtTotals();
+  const goalsActive = S.goals.filter((g) => g.status === "progress").length;
+  const upcoming = (isCur ? scheduleIn(today, addDays(today, 14)) : m.sched).slice(0, 7);
+  const catItems = S.categories
+    .map((c) => ({ label: c.name, short: c.name.split(/[ /&]/)[0], plan: catAvailable(c, mk), actual: catSpent(c.id, mk), color: catColor(c), soft: isDark() ? `hsl(${c.hue} 30% 22%)` : `hsl(${c.hue} 70% 92%)` }))
+    .filter((i) => i.plan > 0 || i.actual > 0);
+  const hello = S.profile.name ? `Hello, ${esc(S.profile.name)}` : "Hello there";
+  const greetingSub = isCur ? "Here's the shape of your money today." : `Looking back at ${monthLabel(mk)}.`;
+
+  return `
+  ${pageHead(hello, greetingSub, `<button class="btn" data-action="go" data-view="calendar">${icon("calendar")}Open calendar</button>`)}
+  ${monthsBar(mk)}
+  <div class="grid g-hero">
+    <div class="card hero-split" style="padding:0">
+      <div>
+        <div class="tiny">Saved across every fund</div>
+        <div class="tile big" style="background:none;border:0;padding:0"><div class="value">${moneyHTML(ft.saved)}</div></div>
+        <div class="tiny mt-s">across ${plural(S.funds.length, "fund")}${ft.target ? `, toward ${money(ft.target)}` : ""}</div>
+        ${ft.target ? `<div class="mt-s">${progressBar(ft.saved, ft.target)}</div>` : ""}
+      </div>
+      <div>
+        <div class="tiny">Still owed</div>
+        <div class="tile big" style="background:none;border:0;padding:0"><div class="value">${moneyHTML(dt.owed)}</div></div>
+        <div class="tiny mt-s">across ${plural(dt.count, "debt")}</div>
+      </div>
+    </div>
+    <div class="tile good big" data-action="go" data-view="today" style="cursor:pointer">
+      <div class="label">${icon("sparkle", 15)} ${monthName(mk)} safe to spend</div>
+      <div class="value ${m.safe < 0 ? "neg" : ""}">${moneyHTML(m.safe)}</div>
+      <div class="sub">${isCur ? `About ${money(Math.max(0, todaySummary().allowance))} a day for the rest of the month` : "Left after everything that month"}</div>
+    </div>
+  </div>
+  <div class="grid g4 mt">
+    <div class="tile accent"><div class="label">Money in</div><div class="value">${moneyHTML(m.income + m.expected)}</div><div class="sub">${money(m.income)} received${m.expected ? ` · ${money(m.expected)} expected` : ""}</div></div>
+    <div class="tile accent"><div class="label">Spent</div><div class="value">${moneyHTML(m.spent)}</div><div class="sub">${plural(m.txs.filter((t) => t.type === "expense").length, "transaction")}</div></div>
+    <div class="tile accent"><div class="label">Debt minimums monthly</div><div class="value">${moneyHTML(dt.minimums)}</div><div class="sub">${dt.count ? `${plural(dt.count, "debt")} in progress` : "Debt-free 🎉"}</div></div>
+    <div class="tile accent"><div class="label">Goals in progress</div><div class="value">${goalsActive}</div><div class="sub">${S.goals.filter((g) => g.status === "done").length} completed</div></div>
+  </div>
+
+  <div class="grid g-side mt">
+    <div class="card">
+      <div class="card-head"><h2>${isCur ? "Coming up" : `Scheduled in ${monthName(mk)}`}</h2><button class="btn sm" data-action="add-bill">${icon("plus")}Add bill</button></div>
+      ${upcoming.length ? `<div class="list">${upcoming.map((o) => schedRow(o)).join("")}</div>` : empty("🌤️", "Nothing due soon", "Add paychecks and bills and they'll show up here with a checkbox.", `<button class="btn primary" data-action="go" data-view="paycheck">Add a paycheck</button>`)}
+    </div>
+    <div class="card focus-hide">
+      <div class="card-head"><h3>${icon("info", 18)} How safe to spend works</h3></div>
+      ${formulaHTML(m)}
+      <p class="tiny mt">Safe to spend is what's left after every bill, savings transfer and debt payment you've planned this month. Spend it guilt-free.</p>
+    </div>
+  </div>
+
+  <div class="card mt focus-hide">
+    <div class="card-head"><h2>Budget vs. actuals — ${monthName(mk)}</h2><button class="btn sm" data-action="go" data-view="budget">Edit budget</button></div>
+    ${chartPlanVsActual(catItems)}
+  </div>
+
+  <div class="grid g2 mt focus-hide">
+    <div class="card"><div class="card-head"><h2>Where it went</h2></div>${spendingDonut(m.txs)}</div>
+    <div class="card">
+      <div class="card-head"><h2>Bills this month</h2><span class="pill muted">${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").filter((o) => o.done).length}/${m.sched.filter((o) => o.kind === "bill" || o.kind === "debt").length} paid</span></div>
+      ${(() => { const b = m.sched.filter((o) => o.kind === "bill" || o.kind === "debt"); return b.length ? `<div class="list">${b.map((o) => schedRow(o)).join("")}</div>` : empty("🧾", "No bills yet", "Add rent, phone, subscriptions…", `<button class="btn" data-action="add-bill">Add a bill</button>`); })()}
+    </div>
+  </div>`;
+}
+function formulaHTML(m) {
+  const row = (label, v, sign) => `<span>${label}</span><b class="m">${sign}${money(Math.abs(v))}</b>`;
+  return `<div class="formula">
+    ${row("Money received", m.income, "+ ")}
+    ${row("Paychecks still expected", m.expected, "+ ")}
+    ${row("Spent so far", m.spent, "− ")}
+    ${row("Moved to savings", m.saved, m.saved < 0 ? "+ " : "− ")}
+    ${row("Bills & debt still due", m.billsDue, "− ")}
+    ${row("Savings transfers planned", m.fundsDue, "− ")}
+    ${m.buffer ? row("Safety buffer", m.buffer, "− ") : ""}
+    <span class="tot">Safe to spend</span><b class="tot m ${m.safe < 0 ? "neg" : "pos"}">${money(m.safe)}</b>
+  </div>`;
+}
+function spendingDonut(txs) {
+  const totals = {};
+  for (const t of txs.filter((t) => t.type === "expense")) totals[t.catId] = (totals[t.catId] || 0) + t.amount;
+  const rows = Object.entries(totals).map(([id, v]) => ({ cat: catById(id), value: v })).sort((a, b) => b.value - a.value);
+  if (!rows.length) return empty("🍃", "No spending yet", "Once you track a spend, you'll see where your money goes.");
+  const top = rows.slice(0, 6), rest = rows.slice(6);
+  const segs = top.map((r) => ({ value: r.value, color: catColor(r.cat), label: r.cat?.name || "Other", emoji: r.cat?.emoji || "•" }));
+  if (rest.length) segs.push({ value: sum(rest, (r) => r.value), color: "var(--ink-3)", label: "Everything else", emoji: "…" });
+  return `<div class="donut-wrap">${donut(segs)}<div class="donut-legend">${segs.map((s) => `<div><i class="dot" style="background:${s.color}"></i>${esc(s.emoji)} ${esc(s.label)}<b>${moneyHTML(s.value)}</b></div>`).join("")}</div></div>`;
+}
+
+/* ---------- Today ---------- */
+function viewToday() {
+  const t = todaySummary();
+  const st = streak();
+  const checked = !!S.checkins[t.today];
+  const mood = S.moods[t.today];
+  const nextWeek = scheduleIn(t.today, addDays(t.today, 7));
+  const freq = frequentSpends();
+  const tasks = tinyTasks(t);
+  const ringP = t.allowance > 0 ? t.variableToday / t.allowance : t.variableToday > 0 ? 1 : 0;
+  const wd = [];
+  for (let i = 6; i >= 0; i--) wd.push(addDays(t.today, -i));
+  return `
+  ${pageHead(`${fmtLong(t.today).split(",")[0]}, ${fmtDay(t.today)}`, "A quick glance for right now: what you can spend, what's coming, one tiny task.")}
+  <div class="grid g-hero">
+    <div class="card today-hero">
+      <div class="row between wrap" style="align-items:flex-start">
+        <div class="grow" style="min-width:220px">
+          <div class="muted">You can spend today</div>
+          <div class="value ${t.leftToday < 0 ? "neg" : ""}">${moneyHTML(t.leftToday)}</div>
+          <div class="sub">${money(t.allowance)} a day for the next ${plural(t.daysLeft, "day")} · ${money(t.safe)} safe to spend this month</div>
+        </div>
+        ${ring(ringP, { size: 112, stroke: 11, label: `${pct(t.variableToday, t.allowance || 1)}%`, sub: "of today used", color: ringP > 1 ? "var(--bad)" : "var(--accent)" })}
+      </div>
+      <div class="row wrap mt">
+        <button class="btn primary" data-action="quick-add">${icon("plus")}Track spending</button>
+        ${t.variableToday === 0 ? `<button class="btn" data-action="toggle-nospend" data-date="${t.today}">${S.noSpend[t.today] ? "✓ No-spend day" : "🧘 Mark no-spend day"}</button>` : ""}
+      </div>
+    </div>
+    <div class="card">
+      <div class="streak"><span class="flame">${st > 0 ? "🔥" : "🌱"}</span><div><h2>${plural(st, "day")} streak</h2><p class="tiny">Check in daily — even 10 seconds counts.</p></div></div>
+      <div class="week-dots mt">${wd.map((d) => `<span class="${S.checkins[d] ? "on" : ""} ${d === t.today ? "today" : ""}" title="${fmtDay(d)}">${DOW[fromISO(d).getDay()][0]}</span>`).join("")}</div>
+      <button class="btn block mt ${checked ? "" : "primary"}" data-action="checkin" ${checked ? "disabled" : ""}>${checked ? "✓ Checked in today" : "I looked at my money today"}</button>
+      <div class="mt"><div class="tiny">How do you feel about money today?</div>
+        <div class="mood mt-s">${["😣", "😟", "😐", "🙂", "🤩"].map((e) => `<button class="${mood === e ? "on" : ""}" data-action="mood" data-mood="${e}" aria-label="Mood ${e}">${e}</button>`).join("")}</div>
+      </div>
+    </div>
+  </div>
+
+  ${tasks.length ? `<div class="card mt"><div class="card-head"><h2>✨ Tiny tasks</h2><span class="tiny">One at a time is plenty</span></div><div class="stack" style="gap:8px">${tasks.join("")}</div></div>` : ""}
+
+  ${freq.length ? `<div class="card mt"><div class="card-head"><h3>${icon("repeat", 18)} One-tap repeat</h3><span class="tiny">Your usual spends</span></div>
+    <div class="chips">${freq.map((f, i) => { const c = catById(f.catId); return `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(c?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`; }).join("")}</div></div>` : ""}
+
+  <div class="grid g2 mt">
+    <div class="card"><div class="card-head"><h2>Spent today</h2><b>${moneyHTML(sum(t.todays.filter((x) => x.type === "expense"), (x) => x.amount))}</b></div>
+      ${t.todays.length ? `<div class="list">${t.todays.map((x) => txRow(x)).join("")}</div>` : empty("🌿", "Nothing tracked today", "Tap Track spending (or press N) the moment you buy something.")}
+    </div>
+    <div class="card"><div class="card-head"><h2>Next 7 days</h2><button class="btn sm" data-action="go" data-view="calendar">Calendar</button></div>
+      ${nextWeek.length ? `<div class="list">${nextWeek.map((o) => schedRow(o)).join("")}</div>` : empty("☀️", "A quiet week", "No bills or paydays in the next 7 days.")}
+    </div>
+  </div>
+
+  <div class="card mt focus-hide">
+    <div class="card-head"><h3>🧠 Money brain dump</h3><span class="tiny">Saved automatically</span></div>
+    <textarea class="input" data-input="notes" placeholder="Cancel that free trial, ask about the refund, check the gas bill…">${esc(S.notes)}</textarea>
+  </div>`;
+}
+function tinyTasks(t) {
+  const out = [];
+  const nudge = (e, html, action = "") => `<div class="nudge"><span class="e">${e}</span><div class="grow">${html}</div>${action}</div>`;
+  const overdue = t.sched.filter((o) => !o.done && o.date < t.today);
+  for (const o of overdue.slice(0, 3)) {
+    const q = o.kind === "income" ? `Did your <b>${esc(o.name)}</b> arrive on ${fmtDay(o.date)}?` : `Did <b>${esc(o.name)}</b> get paid on ${fmtDay(o.date)}?`;
+    out.push(nudge(o.kind === "income" ? "💸" : "🧾", `${q} <span class="tiny">${money(o.amount)}</span>`, `<button class="btn sm" data-action="toggle-occ" data-key="${esc(o.key)}">Yes, check it off</button>`));
+  }
+  const ready = S.wishlist.filter((w) => !w.decision && Date.now() >= w.readyAt);
+  if (ready.length) out.push(nudge("⏸️", `<b>${esc(ready[0].name)}</b> finished its pause. Still want it?`, `<a class="btn sm" href="#impulse">Decide</a>`));
+  const steps = setupSteps();
+  const done = steps.filter((s) => s.done).length;
+  if (done < steps.length) out.push(nudge("🧭", `Finish setting up — <b>${done} of ${steps.length}</b> done. Next: ${esc(steps.find((s) => !s.done).label)}.`, `<a class="btn sm" href="#setup">Continue</a>`));
+  const lb = S.settings.lastBackup;
+  if (!IS_DEMO && S.transactions.length > 15 && (!lb || diffDays(lb, t.today) > 30)) out.push(nudge("💾", "Your data lives in this browser. Save a backup file — it takes 2 seconds.", `<button class="btn sm" data-action="export-json">Back up</button>`));
+  return out.slice(0, 5);
+}
+
+/* ---------- Calendar ---------- */
+function viewCalendar() {
+  const mk = ui.calMonth;
+  const ws = S.profile.weekStart || 0;
+  const first = fromISO(monthStart(mk));
+  const lead = (first.getDay() - ws + 7) % 7;
+  const start = addDays(monthStart(mk), -lead);
+  const cells = Math.ceil((lead + daysInMonth(first.getFullYear(), first.getMonth())) / 7) * 7;
+  const end = addDays(start, cells - 1);
+  const sched = scheduleIn(start, end);
+  const txs = txInRange(start, end);
+  const today = todayISO();
+  let grid = "";
+  for (let i = 0; i < 7; i++) grid += `<div class="dow">${DOW[(i + ws) % 7]}</div>`;
+  for (let i = 0; i < cells; i++) {
+    const d = addDays(start, i);
+    const ev = sched.filter((o) => o.date === d);
+    const spent = sum(txs.filter((t) => t.date === d && t.type === "expense" && !t.link), (t) => t.amount);
+    grid += `<button class="day ${monthKey(d) !== mk ? "out" : ""} ${d === today ? "today" : ""} ${d === ui.calSel ? "sel" : ""} ${S.noSpend[d] ? "nospend" : ""}" data-action="cal-day" data-date="${d}" aria-label="${fmtLong(d)}">
+      <span class="num"><span>${Number(d.slice(8))}</span>${S.noSpend[d] ? "<span title='No-spend day'>🧘</span>" : ""}</span>
+      ${ev.slice(0, 3).map((o) => `<span class="ev ${o.kind === "income" ? "inc" : o.kind} ${o.done ? "paid" : ""}">${esc(o.name)}</span>`).join("")}
+      ${ev.length > 3 ? `<span class="tiny">+${ev.length - 3} more</span>` : ""}
+      ${spent ? `<span class="spent m">−${money(spent)}</span>` : ""}
+    </button>`;
+  }
+  const sel = ui.calSel;
+  const selEv = scheduleIn(sel, sel);
+  const selTx = S.transactions.filter((t) => t.date === sel);
+  const m = monthSummary(mk);
+  return `
+  ${pageHead("Calendar", "Tap any day to see what's due, check things off, or add something.", `<button class="btn" data-action="cal-month" data-mk="${addMonths(mk, -1)}">${icon("chevL")}</button><button class="btn" data-action="cal-month" data-mk="${monthKey(today)}">Today</button><button class="btn" data-action="cal-month" data-mk="${addMonths(mk, 1)}">${icon("chevR")}</button>`)}
+  <div class="grid g-side">
+    <div class="card">
+      <div class="card-head"><h2>${monthLabel(mk)}</h2>
+        <div class="cal-legend"><span><i class="dot good"></i>Payday</span><span><i class="dot"></i>Bill</span><span><i class="dot warn"></i>Debt</span><span><i class="dot info"></i>Savings</span></div></div>
+      <div class="cal">${grid}</div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <div class="card-head"><h3>${fmtLong(sel)}</h3></div>
+        ${selEv.length ? `<div class="list">${selEv.map((o) => schedRow(o, { showDate: false })).join("")}</div>` : `<p class="tiny">Nothing scheduled.</p>`}
+        ${selTx.filter((t) => !t.link).length ? `<div class="day-group">Tracked</div><div class="list">${selTx.filter((t) => !t.link).map((t) => txRow(t)).join("")}</div>` : ""}
+        <div class="row wrap mt">
+          <button class="btn sm primary" data-action="quick-add" data-date="${sel}">${icon("plus")}Spend</button>
+          <button class="btn sm" data-action="add-bill" data-date="${sel}">${icon("receipt")}Bill</button>
+          <button class="btn sm" data-action="add-income" data-date="${sel}">${icon("wallet")}Payday</button>
+          ${sel <= today ? `<button class="btn sm" data-action="toggle-nospend" data-date="${sel}">${S.noSpend[sel] ? "✓ No-spend" : "🧘 No-spend"}</button>` : ""}
+        </div>
+      </div>
+      <div class="card">
+        <h3>${monthName(mk)} at a glance</h3>
+        <div class="formula mt">
+          <span>Paydays</span><b>${m.sched.filter((o) => o.kind === "income").length}</b>
+          <span>Bills & payments</span><b>${m.sched.filter((o) => o.kind !== "income").length}</b>
+          <span>Still to check off</span><b>${m.sched.filter((o) => !o.done).length}</b>
+          <span>No-spend days</span><b>${Object.keys(S.noSpend).filter((d) => monthKey(d) === mk).length}</b>
+          <span class="tot">Safe to spend</span><b class="tot m ${m.safe < 0 ? "neg" : "pos"}">${money(m.safe)}</b>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Paycheck plan ---------- */
+function viewPaycheck() {
+  const windows = paycheckPlan(4);
+  const today = todayISO();
+  const monthlyIncome = sum(S.incomes, (i) => perMonth(i.amount, i.freq));
+  const next = windows.find((w) => w.date >= today) || windows[0];
+  const splitBase = next ? next.amount : monthlyIncome;
+  return `
+  ${pageHead("Paycheck plan", "Budget one paycheck at a time: see exactly which bills each paycheck covers — and what's left to live on.", `<button class="btn primary" data-action="add-income">${icon("plus")}Add income</button>`)}
+  <div class="grid g-side">
+    <div class="stack">
+      ${windows.length ? windows.map((w) => paycheckCard(w, today)).join("") : `<div class="card">${empty("💸", "Add your paycheck to start", "Tell the planner how much you get paid and how often. It'll line up every bill with the paycheck that pays it.", `<button class="btn primary" data-action="add-income">Add my paycheck</button>`)}</div>`}
+    </div>
+    <div class="stack">
+      <div class="card">
+        <div class="card-head"><h3>Income sources</h3><span class="tiny">≈ ${money(monthlyIncome)}/month</span></div>
+        ${S.incomes.length ? `<div class="list">${S.incomes.map((i) => `<div class="li"><span class="emoji-badge" style="${catVars(150)}">${esc(i.emoji || "💰")}</span><div class="name">${esc(i.name)}<small>${FREQS[i.freq]} · next ${relDay(occurrences(i.freq, i.anchor, today, addDays(today, 400), i.endDate)[0] || i.anchor)}</small></div><div class="amt pos">${moneyHTML(i.amount)}</div><button class="btn ghost icon-btn" data-action="edit-income" data-id="${i.id}" aria-label="Edit">${icon("edit")}</button></div>`).join("")}</div>` : `<p class="tiny">No income yet.</p>`}
+      </div>
+      <div class="card">
+        <h3>50 / 30 / 20 helper</h3>
+        <p class="tiny mt-s">A simple starting split for ${next ? "your next paycheck" : "your monthly income"} of ${money(splitBase)}.</p>
+        <div class="stack mt" style="gap:10px">
+          ${[["Needs", 50, "Rent, bills, groceries"], ["Wants", 30, "Fun, eating out, hobbies"], ["Savings & debt", 20, "Future you"]].map(([l, p, h]) => `<div><div class="row between"><b>${l} · ${p}%</b><b class="m">${money((splitBase * p) / 100)}</b></div><div class="tiny">${h}</div><div class="mt-s">${progressBar(p, 100)}</div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function paycheckCard(w, today) {
+  const isNow = w.date <= today && w.end >= today;
+  const perDay = w.left / w.days;
+  return `<div class="card ${isNow ? "" : "flat"}" style="${isNow ? "border-color:var(--accent)" : ""}">
+    <div class="card-head">
+      <div><div class="row wrap">${isNow ? `<span class="pill acc">Current paycheck</span>` : w.date > today ? `<span class="pill muted">Upcoming</span>` : ""}<span class="tiny">${fmtLong(w.date)} → ${fmtDay(w.end)} · ${plural(w.days, "day")}</span></div>
+      <h2 class="mt-s">${esc(w.items[0].name)} ${moneyHTML(w.items[0].amount)}</h2>
+      ${w.extra.length ? `<div class="tiny mt-s">+ ${w.extra.map((o) => `${esc(o.name)} ${money(o.amount)} (${fmtDay(o.date)})`).join(", ")}</div>` : ""}</div>
+      <div style="text-align:right"><div class="tiny">Left after bills</div><div style="font-family:var(--font-head);font-size:1.6rem;font-weight:600" class="${w.left < 0 ? "neg" : "pos"}">${moneyHTML(w.left)}</div><div class="tiny">≈ ${money(Math.max(0, perDay))}/day</div></div>
+    </div>
+    ${progressBar(w.dueTotal, w.amount, "", true)}
+    <div class="tiny mt-s">${money(w.dueTotal)} of this paycheck is already spoken for (${pct(w.dueTotal, w.amount)}%).</div>
+    ${w.left < 0 ? `<div class="banner mt" style="margin-bottom:0"><span>⚠️ This paycheck is short by <b>${money(-w.left)}</b>. Try moving a bill's due date, using your buffer, or pulling from savings.</span></div>` : ""}
+    ${w.due.length ? `<div class="list mt">${w.due.map((o) => schedRow(o)).join("")}</div>` : `<p class="tiny mt">No bills due from this paycheck — it's all yours to plan.</p>`}
+  </div>`;
+}
+
+/* ---------- Transactions ---------- */
+function viewTransactions() {
+  const mk = ui.month;
+  const txs = txInMonth(mk);
+  const out = txs.filter((t) => t.type === "expense");
+  const total = sum(out, (t) => t.amount);
+  return `
+  ${pageHead("Transaction log", `Every dollar you've tracked in ${monthName(mk)}, in one place.`, `
+    <button class="btn" data-action="import-csv">${icon("upload")}Import CSV</button>
+    <button class="btn" data-action="export-csv">${icon("download")}Export CSV</button>
+    <button class="btn primary" data-action="quick-add">${icon("plus")}Add</button>`)}
+  ${monthsBar(mk)}
+  <div class="grid g4">
+    <div class="tile accent"><div class="label">Transactions in ${monthName(mk)}</div><div class="value">${txs.length}</div></div>
+    <div class="tile accent"><div class="label">Total spent</div><div class="value">${moneyHTML(total)}</div></div>
+    <div class="tile good"><div class="label">Income received</div><div class="value">${moneyHTML(sum(txs.filter((t) => t.type === "income"), (t) => t.amount))}</div></div>
+    <div class="tile accent"><div class="label">Average per spend</div><div class="value">${moneyHTML(out.length ? total / out.length : 0)}</div></div>
+  </div>
+  <div class="card mt">
+    <div class="row wrap" style="margin-bottom:8px">
+      <div class="grow" style="position:relative;min-width:200px"><input class="input" id="tx-search" placeholder="Search name, note or category…  ( / )" value="${esc(ui.txQuery)}" style="padding-left:38px"><span style="position:absolute;left:12px;top:10px;color:var(--ink-3)">${icon("search", 18)}</span></div>
+      <div class="seg">${[["all", "All"], ["expense", "Spending"], ["income", "Income"], ["saving", "Savings"]].map(([v, l]) => `<button class="${ui.txType === v ? "on" : ""}" data-action="tx-type" data-v="${v}">${l}</button>`).join("")}</div>
+      <select class="input" id="tx-cat" style="width:auto">${[["", "All categories"], ...catOptions(), ["debt", "💳 Debt payment"], ["savings", "🐷 Savings transfer"]].map(([v, l]) => `<option value="${v}" ${ui.txCat === v ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+    </div>
+    <div id="tx-list">${txListHTML()}</div>
+  </div>`;
+}
+function txListHTML() {
+  const q = ui.txQuery.trim().toLowerCase();
+  const txs = txInMonth(ui.month)
+    .filter((t) => ui.txType === "all" || t.type === ui.txType)
+    .filter((t) => !ui.txCat || t.catId === ui.txCat)
+    .filter((t) => !q || `${t.name} ${t.note} ${catById(t.catId)?.name || ""}`.toLowerCase().includes(q))
+    .sort((a, b) => (a.date === b.date ? b.createdAt - a.createdAt : a.date < b.date ? 1 : -1));
+  if (!txs.length) return empty("🔎", q || ui.txCat || ui.txType !== "all" ? "No matches" : "Nothing tracked this month", "Track a spend with the + button, or press N anywhere.");
+  let html = "", day = "";
+  for (const t of txs) {
+    if (t.date !== day) {
+      day = t.date;
+      const dayOut = sum(txs.filter((x) => x.date === day && x.type === "expense"), (x) => x.amount);
+      html += `${html ? "</div>" : ""}<div class="day-group"><span>${relDay(day)} · ${fmtDay(day)}</span><span class="m">${dayOut ? "−" + money(dayOut) : ""}</span></div><div class="list">`;
+    }
+    html += txRow(t);
+  }
+  return html + "</div>";
+}
+
+/* ---------- Budget (envelopes) ---------- */
+function viewBudget() {
+  const mk = ui.month;
+  const rows = S.categories.map((c) => ({ c, plan: catAvailable(c, mk), base: budgetFor(c, mk), spent: catSpent(c.id, mk) }));
+  const planned = sum(rows, (r) => r.plan), spent = sum(rows, (r) => r.spent);
+  const m = monthSummary(mk);
+  const inc = m.income + m.expected;
+  const groupSpend = (g) => sum(rows.filter((r) => r.c.group === g), (r) => r.spent);
+  const savingsPart = Math.max(0, m.saved) + m.fundsDue + sum(m.txs.filter((t) => t.catId === "debt"), (t) => t.amount);
+  const split = [["Needs", groupSpend("needs"), 50], ["Wants", groupSpend("wants"), 30], ["Savings & debt", savingsPart, 20]];
+  let table = "";
+  for (const g of ["needs", "wants"]) {
+    const gr = rows.filter((r) => r.c.group === g);
+    if (!gr.length) continue;
+    table += `<tr class="group"><td colspan="2">${GROUPS[g].label} <span class="tiny">· ${GROUPS[g].hint}</span></td><td class="r m">${money(sum(gr, (r) => r.plan))}</td><td class="r m hide-m">${money(sum(gr, (r) => r.spent))}</td><td class="r m">${money(sum(gr, (r) => r.plan - r.spent))}</td></tr>`;
+    for (const r of gr) {
+      const left = r.plan - r.spent;
+      table += `<tr>
+        <td><div class="cat-cell"><span class="emoji-badge" style="${catStyle(r.c)}">${esc(r.c.emoji)}</span><button class="btn ghost sm" style="padding:4px 6px" data-action="edit-cat" data-id="${r.c.id}">${esc(r.c.name)}</button>${r.c.rollover ? `<span class="pill muted" title="Unspent money rolls into next month">↻</span>` : ""}</div></td>
+        <td style="width:30%">${progressBar(r.spent, r.plan, catStyle(r.c))}</td>
+        <td class="r"><input class="input inline m" type="number" step="1" min="0" value="${round2(r.base)}" data-input="cat-budget" data-id="${r.c.id}" aria-label="Budget for ${esc(r.c.name)}">${r.plan !== r.base ? `<div class="tiny">${money(r.plan)} with rollover</div>` : ""}</td>
+        <td class="r m hide-m">${money(r.spent)}</td>
+        <td class="r m ${left < 0 ? "neg" : ""}">${money(left)}</td></tr>`;
+    }
+  }
+  return `
+  ${pageHead("Monthly budget", "Give every dollar a job. Tap an amount to change it — the chart and safe-to-spend update instantly.", `
+    <button class="btn" data-action="copy-budget">${icon("repeat")}Copy last month</button>
+    <button class="btn primary" data-action="add-cat">${icon("plus")}Category</button>`)}
+  ${monthsBar(mk)}
+  <div class="grid g4">
+    <div class="tile accent"><div class="label">Expected income</div><div class="value">${moneyHTML(inc)}</div></div>
+    <div class="tile accent"><div class="label">Budgeted</div><div class="value">${moneyHTML(planned)}</div><div class="sub">${inc ? `${pct(planned, inc)}% of income` : ""}</div></div>
+    <div class="tile accent"><div class="label">Spent</div><div class="value">${moneyHTML(spent)}</div><div class="sub">${pct(spent, planned)}% of budget</div></div>
+    <div class="tile ${planned - spent < 0 ? "bad" : "good"}"><div class="label">Left in budget</div><div class="value">${moneyHTML(planned - spent)}</div></div>
+  </div>
+  ${inc && planned > inc ? `<div class="banner mt">⚠️ You've budgeted <b>${money(planned - inc)}</b> more than you expect to earn this month.</div>` : ""}
+  <div class="grid g-side mt">
+    <div class="card">
+      <div class="card-head"><h2>Categories</h2>
+        <div class="seg" title="When you change an amount, apply it to…"><button class="${ui.budgetScope === "all" ? "on" : ""}" data-action="budget-scope" data-v="all">Every month</button><button class="${ui.budgetScope === "month" ? "on" : ""}" data-action="budget-scope" data-v="month">Only ${monthName(mk)}</button></div></div>
+      <div style="overflow-x:auto"><table class="env"><thead><tr><th>Category</th><th>Progress</th><th class="r">Budget</th><th class="r hide-m">Spent</th><th class="r">Left</th></tr></thead><tbody>${table}</tbody></table></div>
+    </div>
+    <div class="stack">
+      <div class="card"><h3>Your real 50 / 30 / 20</h3><p class="tiny mt-s">How this month's money is actually splitting up.</p>
+        <div class="stack mt" style="gap:12px">${split.map(([l, v, target]) => `<div><div class="row between"><b>${l}</b><span class="m">${money(v)} · <b>${pct(v, inc || 1)}%</b> <span class="tiny">/ ${target}%</span></span></div><div class="mt-s">${progressBar(pct(v, inc || 1), 100)}</div></div>`).join("")}</div>
+      </div>
+      <div class="card"><h3>Envelope tips</h3>
+        <p class="tiny mt-s">↻ <b>Rollover</b>: turn it on for a category (tap its name) and unspent money carries into next month — perfect for gifts, car repairs or travel.</p>
+        <p class="tiny mt-s">Bills you check off are counted in their category automatically.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card mt"><div class="card-head"><h2>Budget vs. actuals — ${monthName(mk)}</h2></div>
+    ${chartPlanVsActual(rows.filter((r) => r.plan > 0 || r.spent > 0).map((r) => ({ label: r.c.name, short: r.c.name.split(/[ /&]/)[0], plan: r.plan, actual: r.spent, color: catColor(r.c), soft: isDark() ? `hsl(${r.c.hue} 30% 22%)` : `hsl(${r.c.hue} 70% 92%)` })))}
+  </div>`;
+}
+
+/* ---------- Bills & subscriptions ---------- */
+function viewBills() {
+  const today = todayISO();
+  const nextOf = (b) => occurrences(b.freq, b.anchor, today, addDays(today, 400), b.endDate)[0];
+  const bills = [...S.bills].sort(by((b) => nextOf(b) || "9999"));
+  const subs = bills.filter((b) => b.isSub);
+  const monthlyAll = sum(bills, (b) => perMonth(b.amount, b.freq));
+  const monthlySubs = sum(subs, (b) => perMonth(b.amount, b.freq));
+  const cancelSave = sum(subs.filter((b) => b.review === "cancel"), (b) => perMonth(b.amount, b.freq) * 12);
+  const row = (b) => {
+    const n = nextOf(b);
+    const cat = catById(b.catId);
+    return `<div class="li"><span class="emoji-badge" style="${catStyle(cat)}">${esc(b.emoji || cat?.emoji || "🧾")}</span>
+      <div class="name">${esc(b.name)}<small>${FREQS[b.freq]}${b.autopay ? " · autopay" : ""}${cat ? " · " + esc(cat.name) : ""}</small></div>
+      <div class="when" style="width:auto">${n ? `Next: ${relDay(n)}` : "Ended"}</div>
+      <div class="amt">${moneyHTML(b.amount)}</div>
+      <button class="btn ghost icon-btn" data-action="edit-bill" data-id="${b.id}" aria-label="Edit ${esc(b.name)}">${icon("edit")}</button></div>`;
+  };
+  return `
+  ${pageHead("Bills & subscriptions", "Never miss a payment. Every bill shows up on your calendar and paycheck plan with a checkbox.", `<button class="btn primary" data-action="add-bill">${icon("plus")}Add bill</button>`)}
+  <div class="grid g4">
+    <div class="tile accent"><div class="label">Bills per month</div><div class="value">${moneyHTML(monthlyAll)}</div><div class="sub">${plural(bills.length, "bill")}</div></div>
+    <div class="tile accent"><div class="label">Subscriptions / month</div><div class="value">${moneyHTML(monthlySubs)}</div><div class="sub">${plural(subs.length, "subscription")}</div></div>
+    <div class="tile warn"><div class="label">Subscriptions / year</div><div class="value">${moneyHTML(monthlySubs * 12)}</div><div class="sub">That's the real cost 👀</div></div>
+    <div class="tile good"><div class="label">Savings if you cancel</div><div class="value">${moneyHTML(cancelSave)}</div><div class="sub">per year, from your review</div></div>
+  </div>
+  <div class="grid g-side mt">
+    <div class="card"><div class="card-head"><h2>All bills</h2></div>
+      ${bills.length ? `<div class="list">${bills.map(row).join("")}</div>` : empty("🧾", "No bills yet", "Add rent, utilities, phone, insurance, subscriptions — anything that repeats.", `<button class="btn primary" data-action="add-bill">Add my first bill</button>`)}
+    </div>
+    <div class="card"><div class="card-head"><h2>Subscription audit</h2></div>
+      <p class="tiny">Tap each one: do you still love it? Mark the ones to cancel and see what you'd save.</p>
+      ${subs.length ? `<div class="list mt-s">${subs.map((b) => `<div class="li"><div class="name">${esc(b.emoji || "📺")} ${esc(b.name)}<small>${money(perMonth(b.amount, b.freq) * 12)}/year</small></div>
+        <button class="pill ${b.review === "cancel" ? "bad" : b.review === "keep" ? "good" : "muted"}" data-action="sub-review" data-id="${b.id}">${b.review === "cancel" ? "Cancel it" : b.review === "keep" ? "Keep ♥" : "Review"}</button></div>`).join("")}</div>` : `<p class="tiny mt">Tick “This is a subscription” when adding a bill to audit it here.</p>`}
+    </div>
+  </div>`;
+}
+
+/* ---------- Savings ---------- */
+function viewSavings() {
+  const ft = fundTotals();
+  const monthly = sum(S.funds, (f) => perMonth(f.monthly || 0, f.freq || "monthly"));
+  const card = (f) => {
+    const p = f.target > 0 ? f.saved / f.target : 0;
+    const style = catStyle({ hue: f.hue ?? 205 });
+    const hist = S.transactions.filter((t) => t.effect?.fundId === f.id).sort(by((t) => t.date));
+    let run = f.saved - sum(hist, (t) => t.amount);
+    const series = [run, ...hist.map((t) => (run += t.amount))];
+    let needed = "";
+    if (f.targetDate && f.target > f.saved) {
+      const months = Math.max(1, monthsBetween(monthKey(todayISO()), monthKey(f.targetDate)));
+      needed = `Save <b>${money((f.target - f.saved) / months)}</b>/month to reach it by ${MONTHS_S[fromISO(f.targetDate).getMonth()]} ${f.targetDate.slice(0, 4)}.`;
+    } else if (f.monthly > 0 && f.target > f.saved) {
+      const months = Math.ceil((f.target - f.saved) / perMonth(f.monthly, f.freq || "monthly"));
+      needed = `At ${money(f.monthly)} ${FREQS[f.freq || "monthly"].toLowerCase()}, you'll get there around <b>${monthLabel(addMonths(monthKey(todayISO()), months))}</b>.`;
+    } else if (p >= 1) needed = "Fully funded — amazing work! 🦋";
+    return `<div class="card fund" style="${style}">
+      <div class="fund-top"><span class="big-emoji">${esc(f.emoji || "🐷")}</span><div class="grow"><h3>${esc(f.name)}</h3><div class="tiny">${f.target ? `Goal ${money(f.target)}` : "No target"}${f.targetDate ? ` · by ${fmtDay(f.targetDate)} ${f.targetDate.slice(0, 4)}` : ""}</div></div>
+        ${ring(p, { size: 76, stroke: 8, label: `${Math.round(p * 100)}%`, color: "var(--c)" })}</div>
+      <div class="row between"><div style="font-family:var(--font-head);font-size:1.6rem;font-weight:600">${moneyHTML(f.saved)}</div>${sparkline(series)}</div>
+      ${progressBar(f.saved, f.target, style, true)}
+      ${needed ? `<p class="tiny">${needed}</p>` : ""}
+      <div class="row wrap"><button class="btn sm primary" data-action="fund-money" data-id="${f.id}" data-mode="add">${icon("plus")}Add money</button><button class="btn sm" data-action="fund-money" data-id="${f.id}" data-mode="withdraw">Withdraw</button><button class="btn sm ghost" data-action="edit-fund" data-id="${f.id}">${icon("edit")}Edit</button></div>
+    </div>`;
+  };
+  return `
+  ${pageHead("Savings", "Set up as many funds as you like — an emergency cushion, a trip, a new laptop. Each one has its own progress and plan.", `<button class="btn primary" data-action="add-fund">${icon("plus")}New fund</button>`)}
+  <div class="grid g3">
+    <div class="tile good big"><div class="label">Total saved</div><div class="value">${moneyHTML(ft.saved)}</div><div class="sub">${ft.target ? `${pct(ft.saved, ft.target)}% of ${money(ft.target)}` : ""}</div></div>
+    <div class="tile accent"><div class="label">Planned each month</div><div class="value">${moneyHTML(monthly)}</div><div class="sub">automatic transfers on your calendar</div></div>
+    <div class="tile info"><div class="label">Still to save</div><div class="value">${moneyHTML(Math.max(0, ft.target - ft.saved))}</div></div>
+  </div>
+  <div class="grid g2 mt">${S.funds.length ? S.funds.map(card).join("") : `<div class="card" style="grid-column:1/-1">${empty("🐷", "Start your first savings fund", "Even $10 a paycheck adds up. An emergency fund is a great first one.", `<button class="btn primary" data-action="add-fund">Create a fund</button>`)}</div>`}</div>`;
+}
+
+/* ---------- Debt ---------- */
+function viewDebt() {
+  const dt = debtTotals();
+  const card = (d) => {
+    const paid = Math.max(0, (d.original || d.balance) - d.balance);
+    const orig = d.original || d.balance;
+    return `<div class="card">
+      <div class="fund-top"><span class="big-emoji" style="${catVars(30)}">${d.balance <= 0 ? "🕊️" : "💳"}</span><div class="grow"><h3>${esc(d.name)}</h3><div class="tiny">${d.apr}% APR · ${money(d.minimum)} minimum · due on the ${ordinal(Number((d.anchor || "").slice(8)) || 1)}</div></div>
+        <div style="text-align:right"><div style="font-family:var(--font-head);font-size:1.45rem;font-weight:600">${moneyHTML(d.balance)}</div><div class="tiny">left to pay</div></div></div>
+      <div class="mt">${progressBar(paid, orig, catVars(150), true)}</div>
+      <div class="row between mt-s"><span class="tiny">${money(paid)} paid off · ${pct(paid, orig)}%</span>
+        <div class="row"><button class="btn sm" data-action="debt-pay" data-id="${d.id}">${icon("plus")}Extra payment</button><button class="btn sm ghost" data-action="edit-debt" data-id="${d.id}">${icon("edit")}</button></div></div>
+    </div>`;
+  };
+  return `
+  ${pageHead("Debt payoff", "List what you owe, pick a strategy, and see your debt-free date. Every minimum payment lands on your calendar.", `<button class="btn primary" data-action="add-debt">${icon("plus")}Add debt</button>`)}
+  ${S.debts.length ? `
+  <div class="grid g4">
+    <div class="tile accent"><div class="label">Still owed</div><div class="value">${moneyHTML(dt.owed)}</div></div>
+    <div class="tile accent"><div class="label">Minimums / month</div><div class="value">${moneyHTML(dt.minimums)}</div></div>
+    <div id="debt-kpis" style="display:contents">${debtKpis()}</div>
+  </div>
+  <div class="grid g-side mt">
+    <div class="stack">${S.debts.map(card).join("")}</div>
+    <div class="card" id="debt-planner">${debtPlanner()}</div>
+  </div>` : `<div class="card">${empty("🕊️", "No debts — or not added yet", "Add credit cards, loans or buy-now-pay-later plans. We'll build your payoff plan and debt-free date.", `<button class="btn primary" data-action="add-debt">Add a debt</button>`)}</div>`}`;
+}
+const ordinal = (n) => n + (["th", "st", "nd", "rd"][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10] || "th");
+function debtKpis() {
+  const r = simulateDebts(ui.debtStrategy, ui.debtExtra);
+  return `<div class="tile good"><div class="label">Debt-free date</div><div class="value">${r.ok ? `${MONTHS_S[fromISO(monthStart(addMonths(monthKey(todayISO()), r.months))).getMonth()]} ${addMonths(monthKey(todayISO()), r.months).slice(0, 4)}` : "—"}</div><div class="sub">${r.ok ? `${plural(r.months, "month")} away` : "Minimums don't cover interest"}</div></div>
+    <div class="tile warn"><div class="label">Interest you'll pay</div><div class="value">${moneyHTML(r.interest)}</div><div class="sub">with your current plan</div></div>`;
+}
+function debtPlanner() {
+  const r = simulateDebts(ui.debtStrategy, ui.debtExtra);
+  const other = simulateDebts(ui.debtStrategy === "avalanche" ? "snowball" : "avalanche", ui.debtExtra);
+  const base = simulateDebts(ui.debtStrategy, 0);
+  const cur = monthKey(todayISO());
+  const diff = other.interest - r.interest;
+  return `<div class="card-head"><h2>Payoff planner</h2></div>
+    <div class="seg"><button class="${ui.debtStrategy === "avalanche" ? "on" : ""}" data-action="debt-strategy" data-v="avalanche">🏔️ Avalanche</button><button class="${ui.debtStrategy === "snowball" ? "on" : ""}" data-action="debt-strategy" data-v="snowball">⛄ Snowball</button></div>
+    <p class="tiny mt-s">${ui.debtStrategy === "avalanche" ? "Highest interest first — saves the most money." : "Smallest balance first — quick wins that keep you motivated."}</p>
+    <label class="field mt"><span>Extra each month: <b class="m">${money(ui.debtExtra)}</b></span><input type="range" min="0" max="1500" step="25" value="${ui.debtExtra}" data-input="debt-extra" aria-label="Extra monthly payment"></label>
+    ${r.ok ? `<div class="formula mt">
+      <span>Debt-free in</span><b>${plural(r.months, "month")}</b>
+      <span>Total interest</span><b class="m">${money(r.interest)}</b>
+      ${ui.debtExtra > 0 && base.ok ? `<span>Your extra saves</span><b class="m pos">${money(base.interest - r.interest)} · ${plural(base.months - r.months, "month")}</b>` : ""}
+      <span>vs. ${ui.debtStrategy === "avalanche" ? "snowball" : "avalanche"}</span><b class="m ${diff >= 0 ? "pos" : "neg"}">${diff >= 0 ? "saves " : "costs "}${money(Math.abs(diff))}</b>
+    </div>
+    <div class="mt">${chartLine([{ values: r.series }, { values: base.series, cls: "alt" }], (i) => { const mk = addMonths(cur, i); return `${MONTHS_S[Number(mk.slice(5)) - 1]} ’${mk.slice(2, 4)}`; }, { height: 230, width: 420, aria: "Total debt balance over time" })}</div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>With extra</span><span><i style="background:var(--ink-3)"></i>Minimums only</span></div>
+    <h3 class="mt">Payoff order</h3>
+    <div class="timeline mt-s">${r.order.map((d, i) => `<div class="t" data-n="${i + 1}"><b>${esc(d.name)}</b> <span class="tiny">${d.apr}% · ${money(d.start)}</span><div class="tiny">Paid off ${d.month ? monthLabel(addMonths(cur, d.month)) : "—"}</div></div>`).join("")}</div>`
+    : `<div class="banner mt">Your minimum payments don't cover the interest. Add an extra amount above to see a payoff date.</div>`}`;
+}
+
+/* ---------- Goals ---------- */
+const GOAL_STATUS = { not: ["Not started", "muted"], progress: ["In progress", "acc"], done: ["Done ✓", "good"] };
+function viewGoals() {
+  const card = (g) => {
+    const f = S.funds.find((x) => x.id === g.fundId);
+    const steps = g.steps || [];
+    const [label, cls] = GOAL_STATUS[g.status] || GOAL_STATUS.not;
+    return `<div class="card">
+      <div class="fund-top"><span class="big-emoji">${esc(g.emoji || "🎯")}</span><div class="grow"><h3>${esc(g.name)}</h3>${g.targetDate ? `<div class="tiny">Target: ${fmtDay(g.targetDate)} ${g.targetDate.slice(0, 4)}</div>` : ""}</div>
+        <button class="pill ${cls}" data-action="goal-status" data-id="${g.id}" title="Tap to change">${label}</button></div>
+      ${g.why ? `<p class="muted mt-s" style="font-style:italic">“${esc(g.why)}”</p>` : ""}
+      ${f ? `<div class="mt"><div class="row between tiny"><span>${esc(f.emoji)} ${esc(f.name)}</span><span class="m">${money(f.saved)} / ${money(f.target)}</span></div><div class="mt-s">${progressBar(f.saved, f.target)}</div></div>` : ""}
+      ${steps.length ? `<div class="steps">${steps.map((s, i) => `<label class="${s.done ? "done" : ""}"><input type="checkbox" ${s.done ? "checked" : ""} data-action="goal-step" data-id="${g.id}" data-i="${i}"><span>${esc(s.text)}</span></label>`).join("")}</div><div class="tiny mt-s">${steps.filter((s) => s.done).length} of ${steps.length} steps done</div>` : ""}
+      <div class="row mt"><input class="input" placeholder="Add a tiny next step…" data-input="goal-step-add" data-id="${g.id}" style="padding:7px 10px"><button class="btn sm ghost" data-action="edit-goal" data-id="${g.id}">${icon("edit")}</button></div>
+    </div>`;
+  };
+  const order = { progress: 0, not: 1, done: 2 };
+  return `
+  ${pageHead("Goals", "Turn big dreams into tiny steps. Tap a status pill to move a goal along.", `<button class="btn primary" data-action="add-goal">${icon("plus")}New goal</button>`)}
+  <div class="grid g3">${[["not", "Not started"], ["progress", "In progress"], ["done", "Achieved"]].map(([k, l]) => `<div class="tile ${k === "done" ? "good" : "accent"}"><div class="label">${l}</div><div class="value">${S.goals.filter((g) => g.status === k).length}</div></div>`).join("")}</div>
+  <div class="grid g2 mt">${S.goals.length ? [...S.goals].sort(by((g) => order[g.status] ?? 1)).map(card).join("") : `<div class="card" style="grid-column:1/-1">${empty("🌈", "What are you saving or working toward?", "A trip, being debt-free, a 3-month cushion… write it down and break it into steps.", `<button class="btn primary" data-action="add-goal">Add a goal</button>`)}</div>`}</div>`;
+}
+
+/* ---------- Impulse Pause ---------- */
+function timeLeft(ms) {
+  const h = Math.ceil(ms / 3600000);
+  if (h >= 48) return `${Math.floor(h / 24)}d ${h % 24}h`;
+  if (h >= 1) return `${h}h`;
+  return `${Math.max(1, Math.ceil(ms / 60000))}m`;
+}
+function viewImpulse() {
+  const now = Date.now();
+  const waiting = S.wishlist.filter((w) => !w.decision).sort(by((w) => w.readyAt));
+  const decided = S.wishlist.filter((w) => w.decision).sort((a, b) => (b.decidedAt || 0) - (a.decidedAt || 0));
+  return `
+  ${pageHead("Impulse Pause", "Want something right now? Park it here. When the timer ends, decide with a calm brain — not a dopamine rush.")}
+  <div class="grid g3">
+    <div class="tile good big"><div class="label">Saved by pausing</div><div class="value">${moneyHTML(S.skippedTotal || 0)}</div><div class="sub">${plural(decided.filter((w) => w.decision === "skipped").length, "item")} skipped</div></div>
+    <div class="tile accent"><div class="label">Waiting it out</div><div class="value">${waiting.length}</div><div class="sub">${money(sum(waiting, (w) => w.price))} on pause</div></div>
+    <div class="tile accent"><div class="label">Bought after thinking</div><div class="value">${decided.filter((w) => w.decision === "bought").length}</div><div class="sub">no guilt — you decided on purpose</div></div>
+  </div>
+  <div class="grid g-side mt">
+    <div class="stack">
+      ${waiting.length ? waiting.map((w) => {
+        const ready = now >= w.readyAt;
+        return `<div class="card wish ${ready ? "ready" : ""}"><span class="big-emoji">${ready ? "⏰" : "⏳"}</span>
+          <div class="grow"><h3>${esc(w.name)}</h3><div class="tiny">${money(w.price)}${w.link ? ` · <a href="${esc(w.link)}" target="_blank" rel="noopener">link</a>` : ""} · paused ${relDay(toISO(new Date(w.addedAt))).toLowerCase()}</div>
+            ${ready ? `<p class="mt-s"><b>Pause over.</b> Do you still want it as much?</p>` : `<div class="timer mt-s">Ready in ${timeLeft(w.readyAt - now)}</div>`}</div>
+          <div class="stack" style="gap:6px">${ready ? `<button class="btn sm primary" data-action="wish-skip" data-id="${w.id}">Skip it 💎</button><button class="btn sm" data-action="wish-buy" data-id="${w.id}">Buy it</button>` : `<button class="btn sm" data-action="wish-skip" data-id="${w.id}">Skip now</button>`}<button class="btn sm ghost" data-action="wish-delete" data-id="${w.id}">Remove</button></div></div>`;
+      }).join("") : `<div class="card">${empty("⏸️", "Nothing on pause", "Next time you're about to buy on a whim, add it here first. Most urges fade in 48 hours.")}</div>`}
+      ${decided.length ? `<div class="card"><h3>History</h3><div class="list mt-s">${decided.slice(0, 12).map((w) => `<div class="li"><div class="name">${esc(w.name)}<small>${w.decision === "skipped" ? "Skipped" : "Bought"} · ${relDay(toISO(new Date(w.decidedAt || w.addedAt)))}</small></div><span class="pill ${w.decision === "skipped" ? "good" : "muted"}">${w.decision === "skipped" ? "+" + money(w.price) + " kept" : money(w.price)}</span></div>`).join("")}</div></div>` : ""}
+    </div>
+    <form class="card" data-form="wish">
+      <h3>Pause a purchase</h3>
+      <div class="stack mt" style="gap:12px">
+        ${field("What do you want?", inp("name", "", 'required placeholder="e.g. New sneakers"'))}
+        ${field("Price", moneyInp("price", "", "required"))}
+        ${field("Link", inp("link", "", 'type="url" placeholder="Optional"'))}
+        <div class="field"><span>Wait for</span><div class="seg">${[["24", "24h"], ["48", "48h"], ["72", "3 days"], ["168", "1 week"]].map(([v, l], i) => `<label style="cursor:pointer"><input type="radio" name="hours" value="${v}" ${i === 1 ? "checked" : ""} class="sr-only"><button type="button" class="${i === 1 ? "on" : ""}" data-action="seg-radio">${l}</button></label>`).join("")}</div></div>
+        <button class="btn primary">${icon("pause")}Start the pause</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+/* ---------- Streaks & rewards ---------- */
+function viewRewards() {
+  const today = todayISO();
+  const mk = monthKey(today);
+  const st = streak();
+  const nsMonth = Object.keys(S.noSpend).filter((d) => monthKey(d) === mk).length;
+  const [y, m] = mk.split("-").map(Number);
+  let ns = "";
+  for (let d = 1; d <= daysInMonth(y, m - 1); d++) {
+    const iso = `${mk}-${pad(d)}`;
+    ns += `<button class="${S.noSpend[iso] ? "on" : ""} ${iso > today ? "future" : ""} ${iso === today ? "today" : ""}" ${iso > today ? "disabled" : `data-action="toggle-nospend" data-date="${iso}"`} aria-label="${fmtDay(iso)}">${d}</button>`;
+  }
+  const earned = BADGES.filter((b) => S.badges[b.id]).length;
+  return `
+  ${pageHead("Streaks & rewards", "Small wins deserve a celebration. Build the habit one check-in at a time.")}
+  <div class="grid g3">
+    <div class="tile accent big"><div class="label">Check-in streak</div><div class="value">🔥 ${st}</div><div class="sub">${st ? "Keep it going tomorrow!" : "Check in today to start one"}</div></div>
+    <div class="tile good big"><div class="label">No-spend days in ${monthName(mk)}</div><div class="value">🧘 ${nsMonth}</div><div class="sub">${nsMonth >= 5 ? "Challenge complete! 🏆" : `${5 - nsMonth} more for the No-spend hero badge`}</div></div>
+    <div class="tile info big"><div class="label">Badges earned</div><div class="value">🏅 ${earned}/${BADGES.length}</div></div>
+  </div>
+  <div class="grid g-side mt">
+    <div class="card"><div class="card-head"><h2>Badges</h2></div>
+      <div class="badges">${BADGES.map((b) => `<div class="badge ${S.badges[b.id] ? "" : "locked"}"><div class="e">${b.e}</div><b>${esc(b.name)}</b><span>${esc(b.desc)}</span>${S.badges[b.id] ? `<div class="tiny mt-s">✓ ${fmtDay(S.badges[b.id])}</div>` : ""}</div>`).join("")}</div>
+    </div>
+    <div class="card"><div class="card-head"><h2>No-spend challenge</h2></div>
+      <p class="tiny">Tap a day when you spent nothing beyond your planned bills. Aim for 5 this month.</p>
+      <div class="mt">${progressBar(nsMonth, 5, catVars(150), true)}</div>
+      <div class="ns-grid mt">${ns}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Year in review ---------- */
+function viewYear() {
+  const yr = ui.year;
+  const rows = MONTHS_S.map((label, i) => {
+    const mk = `${yr}-${pad(i + 1)}`;
+    const txs = txInMonth(mk);
+    return { label, mk, inc: sum(txs.filter((t) => t.type === "income"), (t) => t.amount), spent: sum(txs.filter((t) => t.type === "expense"), (t) => t.amount), saved: sum(txs.filter((t) => t.type === "saving"), (t) => t.amount) };
+  }).map((r) => ({ ...r, out: r.spent + r.saved }));
+  const inc = sum(rows, (r) => r.inc), spent = sum(rows, (r) => r.spent), saved = sum(rows, (r) => r.saved);
+  const yearTx = txInRange(`${yr}-01-01`, `${yr}-12-31`).filter((t) => t.type === "expense");
+  const byCat = {};
+  for (const t of yearTx) byCat[t.catId] = (byCat[t.catId] || 0) + t.amount;
+  const top = Object.entries(byCat).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const maxCat = top[0]?.[1] || 1;
+  return `
+  ${pageHead(`Year in review — ${yr}`, "Your income, spending and savings over time. Progress looks good on you.", `<button class="btn" data-action="year" data-v="${yr - 1}">${icon("chevL")}${yr - 1}</button><button class="btn" data-action="year" data-v="${yr + 1}">${yr + 1}${icon("chevR")}</button><button class="btn" data-action="print">${icon("printer")}Print</button>`)}
+  <div class="grid g4">
+    <div class="tile good"><div class="label">Total income</div><div class="value">${moneyHTML(inc)}</div></div>
+    <div class="tile accent"><div class="label">Total spent</div><div class="value">${moneyHTML(spent)}</div></div>
+    <div class="tile info"><div class="label">Moved to savings</div><div class="value">${moneyHTML(saved)}</div></div>
+    <div class="tile accent"><div class="label">Savings rate</div><div class="value">${inc ? Math.round(((inc - spent) / inc) * 100) : 0}%</div><div class="sub">of income not spent</div></div>
+  </div>
+  <div class="card mt"><div class="card-head"><h2>Money in vs. money out</h2></div>${chartInOut(rows)}</div>
+  <div class="grid g2 mt">
+    <div class="card"><div class="card-head"><h2>Top categories</h2></div>
+      ${top.length ? `<div class="stack" style="gap:10px">${top.map(([id, v]) => { const c = catById(id); return `<div><div class="row between"><span>${esc(c?.emoji || "")} ${esc(c?.name || "Other")}</span><b class="m">${money(v)}</b></div><div class="mt-s">${progressBar(v, maxCat, catStyle(c))}</div></div>`; }).join("")}</div>` : `<p class="tiny">No spending recorded in ${yr}.</p>`}
+    </div>
+    <div class="card"><div class="card-head"><h2>Month by month</h2></div>
+      <table class="env"><thead><tr><th>Month</th><th class="r">In</th><th class="r">Out</th><th class="r">Net</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr><td><button class="btn ghost sm" data-action="open-month" data-mk="${r.mk}">${MONTHS[Number(r.mk.slice(5)) - 1]}</button></td><td class="r m">${money(r.inc)}</td><td class="r m">${money(r.out)}</td><td class="r m ${r.inc - r.out < 0 ? "neg" : "pos"}">${money(r.inc - r.out)}</td></tr>`).join("")}
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+/* ---------- Getting started ---------- */
+function viewSetup() {
+  const steps = setupSteps();
+  const done = steps.filter((s) => s.done).length;
+  const guide = [
+    ["Home", "Pick any month and see its whole picture — savings, debt, what's coming up, and your budget vs. actuals as a chart."],
+    ["Today", "Your 10-second check-in: how much you can spend today, one tiny task, and your streak. Open this one daily."],
+    ["Calendar", "Tap any day to add a bill, payday or spend. Recurring items repeat automatically. Check things off as they happen."],
+    ["Paycheck plan", "Budget one paycheck at a time. See which bills each paycheck must cover and what's left per day."],
+    ["Transactions", "Every spend in one searchable list. Import from your bank's CSV or export for your records."],
+    ["Budget", "Set an amount per category. Turn on rollover to let unspent money carry into next month."],
+    ["Bills & subscriptions", "All your repeating costs plus a subscription audit that shows the real yearly cost."],
+    ["Savings & Debt", "Funds with progress rings, and a snowball/avalanche planner that shows your debt-free date."],
+    ["Impulse Pause", "Park impulse buys behind a 24h–7 day timer. Skipped purchases add to your “saved by pausing” total."],
+    ["Streaks & rewards", "Check-in streaks, a no-spend challenge and badges — small dopamine hits for good money habits."],
+  ];
+  return `
+  ${pageHead("Getting started", "A quick tour of what's here — plus a checklist so you always know the next step.", `<button class="btn" data-action="load-sample">${icon("sparkle")}Load sample data</button>`)}
+  <div class="grid g-side">
+    <div class="stack">
+      <div class="card">
+        <div class="card-head"><h2>Your setup checklist</h2>${ring(done / steps.length, { size: 64, stroke: 7, label: `${done}/${steps.length}` })}</div>
+        <div class="checklist">${steps.map((s, i) => `<a href="${s.href}" class="${s.done ? "done" : ""}"><span class="n">${s.done ? "✓" : i + 1}</span><div class="grow"><b>${esc(s.label)}</b><div class="tiny">${esc(s.hint)}</div></div>${icon("chevR", 18)}</a>`).join("")}</div>
+      </div>
+      <div class="card guide"><h2>How each section works</h2>${guide.map(([h, p]) => `<h3>${h}</h3><p>${p}</p>`).join("")}</div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h3>Your currency</h3><p class="tiny mt-s">Every amount in the planner uses this.</p>
+        <select class="input mt" data-input="currency">${CURRENCIES.map(([c, n]) => `<option value="${c}" ${S.profile.currency === c ? "selected" : ""}>${n} — ${c}</option>`).join("")}</select>
+      </div>
+      <div class="card"><h3>Made for busy brains</h3>
+        <p class="tiny mt-s">✨ <b>Focus mode</b> hides everything but the essentials.</p>
+        <p class="tiny mt-s">👁 <b>Privacy blur</b> hides amounts when someone's looking over your shoulder.</p>
+        <p class="tiny mt-s">🔤 <b>Readable font</b> and <b>large text</b> in Settings.</p>
+        <p class="tiny mt-s">🌙 <b>Night mode</b> and 8 colour themes — or pick your own colour.</p>
+      </div>
+      <div class="card"><h3>Keyboard shortcuts</h3>
+        <div class="formula mt"><span>Track spending</span><span class="kbd">N</span><span>Search transactions</span><span class="kbd">/</span><span>Toggle night mode</span><span class="kbd">D</span><span>Privacy blur</span><span class="kbd">P</span><span>Close a window</span><span class="kbd">Esc</span></div>
+      </div>
+      <div class="card"><h3>Your data stays yours</h3><p class="tiny mt-s">Everything is saved privately in this browser on this device — no account, no cloud, no tracking. Use <b>Settings → Back up</b> to save a file you can restore anywhere.</p></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Settings ---------- */
+function viewSettings() {
+  const st = S.settings;
+  const seg = (key, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${String(st[key]) === String(v) ? "on" : ""}" data-action="set" data-key="${key}" data-v="${v}">${l}</button>`).join("")}</div>`;
+  return `
+  ${pageHead("Settings", "Make it look and feel like yours.")}
+  <div class="grid g2">
+    <div class="stack">
+      <div class="card"><h2>Profile</h2>
+        <div class="form-grid mt">
+          ${field("Your name", `<input class="input" data-input="name" value="${esc(S.profile.name)}" placeholder="e.g. Alex">`)}
+          ${field("Currency", `<select class="input" data-input="currency">${CURRENCIES.map(([c, n]) => `<option value="${c}" ${S.profile.currency === c ? "selected" : ""}>${c} — ${n}</option>`).join("")}</select>`)}
+          ${field("Week starts on", `<select class="input" data-input="weekStart"><option value="1" ${S.profile.weekStart === 1 ? "selected" : ""}>Monday</option><option value="0" ${S.profile.weekStart === 0 ? "selected" : ""}>Sunday</option></select>`)}
+          ${field("Safety buffer", `<input class="input" type="number" min="0" step="10" data-input="buffer" value="${S.profile.buffer || 0}">`, "", "kept out of safe to spend")}
+        </div>
+      </div>
+      <div class="card"><h2>Appearance</h2>
+        <div class="stack mt" style="gap:16px">
+          <div class="field"><span>Mode</span>${seg("theme", [["light", "☀️ Day"], ["dark", "🌙 Night"], ["auto", "Auto"]])}</div>
+          <div class="field"><span>Colour theme</span><div class="swatches">${PALETTES.map((p) => `<button class="swatch ${st.palette === p.id ? "on" : ""}" data-action="palette" data-id="${p.id}" title="${p.name}" aria-label="${p.name}"><span style="background:linear-gradient(135deg,hsl(${p.h} ${p.s}% 60%),hsl(${p.h} ${p.s}% 88%))"></span></button>`).join("")}</div></div>
+          <div class="field"><span>Or pick any colour</span><input type="range" class="hue-range" min="0" max="359" value="${st.h}" data-input="hue" aria-label="Accent hue"></div>
+          <div class="field"><span>Colour strength</span><input type="range" min="0" max="85" value="${st.s}" data-input="sat" aria-label="Accent saturation"></div>
+          <div class="field"><span>Font</span>${seg("font", [["elegant", "Elegant"], ["readable", "Readable (Lexend)"], ["classic", "Classic"]])}</div>
+          <div class="field"><span>Text size</span>${seg("size", [["normal", "Comfortable"], ["large", "Large"]])}</div>
+          <div class="field"><span>Animations</span>${seg("motion", [["on", "On"], ["off", "Reduced"]])}</div>
+          ${chk("celebrate", st.celebrate, "Celebrate wins with confetti 🎉").replace("<input", `<input data-input="celebrate"`)}
+        </div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card"><h2>Calm & focus</h2>
+        <div class="stack mt" style="gap:12px">
+          ${chk("focus", st.focus, "<b>Focus mode</b> — show only the essentials").replace("<input", `<input data-input="focus"`)}
+          ${chk("privacy", st.privacy, "<b>Privacy blur</b> — hide amounts until you hover").replace("<input", `<input data-input="privacy"`)}
+        </div>
+      </div>
+      <div class="card"><h2>Your data</h2>
+        <p class="tiny mt-s">Saved automatically in this browser.${st.lastBackup ? ` Last backup: ${fmtDay(st.lastBackup)}.` : " No backup yet."}</p>
+        ${IS_DEMO ? `<div class="banner mt">Backups and imports are part of the full version.</div>` : ""}
+        <div class="row wrap mt">
+          <button class="btn primary" data-action="export-json" ${IS_DEMO ? "disabled" : ""}>${icon("download")}Back up (.json)</button>
+          <button class="btn" data-action="import-json" ${IS_DEMO ? "disabled" : ""}>${icon("upload")}Restore backup</button>
+          <button class="btn" data-action="export-csv">${icon("download")}Transactions CSV</button>
+          <button class="btn" data-action="print">${icon("printer")}Print / PDF</button>
+        </div>
+        <div class="row wrap mt">
+          <button class="btn" data-action="load-sample">${icon("sparkle")}Load sample data</button>
+          <button class="btn danger" data-action="reset">${icon("trash")}Erase everything</button>
+        </div>
+      </div>
+      <div class="card"><h2>Use it everywhere</h2>
+        <p class="tiny mt-s"><b>Offline:</b> keep the downloaded <code>.html</code> file and open it in any browser — no internet needed.</p>
+        <p class="tiny mt-s"><b>Phone:</b> open the online link, then “Add to Home Screen” to install it like an app.</p>
+        <p class="tiny mt-s"><b>Move devices:</b> back up here, then restore the file on the other device.</p>
+      </div>
+      <div class="card"><h2>About</h2><p class="tiny mt-s">${APP_NAME} · ${IS_DEMO ? "Free demo" : "Full edition"} · v1.0</p><p class="tiny mt-s">This planner is a budgeting tool, not financial advice.</p></div>
+    </div>
+  </div>`;
+}
+
+const VIEWS = {
+  setup: viewSetup, home: viewHome, today: viewToday, calendar: viewCalendar, paycheck: viewPaycheck,
+  transactions: viewTransactions, budget: viewBudget, bills: viewBills, savings: viewSavings, debt: viewDebt,
+  goals: viewGoals, impulse: viewImpulse, rewards: viewRewards, year: viewYear, settings: viewSettings,
+};

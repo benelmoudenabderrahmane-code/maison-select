@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Boot: shell, router, theme, global events
+   ========================================================================== */
+
+function applyTheme() {
+  const st = S.settings;
+  const root = document.documentElement;
+  const dark = st.theme === "dark" || (st.theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+  root.dataset.theme = dark ? "dark" : "light";
+  root.style.setProperty("--h", st.h);
+  root.style.setProperty("--s", st.s + "%");
+  root.dataset.font = st.font;
+  root.dataset.size = st.size;
+  root.dataset.motion = st.motion;
+  document.body.classList.toggle("privacy", !!st.privacy);
+  document.body.classList.toggle("focus", !!st.focus);
+  const meta = $('meta[name="theme-color"]');
+  if (meta) meta.content = getComputedStyle(root).getPropertyValue("--bg").trim() || "#fff";
+}
+
+function sidebarHTML() {
+  const ready = S.wishlist.filter((w) => !w.decision && Date.now() >= w.readyAt).length;
+  const counts = { impulse: ready };
+  let html = "";
+  for (const n of NAV) {
+    if (n.group) { html += `<div class="nav-label ${n.nf ? "nf" : ""}">${n.group}</div>`; continue; }
+    html += `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""} ${n.nf ? "nf" : ""}" ${ui.view === n.id ? 'aria-current="page"' : ""}>${icon(n.icon)}<span>${n.label}</span>${counts[n.id] ? `<span class="badge-dot">${counts[n.id]}</span>` : ""}</a>`;
+  }
+  return `
+    <div class="brand"><div class="brand-mark">${icon("logo")}</div><div><b>${APP_NAME}</b><span>${S.profile.name ? `${esc(S.profile.name)}'s money plan` : APP_TAGLINE}</span></div></div>
+    <button class="btn primary track-btn" data-action="quick-add">${icon("plus")}Track spending</button>
+    <nav class="nav" aria-label="Main">${html}</nav>
+    <div class="sidebar-foot">
+      <button class="btn icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
+      <button class="btn icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
+      <button class="btn icon-btn ${S.settings.focus ? "primary" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode">${icon("focus")}</button>
+    </div>`;
+}
+function tabbarHTML() {
+  const t = (id, ic, label) => `<a href="#${id}" class="${ui.view === id ? "active" : ""}">${icon(ic)}<span>${label}</span></a>`;
+  return `${t("home", "home", "Home")}${t("today", "sun", "Today")}
+    <button class="plus" data-action="quick-add" aria-label="Track spending"><span>${icon("plus")}</span></button>
+    ${t("calendar", "calendar", "Calendar")}<button data-action="more" class="${["home", "today", "calendar"].includes(ui.view) ? "" : "active"}">${icon("more")}<span>More</span></button>`;
+}
+
+function render() {
+  const main = $("#main");
+  if (!main) return;
+  if (!VIEWS[ui.view]) ui.view = "home";
+  const banner = IS_DEMO
+    ? `<div class="banner demo"><b>✨ Free demo</b><span>Explore every feature with sample data. Changes reset when you close the tab.</span><a class="btn sm" href="${SHOP_URL}" target="_blank" rel="noopener" style="margin-left:auto">Get the full planner</a></div>`
+    : !storage ? `<div class="banner">⚠️ Your browser is blocking storage (private mode?), so changes won't be kept after you close this page.</div>` : "";
+  main.innerHTML = banner + VIEWS[ui.view]();
+  $("#sidebar").innerHTML = sidebarHTML();
+  $("#tabbar").innerHTML = tabbarHTML();
+  const label = NAV.find((n) => n.id === ui.view)?.label || "";
+  document.title = `${label} · ${APP_NAME}`;
+}
+
+function go(view) {
+  if (location.hash !== `#${view}`) location.hash = view;
+  else route();
+}
+function route() {
+  const v = location.hash.replace("#", "") || "home";
+  const changed = v !== ui.view;
+  ui.view = VIEWS[v] ? v : "home";
+  closeModal();
+  render();
+  if (changed) window.scrollTo({ top: 0 });
+}
+
+function boot() {
+  const had = load();
+  document.body.innerHTML = `<div class="app"><aside class="sidebar" id="sidebar"></aside><main class="main" id="main" tabindex="-1"></main></div><nav class="tabbar" id="tabbar" aria-label="Quick navigation"></nav>`;
+  applyTheme();
+  if (IS_DEMO && !had) loadSample();
+  route();
+  checkBadges(true);
+  saveNow();
+  if (!S.onboarded && !IS_DEMO) openOnboarding();
+
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-action]");
+    if (!el || el.disabled) return;
+    const fn = ACTIONS[el.dataset.action];
+    if (!fn) return;
+    if (el.tagName === "BUTTON" || el.tagName === "A") e.preventDefault();
+    if (el.type === "checkbox") e.preventDefault();
+    fn(el, e);
+  });
+  const onInput = (e) => {
+    const el = e.target.closest("[data-input]");
+    if (el && INPUTS[el.dataset.input]) INPUTS[el.dataset.input](el, e);
+    if (e.target.id === "tx-search" && e.type === "input") { ui.txQuery = e.target.value; $("#tx-list").innerHTML = txListHTML(); }
+    if (e.target.id === "tx-cat") { ui.txCat = e.target.value; $("#tx-list").innerHTML = txListHTML(); }
+  };
+  document.addEventListener("input", onInput);
+  document.addEventListener("change", onInput);
+  document.addEventListener("submit", (e) => {
+    const f = e.target.closest("[data-form]");
+    if (!f) return;
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(f).entries());
+    if (f.dataset.form === "wish") {
+      if (!d.name.trim() || !(num(d.price) > 0)) return toast("Add what it is and the price");
+      const undo = snapshot();
+      S.wishlist.push({ id: uid(), name: d.name.trim(), price: round2(num(d.price)), link: d.link.trim(), addedAt: Date.now(), readyAt: Date.now() + Number(d.hours || 48) * 3600000 });
+      commit(`Paused for ${Number(d.hours) >= 168 ? "a week" : d.hours + " hours"}. You've got this.`, undo);
+    }
+  });
+  window.addEventListener("hashchange", route);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") return closeModal();
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
+    if (typing || e.metaKey || e.ctrlKey || e.altKey || $(".overlay")) return;
+    const k = e.key.toLowerCase();
+    if (k === "n") { e.preventDefault(); openTxForm(); }
+    else if (k === "d") ACTIONS["toggle-theme"]();
+    else if (k === "p") ACTIONS["toggle-privacy"]();
+    else if (e.key === "/") { e.preventDefault(); if (ui.view !== "transactions") go("transactions"); setTimeout(() => $("#tx-search")?.focus(), 30); }
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { if (S.settings.theme === "auto") { applyTheme(); render(); } });
+  // Keep timers (Impulse Pause) and "today" fresh.
+  let lastDay = todayISO();
+  setInterval(() => {
+    if (todayISO() !== lastDay) { lastDay = todayISO(); render(); return; }
+    if (ui.view === "impulse" && !$(".overlay") && !document.activeElement?.closest("form")) render();
+  }, 60000);
+  window.addEventListener("storage", (e) => { if (e.key === STORE_KEY && e.newValue) { S = migrate(JSON.parse(e.newValue)); applyTheme(); render(); } });
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !IS_DEMO) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+
+document.addEventListener("DOMContentLoaded", boot);

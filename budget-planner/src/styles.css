@@ -138,7 +138,7 @@ small, .muted { color: var(--ink-2); }
 .nav .badge-dot { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
 .sidebar-foot { margin-top: auto; padding-top: 14px; display: flex; gap: 6px; }
 
-.main { padding: 30px clamp(16px, 3.4vw, 44px) 60px; max-width: 1240px; width: 100%; }
+.main { padding: 30px clamp(16px, 3.4vw, 44px) 60px; max-width: 1240px; width: 100%; min-width: 0; }
 .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
 .page-head p { color: var(--ink-2); margin-top: 6px; }
 .page-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -452,14 +452,14 @@ body.focus .focus-hide { display: none !important; }
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
   .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .g-side { grid-template-columns: 1fr; }
+  .g-side { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 900px) {
-  .app { grid-template-columns: 1fr; }
+  .app { grid-template-columns: minmax(0, 1fr); }
   .sidebar { display: none; }
   .main { padding: 18px 16px 110px; }
-  .g2, .g3, .g-hero { grid-template-columns: 1fr; }
-  .hero-split { grid-template-columns: 1fr; }
+  .g2, .g3, .g-hero { grid-template-columns: minmax(0, 1fr); }
+  .hero-split { grid-template-columns: minmax(0, 1fr); }
   .hero-split > div + div { border-left: 0; border-top: 1px solid hsl(var(--h) 30% 50% / .14); }
   .cal { gap: 3px; }
   .cal .day { min-height: 58px; padding: 5px; border-radius: 10px; }
@@ -480,9 +480,13 @@ body.focus .focus-hide { display: none !important; }
   .form-grid { grid-template-columns: 1fr; }
   .kv { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .env .hide-m { display: none; }
+  .months { flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 2px 16px; scrollbar-width: none; }
+  .months button { flex: none; }
+  .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cat-grid .chip { overflow-wrap: anywhere; font-size: .78rem; padding: 8px; }
 }
 @media (max-width: 520px) {
-  .g4 { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .tile { padding: 13px 14px; }
   .tile .value { font-size: 1.35rem; }
   .li .when { width: 54px; }
@@ -494,3 +498,4 @@ body.focus .focus-hide { display: none !important; }
   .card { box-shadow: none; break-inside: avoid; }
   body { background: #fff; }
 }
+.fund .chart .line { stroke: var(--c, var(--accent)); }
