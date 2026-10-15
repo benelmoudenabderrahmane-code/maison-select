@@ -3,7 +3,7 @@
 //   node budget-planner/scripts/build.mjs && node budget-planner/scripts/kit.mjs && node budget-planner/scripts/build.mjs
 // (the second build copies the freshly rendered icons). Needs Playwright.
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { fileBase } from "./build.mjs";
@@ -85,6 +85,7 @@ async function listingImages(ed) {
     await ctx.close();
   }
   const dir = join(out, ed.folder, "images");
+  rmSync(dir, { recursive: true, force: true }); // only the current image set ships
   mkdirSync(dir, { recursive: true });
   const page = await browser.newPage({ viewport: { width: 2000, height: 2000 } });
   copyFileSync(join(etsy, "templates", "_base.css"), join(work, "_base.css"));
@@ -94,7 +95,7 @@ async function listingImages(ed) {
     await page.goto(pathToFileURL(tmp).href);
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(dir, t.replace(".html", ".jpg")), type: "jpeg", quality: 90 });
+    await page.screenshot({ path: join(dir, `${fileBase(ed)}-NEW-${t.replace(".html", ".jpg")}`), type: "jpeg", quality: 90 });
   }
   await page.close();
   console.log(`  listing images → ${ed.folder}/images/`);

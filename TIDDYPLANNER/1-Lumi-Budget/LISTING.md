@@ -55,14 +55,14 @@ Tip: Etsy accepts `.html` files. If it ever refuses, zip it (`Lumi-Budget-Planne
 
 ## Photos (upload in this order)
 
-1. `images/01-hero.jpg` — thumbnail (most important: clear, readable at small size)
-2. `images/02-today.jpg`
-3. `images/07-everything.jpg`
-4. `images/03-paycheck.jpg`
-5. `images/04-debt.jpg`
-6. `images/05-adhd.jpg`
-7. `images/06-themes.jpg`
-8. `images/08-how.jpg`
+1. `images/Lumi-Budget-NEW-01-hero.jpg` — thumbnail (most important: clear, readable at small size)
+2. `images/Lumi-Budget-NEW-02-today.jpg`
+3. `images/Lumi-Budget-NEW-07-everything.jpg`
+4. `images/Lumi-Budget-NEW-03-paycheck.jpg`
+5. `images/Lumi-Budget-NEW-04-debt.jpg`
+6. `images/Lumi-Budget-NEW-05-adhd.jpg`
+7. `images/Lumi-Budget-NEW-06-themes.jpg`
+8. `images/Lumi-Budget-NEW-08-how.jpg`
 
 Add a 5–15 second video too (screen-record the demo: Today → track a spend → confetti). Listings with video get more clicks.
 
