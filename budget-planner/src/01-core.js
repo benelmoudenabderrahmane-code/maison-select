@@ -190,6 +190,16 @@ const PALETTE_SETS = {
     { id: "peach", name: "Peach", h: 16, s: 62 },
     { id: "midnight", name: "Midnight", h: 245, s: 18 },
   ],
+  sage: [
+    { id: "honey", name: "Honey", h: 34, s: 74 },
+    { id: "sage", name: "Sage", h: 145, s: 26 },
+    { id: "terracotta", name: "Terracotta", h: 16, s: 56 },
+    { id: "blueberry", name: "Blueberry", h: 226, s: 42 },
+    { id: "lavender", name: "Lavender", h: 268, s: 30 },
+    { id: "rosehip", name: "Rosehip", h: 350, s: 46 },
+    { id: "olive", name: "Olive", h: 62, s: 30 },
+    { id: "charcoal", name: "Charcoal", h: 30, s: 8 },
+  ],
   cherry: [
     { id: "cherry", name: "Cherry", h: 348, s: 70 },
     { id: "blossom", name: "Blossom", h: 340, s: 78 },
@@ -232,6 +242,11 @@ function freshState() {
     badges: {}, // badgeId -> iso earned
     notes: "",
     skippedTotal: 0,
+    // Balance mode (editions with skin.balance): the money really in the account right now.
+    account: { name: "Spending account", balance: 0, checkedAt: 0, checkedOn: "", openFrom: "" },
+    envelopes: [], // { id, name, emoji, amount } — money set aside, still in the account
+    moneyBack: [], // { id, name, kind, amount, due, status, txId }
+    collected: {}, // Apple Pay lines already imported
   };
 }
 
@@ -268,10 +283,11 @@ function migrate(data) {
   const out = { ...base, ...data };
   out.profile = { ...base.profile, ...(data.profile || {}) };
   out.settings = { ...base.settings, ...(data.settings || {}) };
-  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories"]) {
+  out.account = { ...base.account, ...(data.account || {}) };
+  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
-  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges"]) {
+  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected"]) {
     if (!out[k] || typeof out[k] !== "object") out[k] = {};
   }
   return out;

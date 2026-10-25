@@ -120,6 +120,29 @@ function loadSample() {
     { id: uid(), name: "Designer candle set", price: 58, link: "", addedAt: Date.now() - 30 * 24 * hours, readyAt: Date.now() - 28 * 24 * hours, decision: "skipped", decidedAt: Date.now() - 27 * 24 * hours },
   ];
   S.skippedTotal = 129 + 58;
+  S.incomes[0].primary = true;
+  if (SKIN.balance) {
+    // Balance mode: a balance confirmed this morning, money set aside, refunds to chase.
+    S.account = { name: "Checking", balance: 1842.35, checkedAt: fromISO(today).getTime() + 1, checkedOn: today, openFrom: today };
+    for (const t of S.transactions) if (t.date === today) t.createdAt = Date.now() - 1000; else t.createdAt = Math.min(t.createdAt, fromISO(today).getTime() - 1);
+    S.envelopes = [
+      { id: uid(), name: "Groceries until payday", emoji: "🛒", amount: 140 },
+      { id: uid(), name: "Mom's birthday", emoji: "🎁", amount: 45 },
+      { id: uid(), name: "Car repairs", emoji: "🔧", amount: 120 },
+    ];
+    S.moneyBack = [
+      { id: uid(), name: "Return running shoes", kind: "return", amount: 89.99, due: addDays(today, 6), note: "Prepaid label in email", status: "waiting" },
+      { id: uid(), name: "Streaming free trial", kind: "trial", amount: 12.99, due: addDays(today, 2), note: "Cancel in account settings", status: "waiting" },
+      { id: uid(), name: "Duplicate parking charge", kind: "refund", amount: 18, due: addDays(today, 10), note: "", status: "waiting" },
+    ];
+    const bank = (name, amount, d) => S.transactions.push({ id: uid(), createdAt: Date.parse(d) - 86400000, type: "expense", catId: cat("Miscellaneous"), name, amount, date: d, note: "" });
+    for (let i = 1; i <= 3; i++) bank("Monthly account fee", 6, addDays(today, -30 * i + 3));
+    bank("Overdraft fee", 35, addDays(today, -41));
+    bank("Foreign transaction fee", 3.12, addDays(today, -19));
+    for (let i = 1; i <= 4; i++) bank("Cloud Photos Plus", 2.99, addDays(today, -30 * i + 8));
+    // A realistic balance: everything due before payday is covered, with some room to breathe.
+    S.account.balance = round2(S.account.balance - availableSummary(today).margin + 586.34);
+  }
   S.notes = "Ask landlord about lease renewal\nCancel the meditation app free trial before Friday!\nCheck if the gym has a cheaper off-peak plan";
   S.settings.lastBackup = today;
   checkBadges(true);

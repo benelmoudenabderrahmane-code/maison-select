@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Sage & Honey — warm ivory, sage green, honey gold, Fraunces serif
+   ========================================================================== */
+:root {
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --bg: hsl(42 52% 96.6%);
+  --bg-2: hsl(95 22% 93.5%);
+  --surface: hsl(45 60% 99.2%);
+  --surface-2: hsl(44 45% 96%);
+  --ink: hsl(150 14% 16%);
+  --head: hsl(150 24% 22%);
+  --ink-2: hsl(150 6% 38%);
+  --ink-3: hsl(150 5% 42%);
+  --line: hsl(45 28% 88%);
+  --line-2: hsl(45 22% 80%);
+  --accent: hsl(var(--h) var(--s) 52%);
+  --accent-strong: hsl(var(--h) var(--s) 32%);
+  --accent-soft: hsl(var(--h) 70% 92%);
+  --accent-softer: hsl(var(--h) 70% 96%);
+  --good: hsl(140 24% 32%);
+  --good-soft: hsl(110 28% 91%);
+  --info: hsl(140 20% 36%);
+  --info-soft: hsl(95 24% 92%);
+  --shadow: 0 1px 2px hsl(40 30% 30% / .05), 0 14px 34px -24px hsl(80 25% 20% / .35);
+}
+:root[data-theme="dark"] {
+  --bg: hsl(150 12% 8.5%);
+  --bg-2: hsl(150 12% 10.5%);
+  --surface: hsl(150 10% 12.5%);
+  --surface-2: hsl(150 9% 15.5%);
+  --ink: hsl(45 40% 93%);
+  --head: hsl(45 70% 82%);
+  --ink-2: hsl(45 10% 72%);
+  --ink-3: hsl(45 8% 66%);
+  --line: hsl(150 8% 21%);
+  --line-2: hsl(150 8% 28%);
+  --accent: hsl(var(--h) var(--s) 62%);
+  --accent-strong: hsl(var(--h) var(--s) 70%);
+  --accent-ink: hsl(var(--h) 40% 10%);
+  --accent-soft: hsl(var(--h) 30% 20%);
+  --accent-softer: hsl(var(--h) 25% 15%);
+  --good: hsl(110 30% 66%);
+  --good-soft: hsl(120 16% 17%);
+  --info-soft: hsl(110 12% 17%);
+}
+h1 { font-size: clamp(2rem, 4vw, 2.9rem); font-weight: 600; letter-spacing: -.015em; }
+h1, h2, h3, .fund-amt, .tile .value, .kpi .value, .m { font-variant-numeric: lining-nums tabular-nums; }
+h2 { font-size: 1.38rem; font-weight: 600; }
+.page-head h1 .flourish { width: .5em; height: .5em; }
+.btn { border-radius: 999px; }
+
+/* Sidebar: soft sage panel, lined groups, sprig at the bottom */
+@media (min-width: 901px) { .app { grid-template-columns: 264px minmax(0, 1fr); } }
+.sidebar {
+  background: linear-gradient(180deg, hsl(95 24% 94.5%), hsl(80 22% 92.5%));
+  border-right: 1px solid var(--line); padding: 24px 12px 0; gap: 0;
+  overflow-x: hidden; overflow-y: auto; scrollbar-width: thin;
+}
+.sidebar > * { position: relative; z-index: 1; }
+.brand { flex-direction: column; text-align: center; gap: 4px; padding: 0 0 12px; align-items: center; }
+.brand-logo { width: 62px; height: 62px; }
+.brand b { font-size: 1.6rem; color: var(--head); font-weight: 600; line-height: 1.1; font-style: italic; }
+.brand span { text-transform: uppercase; letter-spacing: .26em; font-size: .66rem; margin-top: 6px; color: var(--ink-2); display: block; }
+.nav { gap: 2px; margin-top: 6px; flex: none; }
+.nav-sep { border: 0; border-top: 1px solid hsl(95 18% 84%); margin: 8px 18px 8px 20px; }
+.nav a { font-size: 1rem; padding: 9px 14px 9px 20px; gap: 14px; color: var(--ink); border-radius: 14px; }
+.nav a svg { width: 20px; height: 20px; color: hsl(140 22% 36%); opacity: 1; }
+.nav a:hover { background: hsl(95 24% 89%); }
+.nav a.active { background: var(--surface); color: var(--head); font-weight: 650; box-shadow: 0 10px 22px -16px hsl(80 30% 20% / .6), inset 3px 0 0 var(--accent); }
+.nav a.active svg { color: var(--accent-strong); }
+.nav a.active::before { display: none; }
+.sidebar::after { content: ""; flex: 1 0 0; order: 2; }
+.side-art { order: 3; margin: -70px -12px 0; width: calc(100% + 24px); pointer-events: none; z-index: 0; flex: none; }
+:root[data-theme="dark"] .sidebar { background: var(--bg-2); }
+:root[data-theme="dark"] .side-art { opacity: .5; }
+:root[data-theme="dark"] .nav a.active { background: var(--surface-2); }
+
+/* Header */
+.head-tools { display: inline-flex; gap: 2px; align-self: center; }
+.head-tools .btn { color: var(--ink-2); }
+.head-tools .btn.on { color: var(--accent-strong); background: var(--accent-soft); }
+.page-head { align-items: flex-start; }
+.page-head p { font-size: 1.05rem; }
+.page-head .actions { align-items: center; padding-top: 4px; }
+.add-spend { font-size: 1.05rem; padding: 12px 26px 12px 22px; gap: 10px; box-shadow: 0 14px 26px -14px var(--accent-strong); }
+
+/* Home: the daily number */
+.hero-avail { background: radial-gradient(120% 120% at 100% 0%, hsl(42 80% 92%) 0%, var(--surface) 46%), var(--surface); border-color: hsl(44 40% 84%); }
+:root[data-theme="dark"] .hero-avail { background: radial-gradient(120% 120% at 100% 0%, hsl(40 30% 16%) 0%, var(--surface) 50%); }
+.hero-avail .avail { color: var(--head); }
+.hero-avail .avail.neg { color: var(--bad); }
+.tile.accent { background: var(--surface); border: 1px solid var(--line); }
+.tile .value { color: var(--head); }
+.tile.good { background: var(--good-soft); }
+.kpi-hero .value { color: var(--head); }
+.chip.on { background: var(--accent-soft); border-color: var(--accent); }
+.fees-hero { background: radial-gradient(120% 140% at 50% 0%, hsl(42 80% 92%), var(--surface) 60%); }
+:root[data-theme="dark"] .fees-hero { background: var(--surface); }
+@media (max-width: 900px) { .sage .page-head .add-spend { display: none; } }

@@ -7,7 +7,8 @@ Each folder is one Etsy listing: a premium, ADHD-friendly budget planner app tha
 | `1-Lumi-Budget/` | **Lumi Budget** | Blush & cream, elegant serif. Includes 8 finished listing images. |
 | `2-Lila-Bloom/` | **Lila Bloom** | Soft lavender, white cards, deep plum accents. |
 | `3-Cherry-Blossom/` | **Cherry Blossom** | Warm cream, crimson serif, blush & sage, blossom art. |
-| `site/` | Online versions of all three | Upload this folder once to host every app. |
+| `4-Sage-Honey/` | **Sage & Honey** | Ivory, sage & honey. Starts from your real balance: available until payday, envelopes, Can I afford it?, Fresh start, Money back, Fees check, Apple Pay quick entry. |
+| `site/` | Online versions of all four | Upload this folder once to host every app. |
 
 ## What's in each app folder
 
@@ -27,6 +28,6 @@ Each folder is one Etsy listing: a premium, ADHD-friendly budget planner app tha
 
 Everything is explained step by step in **`SELLER-GUIDE.md`**.
 
-## Features (all three apps)
+## Features (all four apps)
 
 Safe to spend (month and today) · Paycheck plan · Calendar with check-off bills and paydays · Sortable spending log with category donut and CSV import/export · Envelope budget with rollover · Bills & subscription audit · Savings goals with next contribution and savings-rhythm chart · Snowball/avalanche debt planner · Goals with steps · Impulse Pause · Streaks, no-spend challenge and 15 badges · Year in review · 8 colour themes plus a custom colour · Day/night mode · Focus mode · Privacy blur · Readable font & large text · 24 currencies · Backup & restore · Print · Installable app (PWA).

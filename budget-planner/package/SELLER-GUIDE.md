@@ -1,6 +1,6 @@
 # Seller guide
 
-How to go from this folder to three live Etsy listings.
+How to go from this folder to four live Etsy listings.
 
 ## 1. Personalise
 
@@ -24,7 +24,7 @@ Then rebuild everything:
 ```bash
 npm run planner:kit    # apps + demos + PDFs + icons + Lumi images + TIDDYPLANNER.zip
 npm run planner:build  # apps only (fast)
-npm run planner:test   # automated audit of all three apps
+npm run planner:test   # automated audit of all four apps
 ```
 
 Rendering the PDFs, icons and images needs Playwright (`npm i -D playwright`).
@@ -48,6 +48,7 @@ Each app's links will then be:
 | Lumi Budget | `<publicUrl>/lumi/planner-…/` | `<publicUrl>/lumi/planner-…/demo/` |
 | Lila Bloom | `<publicUrl>/lila/planner-…/` | `<publicUrl>/lila/planner-…/demo/` |
 | Cherry Blossom | `<publicUrl>/cherry/planner-…/` | `<publicUrl>/cherry/planner-…/demo/` |
+| Sage & Honey | `<publicUrl>/sage/planner-…/` | `<publicUrl>/sage/planner-…/demo/` |
 
 The exact paths are printed when you build. They're also in each PDF.
 
@@ -77,7 +78,8 @@ Open a demo file (`<Name>-Demo.html`) in Chrome. It's already filled with realis
 
 - **Free demo:** put the demo link near the top of the description and on the first image.
 - **Three listings, three audiences:** Lumi ("ADHD budget planner"), Lila ("lavender / purple aesthetic"), Cherry ("cherry blossom / pink aesthetic"). Each `LISTING.md` targets different keywords.
-- **Bundle:** later, add a 4th listing with all three apps at a discount.
+- **Sage & Honey:** the "safe to spend until payday" listing — real balance, envelopes, Apple Pay quick entry.
+- **Bundle:** later, add a listing with all four apps at a discount.
 - **Reviews:** reply to every message fast. Follow Etsy's rules: never trade incentives for reviews.
 - **Tags:** after 30 days, check Etsy Stats and swap tags that bring no visits (alternatives in each `LISTING.md`).
 

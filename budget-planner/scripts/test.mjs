@@ -422,6 +422,131 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await ctx.close();
   });
 
+  if (ed.skin?.balance) await step("balance engine (available until payday)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForTimeout(200);
+    await page.keyboard.press("Escape");
+    const r = await page.evaluate(() => {
+      const P = window.__planner, S = P.state;
+      const iso = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+      const today = iso(0), out = {};
+      const reset = () => {
+        Object.assign(S, { incomes: [{ id: "pay", name: "Paycheck", amount: 2000, freq: "biweekly", anchor: iso(10), endDate: "", primary: true }],
+          bills: [{ id: "rent", name: "Rent", amount: 600, freq: "monthly", anchor: iso(3), catId: "", endDate: "" }],
+          envelopes: [{ id: "env", name: "Groceries", emoji: "", amount: 300 }], transactions: [], links: {}, debts: [], funds: [], moneyBack: [], collected: {} });
+        S.profile.buffer = 100;
+        P.checkBalance(1500, today);
+        S.account.checkedAt = Date.now() - 5000;
+      };
+      reset();
+      let a = P.availableSummary();
+      out.t01 = [a.available, a.days, a.guide];
+      P.addTx({ type: "expense", amount: 30, name: "Lunch", date: today, catId: "" });
+      a = P.availableSummary();
+      out.t02 = [a.available, a.spentToday, a.guide, a.leftToday];
+      const rent = P.scheduleIn(today, iso(30)).find((o) => o.kind === "bill");
+      P.toggleOccurrence(rent);
+      a = P.availableSummary();
+      out.t03 = [a.available, a.balance, a.bills];
+      P.addTx({ type: "expense", amount: 40, name: "Market", date: today, catId: "", effect: { envelopeId: "env" } });
+      a = P.availableSummary();
+      out.t04 = [a.available, S.envelopes[0].amount];
+      out.t05 = P.availableSummary().available; // the paycheck in 10 days is not counted
+      P.addTx({ type: "income", amount: 200, name: "Side job", date: today, catId: "income" });
+      out.t06 = P.availableSummary().available;
+      S.envelopes[0].amount = 5000;
+      a = P.availableSummary();
+      out.t07 = [a.available, a.shortBy > 0];
+      reset();
+      S.incomes[0].anchor = today;
+      a = P.availableSummary();
+      out.t10 = [a.confirmPayday, Number.isFinite(a.guide), a.guide];
+      reset();
+      S.bills[0].anchor = iso(10);
+      out.t11 = P.availableSummary().bills; // a bill due on payday stays protected
+      reset();
+      S.account.openFrom = iso(-10); S.account.checkedOn = iso(-10);
+      S.bills[0].anchor = iso(-5);
+      const late = P.scheduleIn(iso(-10), iso(-1)).find((o) => o.kind === "bill");
+      out.t12a = P.availableSummary().bills; // overdue bill still protected
+      P.toggleOccurrence(late);
+      for (const t of S.transactions) if (t.link === late.key) t.absorbed = true;
+      P.checkBalance(800, today);
+      a = P.availableSummary();
+      out.t12 = [a.balance, a.bills];
+      P.addTx({ type: "expense", amount: 20, name: "Old coffee", date: iso(-3), catId: "", absorbed: true });
+      out.t21 = P.balanceNow();
+      reset();
+      out.afford = [P.previewPurchase(30).fits, P.previewPurchase(30).fitsToday, P.previewPurchase(1000).fits];
+      const c = P.parseCollected("SPEND|$4.50|Corner Cafe|2026-10-25 08:10\nhello\nSPEND|abc|x|\nSPEND|12,30 €|Bakery|2026-10-24");
+      out.collect = c.map((x) => [x.amount, x.name]);
+      S.collected[c[0].key] = today;
+      out.seen = P.parseCollected("SPEND|$4.50|Corner Cafe|2026-10-25 08:10")[0].seen;
+      const ics = P.billsICS();
+      out.ics = [ics.startsWith("BEGIN:VCALENDAR"), (ics.match(/BEGIN:VEVENT/g) || []).length, /\r\nEND:VCALENDAR\r\n$/.test(ics)];
+      for (let i = 1; i <= 3; i++) S.transactions.push({ id: "s" + i, type: "expense", amount: 9.99, name: "Music Plus", date: iso(-30 * i), catId: "", createdAt: 1 });
+      S.transactions.push({ id: "f1", type: "expense", amount: 35, name: "Overdraft fee", date: iso(-12), catId: "", createdAt: 1 });
+      const f = P.feesScan();
+      out.fees = [f.repeats.map((x) => x.name).join(), f.fees.length, f.yearly];
+      return out;
+    });
+    const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    check("T01 available = balance − bills − envelopes − buffer", eq(r.t01, [500, 10, 50]), JSON.stringify(r.t01));
+    check("T02 a spend lowers available and today's room", eq(r.t02, [470, 30, 50, 20]), JSON.stringify(r.t02));
+    check("T03 paying a protected bill changes nothing", eq(r.t03, [470, 870, 0]), JSON.stringify(r.t03));
+    check("T04 spending from an envelope changes nothing", eq(r.t04, [470, 260]), JSON.stringify(r.t04));
+    check("T05 expected pay is not counted", r.t05 === 470, r.t05);
+    check("T06 money received is counted", r.t06 === 670, r.t06);
+    check("T07 a shortfall shows 0 and how much is missing", eq(r.t07, [0, true]), JSON.stringify(r.t07));
+    check("T10 payday today: no division by zero", eq(r.t10, [true, true, 0]), JSON.stringify(r.t10));
+    check("T11 bill on payday stays protected", r.t11 === 600, r.t11);
+    check("T12 overdue bill protected, then fresh start counts it once", r.t12a === 600 && eq(r.t12, [800, 0]), JSON.stringify([r.t12a, r.t12]));
+    check("T21 an entry already in the balance doesn't change it", r.t21 === 800, r.t21);
+    check("can I afford it", eq(r.afford, [true, true, false]), JSON.stringify(r.afford));
+    check("Apple Pay lines parsed, junk ignored", eq(r.collect, [[4.5, "Corner Cafe"], [12.3, "Bakery"]]), JSON.stringify(r.collect));
+    check("Apple Pay line not added twice", r.seen === true);
+    check("bills calendar file (.ics)", r.ics[0] && r.ics[1] >= 12 && r.ics[2], JSON.stringify(r.ics));
+    check("fees check finds repeat charge + fee", r.fees[0].includes("Music Plus") && r.fees[1] === 1 && r.fees[2] > 150, JSON.stringify(r.fees));
+    // The screens around it.
+    await page.click("[data-ob=sample]").catch(() => {});
+    await page.evaluate(() => { location.hash = "home"; });
+    await page.waitForTimeout(250);
+    await page.click("[data-action=afford] >> nth=0");
+    await page.fill(".modal [name=amount]", "25");
+    check("can I afford it shows an answer", /left today|fits|Not before payday/.test(await page.textContent(".afford-out")));
+    await page.keyboard.press("Escape");
+    await page.click("[data-action=toggle-breakdown]");
+    const bd = await page.evaluate(() => { const rows = [...document.querySelectorAll(".bd-row b")].map((b) => b.textContent); return rows; });
+    check("how it's worked out is shown", bd.length >= 3, bd.join(" | "));
+    await page.click(".fresh-line [data-action=fresh-start]");
+    await page.fill(".modal [name=balance]", "2500");
+    await page.click(".modal button.primary");
+    await page.waitForSelector(".overlay", { state: "detached" });
+    check("start from today sets the balance", (await state(page, (S) => S.account.balance)) === 2500);
+    await page.evaluate(() => { location.hash = "add?amount=4.50&name=Corner%20Cafe"; });
+    await page.waitForSelector(".modal");
+    check("#add link pre-fills a spend", (await page.inputValue(".modal [name=amount]")) === "4.5" && (await page.inputValue(".modal [name=name]")) === "Corner Cafe");
+    await page.keyboard.press("Escape");
+    for (const v of ["envelopes", "moneyback", "fees", "quickentry"]) {
+      await go(page, v);
+      const w = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(`${v} renders without overflow`, w <= 0 && (await page.$("h1")) != null, `${w}px`);
+    }
+    await go(page, "envelopes");
+    const envs = await state(page, (S) => S.envelopes.length);
+    await form(page, "[data-action=add-envelope] >> nth=0", { name: "Gifts", amount: "50" });
+    check("new envelope sets money aside", (await state(page, (S) => S.envelopes.length)) === envs + 1);
+    await go(page, "moneyback");
+    await form(page, "[data-action=add-moneyback]", { name: "Return jacket", amount: "60" });
+    const before = await state(page, (S) => S.transactions.length);
+    await page.click("[data-action=mb-done][data-s=received] >> nth=0");
+    check("money back received adds the money", (await state(page, (S) => S.transactions.length)) === before + 1);
+    check("no JavaScript errors (balance)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await ctx.close();
+  });
+
   await step("small laptop: every menu reachable, strips swipe", async () => {
     const { ctx, page } = await newPage({ width: 1280, height: 660 });
     current = page;

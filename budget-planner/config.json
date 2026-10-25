@@ -84,6 +84,37 @@
         "head": "Playfair Display",
         "headColor": "#9b1b3a"
       }
+    },
+    {
+      "id": "sage",
+      "folder": "4-Sage-Honey",
+      "appName": "Sage & Honey",
+      "tagline": "Calm money, sweet days",
+      "storeKey": "sage-honey-v1",
+      "hostedDir": "sage/planner-80ef14a66457",
+      "listingImages": true,
+      "fonts": "family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&family=Lexend:wght@300..700",
+      "themeColor": "#f7f2e8",
+      "skin": {
+        "monthNav": "compact",
+        "homeLayout": "balance",
+        "balance": true,
+        "navStyle": "lines",
+        "headTools": true,
+        "palette": "honey",
+        "chartMono": true
+      },
+      "brand": {
+        "accent": "#9a5b13",
+        "ink": "#24302a",
+        "muted": "#5f6a62",
+        "soft": "#f3e6c8",
+        "bg1": "#fbf8f1",
+        "bg2": "#eef2e9",
+        "head": "Fraunces",
+        "headColor": "#2f4a3a"
+      },
+      "templates": "templates-sage"
     }
   ]
 }

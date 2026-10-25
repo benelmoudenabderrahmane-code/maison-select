@@ -69,6 +69,45 @@ async function record(ed) {
     await click(sel, 14);
   };
 
+  if (ed.skin?.balance) await balanceTour(); else await classicTour();
+  async function balanceTour() {
+    await page.evaluate(() => { location.hash = "home"; });
+    await page.waitForTimeout(900);                                // the daily number
+    await click("[data-action=afford] >> nth=0");                  // Can I afford it?
+    await page.waitForTimeout(250);
+    await page.keyboard.type("89", { delay: 120 });
+    await page.waitForTimeout(1100);
+    await click(".modal [data-close] >> nth=0", 12);
+    await page.waitForTimeout(250);
+    await click(".hero-actions [data-action=quick-add]");          // Add a coffee
+    await page.waitForTimeout(250);
+    await page.keyboard.type("4.50", { delay: 90 });
+    await click(".modal [data-cat]:has-text('Coffee')", 14);
+    await click(".modal button.primary", 14);
+    await page.waitForTimeout(700);
+    await page.evaluate(() => { const st = document.createElement("style"); st.textContent = ".toasts{display:none!important}"; document.head.appendChild(st); });
+    await click("[data-action=toggle-breakdown]", 14);             // How is it worked out?
+    await page.waitForTimeout(1200);
+    await click("[data-action=toggle-breakdown]", 10);
+    await nav("envelopes");                                        // Envelopes
+    await page.waitForTimeout(700);
+    await nav("moneyback");                                        // Money back
+    await page.waitForTimeout(600);
+    await nav("fees");                                             // Fees check
+    await page.waitForTimeout(700);
+    await nav("calendar");                                         // Calendar
+    await page.waitForTimeout(600);
+    await nav("settings");                                         // Colours + night
+    await click("[data-action=palette] >> nth=2", 14);
+    await page.waitForTimeout(300);
+    await click("[data-action=palette] >> nth=0", 10);
+    await page.waitForTimeout(300);
+    await click("[data-action=set][data-key=theme][data-v=dark]", 14);
+    await page.waitForTimeout(400);
+    await nav("home");
+    await page.waitForTimeout(2000);
+  }
+  async function classicTour() {
   await page.waitForTimeout(700);                                  // Today
   await click("#sidebar .track-btn, .today-hero [data-action=quick-add]"); // Track a spend
   await page.waitForTimeout(250);
@@ -109,6 +148,7 @@ async function record(ed) {
   await page.waitForTimeout(400);
   await nav("home");
   await page.waitForTimeout(2000);
+  }
   const end = (Date.now() - t0) / 1000;
   await page.waitForTimeout(300);
   const closedAt = (Date.now() - t0) / 1000;

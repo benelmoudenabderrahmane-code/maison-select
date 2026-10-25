@@ -18,7 +18,7 @@ const src = (f) => readFileSync(join(root, "src", f), "utf8");
 const edFile = (ed, f) => join(root, "editions", ed.id, f);
 const readIf = (p) => (existsSync(p) ? readFileSync(p, "utf8").trim() : "");
 const jsFiles = readdirSync(join(root, "src")).filter((f) => /^\d\d-.*\.js$/.test(f)).sort();
-export const fileBase = (ed) => ed.appName.replace(/\s+/g, "-");
+export const fileBase = (ed) => ed.appName.replace(/\s*&\s*/g, " and ").replace(/\s+/g, "-");
 
 function build(ed, edition, { pwa }) {
   const skin = {

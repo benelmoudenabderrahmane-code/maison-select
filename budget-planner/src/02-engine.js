@@ -102,6 +102,11 @@ function applyEffect(tx, sign) {
     const f = S.funds.find((x) => x.id === tx.effect.fundId);
     if (f) f.saved = round2(f.saved + sign * tx.amount);
   }
+  if (tx.effect.envelopeId) {
+    // Spending from an envelope uses money that was already set aside.
+    const e = S.envelopes.find((x) => x.id === tx.effect.envelopeId);
+    if (e) e.amount = round2(Math.max(0, e.amount - sign * tx.amount));
+  }
 }
 function addTx(tx) {
   const t = { id: uid(), createdAt: Date.now(), note: "", ...tx, amount: round2(tx.amount) };
@@ -129,11 +134,14 @@ function updateTx(id, patch) {
 }
 /** Check or uncheck a scheduled occurrence; checking it records a real transaction. */
 function toggleOccurrence(o) {
+  if (S.links[o.key] === "skip") { delete S.links[o.key]; return false; }
   if (S.links[o.key]) {
     removeTx(S.links[o.key]);
     return false;
   }
   const base = { date: o.date, name: o.name, amount: o.amount, link: o.key };
+  // Balance mode: anything dated before the last balance check is already in that balance.
+  if (SKIN.balance && S.account.checkedOn && o.date < S.account.checkedOn) base.absorbed = true;
   if (o.kind === "income") addTx({ ...base, type: "income", catId: "income" });
   else if (o.kind === "bill") addTx({ ...base, type: "expense", catId: o.catId || "" });
   else if (o.kind === "debt") addTx({ ...base, type: "expense", catId: "debt", effect: { debtId: o.refId } });
@@ -178,6 +186,12 @@ function monthSummary(mk) {
 }
 function todaySummary() {
   const today = todayISO();
+  if (SKIN.balance) {
+    // Balance mode: the daily number comes from the real balance, until payday.
+    const a = availableSummary(today);
+    const m = monthSummary(monthKey(today));
+    return { ...m, today, daysLeft: Math.max(1, a.days), todays: S.transactions.filter((t) => t.date === today), variableToday: a.spentToday, allowance: a.guide, leftToday: a.leftToday, safe: a.available };
+  }
   const mk = monthKey(today);
   const m = monthSummary(mk);
   const d = fromISO(today);

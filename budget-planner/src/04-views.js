@@ -201,6 +201,7 @@ function viewHome() {
     ${chartPlanVsActual(catItems)}
   </div>`;
 
+  if (SKIN.homeLayout === "balance") return homeBalance();
   if (SKIN.homeLayout === "bloom") return homeBloom({ today, mk, m, isCur, ft, dt, goalsActive, hello, greetingSub, t });
   if (SKIN.homeLayout === "tiles") {
     const prevMk = addMonths(mk, -1);
@@ -1081,6 +1082,7 @@ function viewSettings() {
           <button class="btn" data-action="import-json" ${IS_DEMO ? "disabled" : ""}>${icon("upload")}Restore backup</button>
           <button class="btn" data-action="export-csv">${icon("download")}Transactions CSV</button>
           <button class="btn" data-action="print">${icon("printer")}Print / PDF</button>
+          <button class="btn" data-action="export-ics">${icon("calendar")}Bills to calendar (.ics)</button>
         </div>
         <div class="row wrap mt">
           <button class="btn" data-action="load-sample">${icon("sparkle")}Load sample data</button>

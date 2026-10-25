@@ -105,7 +105,7 @@ function nudgeIfOver(catId, mk) {
 
 /* ---------- Bills ---------- */
 function openBillForm(bill = null, preset = {}) {
-  const b = bill || { name: "", amount: "", catId: "", freq: "monthly", anchor: preset.date || todayISO(), autopay: false, isSub: false, emoji: "" };
+  const b = bill || { name: preset.name || "", amount: preset.amount ?? "", catId: "", freq: preset.freq || "monthly", anchor: preset.date || todayISO(), autopay: false, isSub: !!preset.isSub, emoji: "" };
   openModal({
     title: bill ? "Edit bill" : "Add a bill",
     body: `<div class="form-grid">
@@ -659,7 +659,12 @@ function openOnboarding(step = 0) {
       body: `<div class="form-grid">${field("What should we call you?", inp("name", S.profile.name, 'placeholder="Your first name" autofocus'))}${field("Your currency", sel("currency", CURRENCIES.map(([c, n]) => [c, `${n} — ${c}`]), S.profile.currency))}</div>`,
       foot: `<button type="button" class="btn left" data-ob="skip">Skip</button><button class="btn primary">Next</button>`,
     },
-    {
+    SKIN.balance ? {
+      title: "Your money right now",
+      body: `<p class="muted" style="margin-bottom:14px">Open your banking app. Your daily number starts from what's really in your account — expected pay only counts once it arrives.</p>
+        <div class="form-grid">${field("Balance in your spending account", moneyInp("balance", "", 'autofocus min="-10000000"'), "full")}${field("Amount per paycheck", moneyInp("amount", ""))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>`,
+      foot: `<button type="button" class="btn left" data-ob="skip">Skip for now</button><button class="btn primary">Next</button>`,
+    } : {
       title: "Your paycheck",
       body: `<p class="muted" style="margin-bottom:14px">This powers your paycheck plan and safe-to-spend number. Use the amount that lands in your account.</p>
         <div class="form-grid">${field("Amount per paycheck", moneyInp("amount", "", 'autofocus'))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>`,
@@ -678,7 +683,8 @@ function openOnboarding(step = 0) {
     foot: st.foot,
     onSubmit: (d) => {
       if (step === 1) { S.profile.name = (d.name || "").trim(); S.profile.currency = d.currency; _fmtCache = {}; }
-      if (step === 2 && num(d.amount) > 0) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "" });
+      if (step === 2 && num(d.amount) > 0) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "", primary: true });
+      if (step === 2 && SKIN.balance && String(d.balance ?? "").trim() !== "") checkBalance(num(d.balance));
       if (step === steps.length - 1) { S.onboarded = true; saveNow(); go("setup"); render(); return; }
       saveNow();
       setTimeout(() => openOnboarding(step + 1), 10);

@@ -19,9 +19,37 @@ mkdirSync(join(work, "shots"), { recursive: true });
 
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 
+const APPLE_PAY_PAGE = (ed) => `<section class="page">
+  <div class="eyebrow">${ed.appName}</div>
+  <h1 style="margin-top:10pt;font-size:30pt">Apple Pay <em>quick entry</em></h1>
+  <p class="muted" style="margin-top:8pt;max-width:5.6in">Pay with your iPhone, then open your planner and tap <b>Apple Pay</b> — the amount and shop name are filled in for you. Set it up once, in about 3 minutes. Needs an iPhone with iOS 17 or later and a card in Apple Wallet; availability depends on your country and card.</p>
+  <div class="card">
+    <h2>1 · Create the automation</h2>
+    <ol class="steps small">
+      <li>Open the <b>Shortcuts</b> app → <b>Automation</b> → <b>+</b> → <b>Transaction</b>.</li>
+      <li>Pick your Wallet cards, choose <b>Run Immediately</b>, then <b>Next</b> → <b>New Blank Automation</b>.</li>
+      <li>Add a <b>Text</b> action and type <b>SPEND|</b>, then the <b>Amount</b> variable, <b>|</b>, the <b>Merchant</b> variable, <b>|</b> and <b>Current Date</b>.</li>
+      <li>Add <b>Append to Text File</b>: file <b>Shortcuts/planner-spends.txt</b>, with <b>Make New Line</b> on.</li>
+      <li>Add <b>Get File</b> (the same file), then <b>Copy to Clipboard</b>, then <b>Show Notification</b> “Open your planner to collect”.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>2 · Collect your spends</h2>
+    <p class="small muted">Open your planner from your Home Screen and tap <b>Apple Pay</b> under your daily number. Your iPhone asks to paste: tap <b>Allow Paste</b>. New payments appear ticked — tap <b>Add selected</b>. Payments you already added are skipped automatically.</p>
+    <p class="small muted" style="margin-top:6pt">Tip: once a month you can empty <b>planner-spends.txt</b> in the Files app. Your planner remembers what it already added.</p>
+  </div>
+  <div class="card">
+    <h2>Good to know</h2>
+    <p class="small muted">Nothing is recorded without your tap, and nothing is sent anywhere: the Shortcut and your planner talk through your iPhone's clipboard. On a computer or Android, any shortcut tool can open your planner link ending in <b>#add?amount=4.50&amp;name=Cafe</b> to pre-fill a spend.</p>
+  </div>
+  <div class="foot"><span>${ed.appName} · Start here</span><span>Page 3 of 3</span></div>
+</section>`;
 const fillFor = (ed) => (html) => {
   const b = ed.brand;
   return html
+    .replaceAll("{{EXTRA_PAGES}}", ed.skin?.balance ? APPLE_PAY_PAGE(ed) : "")
+    .replaceAll("{{PAGES}}", ed.skin?.balance ? "3" : "2")
+    .replaceAll("{{SETUP_LINE}}", ed.skin?.balance ? "Add your name, currency, today’s balance and your paycheck." : "Add your name, currency and paycheck.")
     .replaceAll("{{FILE}}", `${fileBase(ed)}-Planner.html`)
     .replaceAll("{{APP}}", ed.appName)
     .replaceAll("{{URL}}", `${config.publicUrl}/${ed.hostedDir}/`)
@@ -64,11 +92,29 @@ async function listingImages(ed) {
     await shot(page, "today", "today-dark", { dark: true });
     await shot(page, "debt", "debt-dark", { dark: true });
     // A few colour themes, for the "themes" listing image.
-    for (const pal of ["sage", "lavender", "ocean", "honey"]) {
+    await page.evaluate(() => { location.hash = "settings"; });
+    await page.waitForTimeout(150);
+    const pals = (await page.$$eval("[data-action=palette]", (b) => b.map((x) => x.dataset.id))).slice(1, 5);
+    for (const pal of pals) {
       await page.evaluate(() => { location.hash = "settings"; });
       await page.waitForTimeout(150);
       await page.click(`[data-action=palette][data-id=${pal}]`);
       await shot(page, "home", `home-${pal}`);
+    }
+    await page.evaluate(() => { location.hash = "settings"; });
+    await page.waitForTimeout(150);
+    await page.click("[data-action=palette] >> nth=0");
+    if (ed.skin?.balance) {
+      for (const v of ["envelopes", "moneyback", "fees", "quickentry"]) await shot(page, v, v);
+      await shot(page, "home", "home-bd", { prep: async (p) => { await p.click("[data-action=toggle-breakdown]"); await p.waitForTimeout(150); } });
+      await page.click("[data-action=toggle-breakdown]");
+      const modal = (open, fill) => async (p) => { await p.click(open); await p.waitForSelector(".modal"); if (fill) await fill(p); await p.waitForTimeout(250); };
+      await shot(page, "home", "afford", { prep: modal("[data-action=afford] >> nth=0", (p) => p.fill(".modal [name=amount]", "89")) });
+      await page.keyboard.press("Escape");
+      await shot(page, "home", "fresh", { prep: modal(".fresh-line [data-action=fresh-start]") });
+      await page.keyboard.press("Escape");
+      await shot(page, "home", "add", { prep: modal(".hero-actions [data-action=quick-add]", async (p) => { await p.fill(".modal [name=amount]", "4.50"); await p.click(".modal [data-cat] >> nth=0").catch(() => {}); }) });
+      await page.keyboard.press("Escape");
     }
     await page.evaluate(() => { location.hash = "settings"; });
     await page.waitForTimeout(150);
@@ -82,26 +128,33 @@ async function listingImages(ed) {
     await shot(page, "impulse", "m-impulse");
     await shot(page, "paycheck", "m-paycheck");
     await shot(page, "rewards", "m-rewards");
+    if (ed.skin?.balance) {
+      await shot(page, "quickentry", "m-quick");
+      await shot(page, "home", "m-afford", { prep: async (p) => { await p.click("[data-action=afford] >> nth=0"); await p.waitForSelector(".modal"); await p.fill(".modal [name=amount]", "24"); await p.waitForTimeout(250); } });
+      await page.keyboard.press("Escape");
+    }
     await ctx.close();
   }
   const dir = join(out, ed.folder, "images");
   rmSync(dir, { recursive: true, force: true }); // only the current image set ships
   mkdirSync(dir, { recursive: true });
   const page = await browser.newPage({ viewport: { width: 2000, height: 2000 } });
-  copyFileSync(join(etsy, "templates", "_base.css"), join(work, "_base.css"));
-  for (const t of readdirSync(join(etsy, "templates")).filter((f) => /^\d\d-.*\.html$/.test(f)).sort()) {
+  // Each edition can bring its own art direction (etsy/<templates>/ with its own _base.css).
+  const tdir = join(etsy, ed.templates || "templates");
+  copyFileSync(join(tdir, "_base.css"), join(work, "_base.css"));
+  for (const t of readdirSync(tdir).filter((f) => /^\d\d-.*\.html$/.test(f)).sort()) {
     const tmp = join(work, t);
-    writeFileSync(tmp, fillFor(ed)(readFileSync(join(etsy, "templates", t), "utf8")));
+    writeFileSync(tmp, fillFor(ed)(readFileSync(join(tdir, t), "utf8")));
     await page.goto(pathToFileURL(tmp).href);
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(dir, `${fileBase(ed)}-NEW-${t.replace(".html", ".jpg")}`), type: "jpeg", quality: 90 });
+    await page.screenshot({ path: join(dir, `${fileBase(ed)}${ed.templates ? "" : "-NEW"}-${t.replace(".html", ".jpg")}`), type: "jpeg", quality: 90 });
   }
   await page.close();
   console.log(`  listing images → ${ed.folder}/images/`);
 }
 
-for (const ed of config.editions) {
+for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === process.argv[2])) {
   console.log(ed.appName);
   /* Icons */
   const icon = await browser.newPage();

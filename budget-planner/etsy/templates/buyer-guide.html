@@ -55,12 +55,12 @@
     <h2>⏱️ Your first 3 minutes</h2>
     <ol class="steps small">
       <li>Open the planner and choose <b>Set up my planner</b> (or <b>Explore with sample data</b> to look around first).</li>
-      <li>Add your name, currency and paycheck.</li>
+      <li>{{SETUP_LINE}}</li>
       <li>Follow the <b>Getting started</b> checklist: bills → budget → savings fund → first spend.</li>
       <li>Open <b>Today</b> once a day. Press <b>N</b> (or tap <b>+</b>) whenever you spend.</li>
     </ol>
   </div>
-  <div class="foot"><span>{{APP}} · Start here</span><span>Page 1 of 2</span></div>
+  <div class="foot"><span>{{APP}} · Start here</span><span>Page 1 of {{PAGES}}</span></div>
 </section>
 
 <section class="page">
@@ -98,7 +98,8 @@
     <p class="muted" style="font-size:8.5pt;margin-top:10pt">For personal use only — please don't share or resell your link or file. {{APP}} is a budgeting tool and does not provide financial advice.</p>
   </div>
 
-  <div class="foot"><span>{{APP}} · Start here</span><span>Page 2 of 2</span></div>
+  <div class="foot"><span>{{APP}} · Start here</span><span>Page 2 of {{PAGES}}</span></div>
 </section>
+{{EXTRA_PAGES}}
 </body>
 </html>

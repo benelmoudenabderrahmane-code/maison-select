@@ -115,6 +115,7 @@ function go(view) {
   else route();
 }
 function route() {
+  if (location.hash.startsWith("#add?")) { handleAddLink(); return; }
   const v = location.hash.replace("#", "") || "home";
   const changed = v !== ui.view;
   ui.view = VIEWS[v] ? v : "home";
@@ -195,6 +196,7 @@ function boot() {
 }
 
 // Small hook used by the automated test suite (scripts/test.mjs).
-window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY };
+window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY,
+  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow };
 
 document.addEventListener("DOMContentLoaded", boot);
