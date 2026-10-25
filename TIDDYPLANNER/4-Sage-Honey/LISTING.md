@@ -39,7 +39,7 @@ Rotate in after 30 days: `cash envelopes`, `sinking funds`, `refund tracker`, `s
 
 Upload `images/Sage-and-Honey-01-cover.jpg` … `10-what-you-get.jpg` in order (2000 × 2000).
 
-**Video:** upload `video/Sage-and-Honey-Walkthrough.mp4` (14.5 s, real app walkthrough, silent).
+**Video:** upload `video/Sage-and-Honey-Video-Promo.mp4` (15 s, premium Q&A promo) as the main video, and `video/Sage-and-Honey-Walkthrough.mp4` (14.5 s, real app walkthrough) as the second one if Etsy offers two slots. Both are silent.
 
 ## Pricing (suggestion)
 

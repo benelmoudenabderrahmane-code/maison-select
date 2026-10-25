@@ -1,0 +1,98 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..700&display=swap">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; background: #f7f1e4; font-family: Inter, sans-serif; color: #22362b; }
+  .abs { position: absolute; will-change: transform, opacity; }
+  #bg { inset: 0; background: radial-gradient(760px 700px at 72% 30%, #f6dfa6 0%, #f4ead2 42%, #f7f1e4 72%); }
+  #combs { inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='135' viewBox='0 0 104 180'%3E%3Cpath d='M52 0l52 30v60l-52 30L0 90V30zM52 120l52 30v60M0 150l52-30' fill='none' stroke='%23c3841b' stroke-opacity='.16' stroke-width='2'/%3E%3C/svg%3E"); background-size: 78px 135px; -webkit-mask-image: radial-gradient(520px 520px at 50% 45%, #000, transparent 75%); }
+  .frame { inset: 26px; border: 1px solid rgba(195, 132, 27, .45); border-radius: 28px; }
+  /* Intro & end */
+  #logo { left: 470px; top: 300px; width: 140px; height: 140px; }
+  #logo svg { width: 100%; height: 100%; }
+  #word { left: 0; right: 0; top: 470px; text-align: center; font-family: Fraunces, serif; font-size: 118px; font-weight: 600; letter-spacing: -.03em; font-style: italic; }
+  #word span { color: #c3841b; }
+  #tag { left: 0; right: 0; top: 625px; text-align: center; font-size: 22px; letter-spacing: .42em; text-transform: uppercase; color: #6f7a63; }
+  /* Q&A beats */
+  .q { left: 90px; top: 90px; max-width: 900px; background: #fffdf7; border: 2px solid #ead9b2; border-radius: 34px 34px 34px 8px; padding: 24px 34px; font-family: Fraunces, serif; font-size: 50px; font-weight: 600; letter-spacing: -.02em; box-shadow: 0 30px 60px -36px rgba(60, 50, 20, .5); white-space: nowrap; overflow: hidden; }
+  .a { background: #2f4a3a; color: #f7f1e4; border-radius: 999px; padding: 18px 30px 18px 22px; font-size: 27px; font-weight: 600; display: flex; align-items: center; gap: 14px; box-shadow: 0 24px 50px -24px rgba(34, 54, 43, .7); white-space: nowrap; }
+  .a i { width: 34px; height: 34px; border-radius: 50%; background: #f2c46b; color: #2f4a3a; display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 20px; }
+  .phone { width: 340px; background: #1f2a23; border-radius: 54px; padding: 13px; box-shadow: 0 60px 110px -40px rgba(34, 54, 43, .65); }
+  .phone .scr { border-radius: 42px; overflow: hidden; height: 640px; background: #fbf7ee; position: relative; }
+  .phone img { display: block; width: 100%; position: absolute; left: 0; top: 0; }
+  .card { width: 760px; border-radius: 22px; overflow: hidden; background: #fff; box-shadow: 0 60px 110px -40px rgba(34, 54, 43, .55), 0 0 0 2px rgba(195, 132, 27, .25); }
+  .card img { display: block; width: 100%; }
+  #bar { left: 90px; right: 90px; bottom: 62px; display: flex; gap: 10px; }
+  #bar i { flex: 1; height: 4px; border-radius: 4px; background: rgba(34, 54, 43, .12); overflow: hidden; }
+  #bar i b { display: block; height: 100%; width: 0; background: #c3841b; }
+  #end { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #end .logo { width: 110px; height: 110px; }
+  #end .w { font-family: Fraunces, serif; font-size: 96px; font-weight: 600; font-style: italic; letter-spacing: -.03em; margin-top: 10px; }
+  #end .w span { color: #c3841b; }
+  #end .l { width: 120px; height: 1px; background: #c3841b; margin: 24px auto; }
+  #end .tag2 { font-family: Fraunces, serif; font-size: 40px; color: #2f4a3a; }
+  #end .cta { margin-top: 36px; background: #2f4a3a; color: #f7f1e4; border-radius: 999px; padding: 20px 40px; font-size: 26px; font-weight: 650; }
+  #end .small { margin-top: 26px; font-size: 18px; letter-spacing: .24em; color: #8a8b6d; text-transform: uppercase; }
+</style></head><body>
+<div id="bg" class="abs"></div><div id="combs" class="abs"></div><div class="abs frame"></div>
+
+<div id="logo" class="abs"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="sgH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6cf78"/><stop offset="1" stop-color="#c7871d"/></linearGradient><linearGradient id="sgL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6f9672"/><stop offset="1" stop-color="#a9c4a2"/></linearGradient></defs><g transform="translate(0 0) scale(1)"><path d="M32 14C29.6 20.8 17 32 17 40.3A15 15 0 0 0 47 40.3C47 32 34.4 20.8 32 14Z" fill="url(#sgH)"/><ellipse cx="25" cy="44" rx="4.2" ry="6" fill="#fff" opacity=".35" transform="rotate(-20 25 44)"/><g transform="translate(31 15) rotate(-150)"><path d="M0 0C5.6 -6.8 14.4 -6.8 20 0C14.4 6 5.6 6 0 0Z" fill="url(#sgL)"/><path d="M1.2 0L18 0" stroke="#e9f0e2" stroke-width="0.6" opacity=".7" stroke-linecap="round"/></g><g transform="translate(33 15) rotate(-32)"><path d="M0 0C6.2 -7.5 15.8 -7.5 22 0C15.8 6.6 6.2 6.6 0 0Z" fill="url(#sgL)"/><path d="M1.3 0L19.8 0" stroke="#e9f0e2" stroke-width="0.7" opacity=".7" stroke-linecap="round"/></g><path d="M32 15V9" stroke="#5d7f60" stroke-width="2" stroke-linecap="round"/></g></svg></div>
+<div id="word" class="abs">Sage <span>&amp;</span> Honey</div>
+<div id="tag" class="abs">Calm money · sweet days</div>
+
+<div id="q1" class="abs q">How much can I spend today?</div>
+<div id="p1" class="abs phone" style="left:370px;top:240px"><div class="scr"><img src="sage/m-home.jpg"></div></div>
+<div id="a1" class="abs a" style="left:200px;top:810px"><i>✓</i>Until payday — bills already covered</div>
+
+<div id="q2" class="abs q">Can I afford it?</div>
+<div id="p2" class="abs phone" style="left:370px;top:240px"><div class="scr"><img src="sage/m-afford.jpg"></div></div>
+<div id="a2" class="abs a" style="left:250px;top:810px"><i>✓</i>See what's left — before you buy</div>
+
+<div id="q3" class="abs q">Missed a few days?</div>
+<div id="c3" class="abs card" style="left:160px;top:290px"><img src="sage/fresh.jpg"></div>
+<div id="a3" class="abs a" style="left:300px;top:780px"><i>✓</i>Start from today. No catching up.</div>
+
+<div id="q4" class="abs q">Paid with Apple Pay?</div>
+<div id="p4" class="abs phone" style="left:370px;top:240px"><div class="scr"><img src="sage/m-quick.jpg"></div></div>
+<div id="a4" class="abs a" style="left:345px;top:810px"><i>✓</i>Collect it in one tap</div>
+
+<div id="bar" class="abs"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+
+<div id="end" class="abs"><div class="logo" id="endlogo"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="sgH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6cf78"/><stop offset="1" stop-color="#c7871d"/></linearGradient><linearGradient id="sgL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6f9672"/><stop offset="1" stop-color="#a9c4a2"/></linearGradient></defs><g transform="translate(0 0) scale(1)"><path d="M32 14C29.6 20.8 17 32 17 40.3A15 15 0 0 0 47 40.3C47 32 34.4 20.8 32 14Z" fill="url(#sgH)"/><ellipse cx="25" cy="44" rx="4.2" ry="6" fill="#fff" opacity=".35" transform="rotate(-20 25 44)"/><g transform="translate(31 15) rotate(-150)"><path d="M0 0C5.6 -6.8 14.4 -6.8 20 0C14.4 6 5.6 6 0 0Z" fill="url(#sgL)"/><path d="M1.2 0L18 0" stroke="#e9f0e2" stroke-width="0.6" opacity=".7" stroke-linecap="round"/></g><g transform="translate(33 15) rotate(-32)"><path d="M0 0C6.2 -7.5 15.8 -7.5 22 0C15.8 6.6 6.2 6.6 0 0Z" fill="url(#sgL)"/><path d="M1.3 0L19.8 0" stroke="#e9f0e2" stroke-width="0.7" opacity=".7" stroke-linecap="round"/></g><path d="M32 15V9" stroke="#5d7f60" stroke-width="2" stroke-linecap="round"/></g></svg></div><div class="w">Sage <span>&amp;</span> Honey</div><div class="l"></div><div class="tag2">Know what's safe to spend — <em>until payday.</em></div><div class="cta">Free demo · Instant download</div><div class="small">Online + offline · No subscription</div></div>
+
+<script src="common.js"></script>
+<script>
+  window.DURATION = 15;
+  const beats = [[2.6, 5.6], [5.6, 8.6], [8.6, 11.5], [11.5, 13.6]];
+  const typeIn = (el, t, a) => { const k = p(t, a, a + 0.55, easeOut); el.style.clipPath = `inset(0 ${100 - k * 100}% 0 0 round 34px)`; };
+  window.render = (t) => {
+    // Background drifts slowly.
+    $("bg").style.transform = `scale(${1.04 + 0.03 * Math.sin(t / 3)}) translate(${Math.sin(t / 4) * 10}px, 0)`;
+    $("combs").style.opacity = 0.6 + 0.4 * Math.sin(t / 2);
+    // Intro: drop falls, wordmark rises, then everything lifts away.
+    const inO = p(t, 0.1, 0.9) * (1 - p(t, 2.2, 2.7));
+    set($("logo"), { o: inO, y: lerp(-80, 0, p(t, 0.1, 1.0, easeOut)) - 30 * p(t, 2.2, 2.7), s: lerp(.7, 1, p(t, .1, 1, easeOut)) });
+    set($("word"), { o: p(t, 0.5, 1.3) * (1 - p(t, 2.2, 2.7)), y: lerp(40, 0, p(t, 0.5, 1.3, easeOut)) - 30 * p(t, 2.2, 2.7), blur: lerp(8, 0, p(t, .5, 1.2)) });
+    set($("tag"), { o: p(t, 1.1, 1.7) * (1 - p(t, 2.2, 2.7)), y: lerp(20, 0, p(t, 1.1, 1.7, easeOut)) });
+    // Each beat: question types in, device rises, answer pops, then the beat fades.
+    const beat = (i, dev, kind) => {
+      const [a, b] = beats[i];
+      const vis = p(t, a, a + 0.35) * (1 - p(t, b - 0.35, b));
+      const q = $(`q${i + 1}`), ans = $(`a${i + 1}`), d = $(dev);
+      set(q, { o: vis, y: lerp(20, 0, p(t, a, a + 0.4, easeOut)) });
+      typeIn(q, t, a + 0.05);
+      const rise = p(t, a + 0.3, a + 1.1, easeOut);
+      set(d, kind === "card" ? { o: vis * rise, x: lerp(160, 0, rise), s: lerp(.94, 1, rise), r: lerp(2, 0, rise) } : { o: vis * rise, y: lerp(220, 0, rise), rx: lerp(14, 0, rise) });
+      if (kind !== "card") { const img = d.querySelector("img"); img.style.transform = `translateY(${-lerp(0, 160, p(t, a + 1.2, b - 0.3))}px)`; }
+      const pop = p(t, a + 1.25, a + 1.65, easeOut);
+      set(ans, { o: vis * pop, s: lerp(.8, 1, pop), y: lerp(20, 0, pop) });
+      document.querySelectorAll("#bar b")[i].style.width = `${p(t, a, b, (x) => x) * 100}%`;
+    };
+    beat(0, "p1"); beat(1, "p2"); beat(2, "c3", "card"); beat(3, "p4");
+    set($("bar"), { o: p(t, 2.6, 3) * (1 - p(t, 13.4, 13.7)) });
+    // End card.
+    const e = p(t, 13.6, 14.3, easeOut);
+    set($("end"), { o: e, s: lerp(.96, 1, e) });
+  };
+  window.render(0);
+</script>
+</body></html>

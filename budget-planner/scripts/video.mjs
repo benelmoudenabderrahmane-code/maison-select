@@ -16,12 +16,14 @@ const FPS = 30, SIZE = 1080;
 const VIDEOS = [
   { scene: "reveal.html", file: "Lumi-Budget-Video-1-Reveal" },
   { scene: "tour.html", file: "Lumi-Budget-Video-2-Tour" },
+  { scene: "sage-promo.html", file: "Sage-and-Honey-Video-Promo", folder: "4-Sage-Honey" },
 ];
 const only = process.argv[2];
-const dest = join(out, "1-Lumi-Budget", "video");
-mkdirSync(dest, { recursive: true });
+
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 for (const v of VIDEOS.filter((x) => !only || x.scene.startsWith(only))) {
+  const dest = join(out, v.folder || "1-Lumi-Budget", "video");
+  mkdirSync(dest, { recursive: true });
   const frames = join(root, "etsy", "build", "frames", v.file);
   rmSync(frames, { recursive: true, force: true });
   mkdirSync(frames, { recursive: true });
