@@ -200,7 +200,7 @@ function homeBalance() {
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
   const numberHTML = `
       <div class="eyebrow">Available until ${relShort(a.h)}</div>
-      <div class="avail ${a.shortBy ? "neg" : ""}">${moneyHTML(a.available)}</div>
+      <div class="avail ${a.shortBy ? "neg" : ""}" data-count="${a.available}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
       <div class="fresh-line">${freshness(a)} <button class="link-btn" data-action="fresh-start">Update balance</button></div>
       <div class="guide">
@@ -214,8 +214,10 @@ function homeBalance() {
         <button class="btn primary" data-action="quick-add">${icon("plus")}Add expense</button>
         <button class="btn" data-action="afford">${icon("search")}Can I afford it?</button>
         ${NOOK ? "" : `<button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>`}
+        ${NOOK || S.settings.justToday ? "" : `<button class="btn ghost" data-action="just-today" title="Hide everything but today">${icon("sun")}Just today</button>`}
       </div>`;
   const oneTapHTML = freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`;
+  if (S.settings.justToday) return homeJustToday(a, { hello, numberHTML, actionsHTML, oneTapHTML });
   return `
   <div class="sage">
   ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
@@ -226,7 +228,8 @@ function homeBalance() {
     ${NOOK ? `<div class="card hero-quick">
       <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
       ${oneTapHTML}
-      ${ui.showBreakdown ? breakdownHTML(a) : `<button class="link-btn mt" data-action="toggle-breakdown">How is today's number worked out?</button>`}
+      <div class="row wrap mt">${ui.showBreakdown ? "" : `<button class="link-btn" data-action="toggle-breakdown">How is today's number worked out?</button>`}<button class="link-btn" data-action="forgot">Forgot to log something?</button><button class="link-btn" data-action="just-today">${icon("sun", 15)} Just today mode</button></div>
+      ${ui.showBreakdown ? breakdownHTML(a) : ""}
     </div>` : `<div class="card hero-avail">
       ${numberHTML}
       ${actionsHTML}
@@ -244,6 +247,8 @@ function homeBalance() {
         : empty("🌤️", "Nothing due before payday", "Add your bills so they're protected automatically.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
     </div>
   </div>
+  ${recapCard(a) ? `<div class="mt">${recapCard(a)}</div>` : ""}
+  ${paydayForecast(a) ? `<div class="mt">${forecastCard(a)}</div>` : ""}
   <div class="grid g3 mt">
     <a class="card mini-card" href="#envelopes"><div class="card-head"><h3>${icon("envelope", 18)} Envelopes</h3><span class="tiny">${money(a.reserved)}</span></div>
       ${S.envelopes.length ? S.envelopes.slice(0, 3).map((e) => `<div class="row between mini-row"><span>${esc(e.emoji || "✉️")} ${esc(e.name)}</span><b class="m">${money(e.amount)}</b></div>`).join("") : `<p class="tiny">Set money aside for groceries, gifts or the car.</p>`}</a>

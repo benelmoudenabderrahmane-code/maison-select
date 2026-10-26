@@ -20,6 +20,7 @@ const NOOK_EARN = {
   checkin: { label: "Daily check-in", n: 2, cap: 2 },
   envelope: { label: "Set money aside", n: 2, cap: 4 },
   fresh: { label: "Start from today (balance check)", n: 3, cap: 3 },
+  close: { label: "Close your day (evening recap)", n: 3, cap: 3 },
   pat: { label: "Say hello to your friend", n: 1, cap: 3 },
 };
 let nookQuiet = false; // no rewards while sample data is being generated

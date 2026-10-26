@@ -222,7 +222,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -248,6 +248,7 @@ function freshState() {
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
     nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
+    dayClosed: {}, // iso -> true when the evening recap was closed
   };
 }
 
@@ -291,7 +292,7 @@ function migrate(data) {
   for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
-  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected"]) {
+  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {
     if (!out[k] || typeof out[k] !== "object") out[k] = {};
   }
   return out;

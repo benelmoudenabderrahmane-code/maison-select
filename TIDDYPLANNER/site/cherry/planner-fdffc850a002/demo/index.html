@@ -686,6 +686,135 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 }
 .short-line { color: var(--bad); margin: -4px 0 10px; font-size: .95rem; }
 
+/* ---------- The Honey Nook: illustrated room + companion ---------- */
+.nook { position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 1; min-height: 330px; isolation: isolate; margin-bottom: 16px;
+  box-shadow: 0 2px 4px hsl(30 40% 30% / .06), 0 30px 60px -34px hsl(30 50% 25% / .55); border: 1px solid hsl(40 40% 86%); background: #f3e6cf; }
+.nook-page { aspect-ratio: 2.6 / 1; min-height: 380px; }
+.nook-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; z-index: -2; user-select: none;
+  animation: nookDrift 26s ease-in-out infinite alternate; transform-origin: 62% 60%; }
+@keyframes nookDrift { from { transform: scale(1.02); } to { transform: scale(1.06) translateX(-.6%); } }
+.nook-light { position: absolute; inset: 0; z-index: -1; pointer-events: none; transition: background .6s; }
+.nook[data-time="morning"] .nook-light { background: linear-gradient(180deg, hsl(200 80% 92% / .28), transparent 60%); }
+.nook[data-time="golden"] .nook-light { background: radial-gradient(60% 90% at 62% 30%, hsl(38 100% 70% / .22), transparent 70%); }
+.nook[data-time="night"] .nook-bg { filter: brightness(.48) saturate(.8) hue-rotate(-8deg); }
+.nook[data-time="night"] .nook-light { background: radial-gradient(22% 46% at 84% 44%, hsl(40 100% 70% / .55), transparent 70%), radial-gradient(40% 60% at 62% 32%, hsl(230 60% 70% / .18), transparent 70%), linear-gradient(180deg, hsl(235 45% 18% / .25), hsl(30 40% 10% / .15)); mix-blend-mode: screen; }
+/* glass card with today's number */
+.nook-card { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); width: min(440px, 44%); z-index: 3;
+  background: hsl(45 60% 99% / .74); -webkit-backdrop-filter: blur(16px) saturate(1.25); backdrop-filter: blur(16px) saturate(1.25);
+  border: 1px solid hsl(0 0% 100% / .75); border-radius: 26px; padding: 22px 26px 20px; box-shadow: 0 24px 50px -28px hsl(30 50% 20% / .55); animation: nookIn .7s var(--ease) both; }
+.nook-card .avail { font-family: var(--font-head); font-size: clamp(2.6rem, 5.4vw, 4.2rem); font-weight: 650; color: var(--head); line-height: 1; margin: 8px 0 10px; letter-spacing: -.02em; font-variant-numeric: lining-nums tabular-nums; }
+.nook-card .avail .m small { font-size: .5em; }
+.nook-card .eyebrow { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); font-weight: 650; }
+.nook-card .guide { margin-top: 12px; padding-top: 12px; }
+.nook-card .hero-actions { margin-top: 14px; }
+:root[data-theme="dark"] .nook-card { background: hsl(150 12% 10% / .72); border-color: hsl(0 0% 100% / .12); }
+@keyframes nookIn { from { opacity: 0; transform: translateY(calc(-50% + 14px)); } to { opacity: 1; transform: translateY(-50%); } }
+/* companion */
+.nook-friend { position: absolute; left: 61%; bottom: 8%; width: 10.5%; min-width: 96px; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; }
+.nook-page .nook-friend { width: 10%; }
+.nook-pet { border: 0; background: none; padding: 0; cursor: pointer; width: 100%; transform-origin: 50% 100%; animation: nookBreathe 3.4s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
+.nook-pet img { width: 100%; height: auto; display: block; filter: drop-shadow(0 10px 10px hsl(30 50% 25% / .18)); user-select: none; pointer-events: none; }
+.nook-pet.pose-sleep { width: 128%; animation: nookSleep 4.6s ease-in-out infinite; }
+.nook-pet:hover { animation-duration: 1.6s; }
+.nook-pet:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; border-radius: 20px; }
+.nook-pet.react { animation: nookHop .9s var(--ease) 2; }
+@keyframes nookBreathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.03); } }
+@keyframes nookSleep { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, 1.045); } }
+@keyframes nookHop { 0% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(0) scale(1.08, .92); } 45% { transform: translateY(-22%) scale(.96, 1.06); } 70% { transform: translateY(0) scale(1.06, .94); } 100% { transform: translateY(0) scale(1, 1); } }
+.nook-shadow { width: 70%; height: 14px; margin-top: -10px; border-radius: 50%; background: radial-gradient(closest-side, hsl(30 40% 20% / .28), transparent); z-index: -1; }
+.nook-bubble { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-30%); width: max-content; max-width: 250px; background: hsl(45 80% 99% / .95); color: var(--ink);
+  border-radius: 18px 18px 18px 6px; padding: 10px 14px; font-family: var(--font-head); font-style: italic; font-size: .98rem; line-height: 1.3; box-shadow: 0 14px 30px -18px hsl(30 50% 20% / .6); animation: nookBubble .6s .3s var(--ease) both; }
+:root[data-theme="dark"] .nook-bubble { background: hsl(150 10% 14% / .95); color: var(--ink); }
+@keyframes nookBubble { from { opacity: 0; transform: translateX(-30%) translateY(8px) scale(.96); } to { opacity: 1; transform: translateX(-30%) translateY(0) scale(1); } }
+.nook-float { position: absolute; left: 50%; top: 10%; transform: translateX(-50%); font-weight: 800; color: hsl(36 80% 34%); font-size: 1.2rem; pointer-events: none; animation: nookFloat 1.6s ease-out forwards; text-shadow: 0 2px 0 #fff; }
+@keyframes nookFloat { from { opacity: 0; transform: translate(-50%, 10px); } 20% { opacity: 1; } to { opacity: 0; transform: translate(-50%, -60px); } }
+.nook-drops { position: absolute; right: 16px; top: 14px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; text-decoration: none; color: var(--ink);
+  background: hsl(45 60% 99% / .7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid hsl(0 0% 100% / .7); font-size: .9rem; }
+.nook-drops span { color: var(--ink-2); font-size: .8rem; }
+:root[data-theme="dark"] .nook-drops { background: hsl(150 12% 10% / .7); border-color: hsl(0 0% 100% / .12); }
+/* atmosphere */
+.nook-motes, .nook-snow { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.nook-motes i { position: absolute; left: var(--x); top: var(--y); width: 5px; height: 5px; border-radius: 50%; background: hsl(45 100% 80%); box-shadow: 0 0 10px 3px hsl(45 100% 75% / .6); opacity: 0; animation: nookMote var(--d) ease-in-out var(--w) infinite; }
+@keyframes nookMote { 0%, 100% { opacity: 0; transform: translateY(0); } 50% { opacity: .85; transform: translateY(-16px); } }
+.nook[data-time="night"] .nook-motes i { background: hsl(55 100% 85%); }
+.nook-snow i { position: absolute; top: -10px; left: var(--x); width: 6px; height: 6px; border-radius: 50%; background: #fff; opacity: .9; animation: nookSnow var(--d) linear var(--w) infinite; }
+@keyframes nookSnow { to { transform: translate(24px, 360px); opacity: 0; } }
+/* nook page pickers */
+.nook-pets, .nook-rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.nook-pick, .nook-room { border: 1px solid var(--line); background: var(--surface-2); border-radius: 20px; padding: 14px 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--ink); text-align: center; transition: transform .15s, border-color .15s; }
+.nook-pick:hover:not(:disabled), .nook-room:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); }
+.nook-pick.on, .nook-room.on { border: 2px solid var(--accent); background: var(--accent-softer); }
+.nook-pick:disabled, .nook-room:disabled { opacity: .6; cursor: not-allowed; }
+.nook-pick img { height: 96px; width: auto; }
+.nook-room img { width: 100%; height: 70px; object-fit: cover; border-radius: 12px; }
+.nook-room-auto { height: 70px; display: grid; place-items: center; font-size: 1.6rem; }
+.nook-pick b, .nook-room b { font-family: var(--font-head); font-size: 1.05rem; }
+.nook-pick span, .nook-room span { font-size: .78rem; color: var(--ink-2); }
+.nook-pick.soon { cursor: default; border-style: dashed; }
+.nook-pick .q { height: 96px; display: grid; place-items: center; font-family: var(--font-head); font-size: 2.6rem; color: var(--ink-3); }
+.hero-quick .link-btn { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .nook-bg, .nook-pet, .nook-motes i, .nook-snow i { animation: none !important; } }
+:root[data-motion="off"] .nook-bg, :root[data-motion="off"] .nook-pet, :root[data-motion="off"] .nook-motes i, :root[data-motion="off"] .nook-snow i { animation: none !important; }
+@media (max-width: 760px) {
+  .nook, .nook-page { aspect-ratio: auto; min-height: 0; padding-top: 250px; background: var(--surface); }
+  .nook-bg { height: 260px; bottom: auto; object-position: 66% 50%; }
+  .nook-light { height: 260px; bottom: auto; }
+  .nook-card { position: relative; left: auto; top: auto; transform: none; width: auto; margin: 0 10px 10px; animation: none; background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nook-friend { left: 64%; bottom: auto; top: 88px; width: 30%; min-width: 0; }
+  .nook-drops { right: auto; left: 12px; top: 204px; }
+  .nook-page .nook-drops { top: 12px; }
+  .nook-page { padding-top: 0; aspect-ratio: 1.45 / 1; }
+  .nook-page .nook-bg, .nook-page .nook-light { height: 100%; bottom: 0; }
+  .nook-page .nook-friend { top: auto; bottom: 7%; width: 24%; left: 62%; }
+  .nook-bubble { max-width: 170px; font-size: .82rem; transform: translateX(-70%); }
+  @keyframes nookBubble { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* ---------- Today tools: forecast, evening recap, just today, forgot ---------- */
+.avail.counting { transition: none; }
+.fc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 6px; }
+.fc-stats > div { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); }
+.fc-stats b { font-size: 1.15rem; color: var(--ink); }
+.fc-stats b.neg { color: var(--bad); }
+.fc-stats small { color: var(--ink-3); font-size: .78rem; }
+.fc-chart { color: var(--accent); padding: 34px 0 0; }
+.fc-plot { position: relative; height: 150px; }
+.fc-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fc-line { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.fc-zero { stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.fc-ev, .fc-low { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: var(--surface); border: 2px solid currentColor; }
+.fc-ev em { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 15px; line-height: 1; white-space: nowrap; }
+.fc-low { background: var(--accent-strong); border-color: var(--surface); }
+.fc-pay { position: absolute; top: -26px; bottom: 0; border-left: 1.5px dashed var(--good); }
+.fc-pay b { position: absolute; top: -4px; right: 6px; white-space: nowrap; color: var(--good); font-size: .8rem; font-weight: 650; }
+.fc-x { position: relative; height: 22px; margin-top: 6px; color: var(--ink-3); font-size: .76rem; }
+.fc-x span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.fc-x span:first-child { transform: none; margin-left: -4px; }
+.fc-x span:last-child:not(:first-child) { transform: translateX(-100%); }
+.recap { background: linear-gradient(160deg, var(--accent-softer), var(--surface) 70%); }
+.recap.closed { background: linear-gradient(160deg, var(--good-soft), var(--surface) 70%); }
+.recap-sum { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.recap-sum b { font-size: 1.6rem; font-family: var(--font-head); color: var(--ink); }
+.recap-sum span { color: var(--ink-2); font-size: .9rem; }
+.recap .pos { color: var(--good); font-weight: 600; }
+.recap-dots { display: flex; gap: 5px; }
+.recap-dots i { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 10px var(--font-body); font-style: normal; color: var(--ink-3); background: var(--surface-2); border: 1px solid var(--line); }
+.recap-dots i.on { background: var(--accent); color: var(--accent-ink, #fff); border-color: transparent; }
+.recap-dots i.now { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent); }
+.jt-grid { margin-top: 16px; }
+.jt-li { width: 100%; background: none; border: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.fg-head, .fg-row { display: grid; grid-template-columns: 1.1fr .9fr 1.5fr 1.3fr; gap: 8px; }
+.fg-head { margin: 12px 0 4px; color: var(--ink-3); }
+.fg-rows { display: flex; flex-direction: column; gap: 8px; }
+@media (max-width: 640px) {
+  .fc-stats { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .fc-stats > div:last-child { grid-column: 1 / -1; }
+  .fc-card .card-head .tiny { display: none; }
+  .fg-head { display: none; }
+  .fg-row { grid-template-columns: 1fr 1fr; padding-bottom: 10px; border-bottom: 1px dashed var(--line-2); }
+  .recap .card-head { flex-wrap: wrap; gap: 8px; }
+}
+
 /* ==========================================================================
    Cherry Blossom — warm cream, deep crimson serif, blush & sage, blossom branch
    ========================================================================== */
@@ -922,7 +1051,7 @@ h1, h2, h3, .bkpi-value, .bsave-amt, .big-pct, .month-pill b, .sh-value, .fund-a
 <script>
 "use strict";
 (() => {
-const __BUILD__ = {"appName":"Cherry Blossom","tagline":"Money in full bloom","storeKey":"cherry-blossom-v1","edition":"demo","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"cherry","monthNav":"bloom","homeLayout":"bloom","navStyle":"lines","headTools":true,"palette":"cherry","chartMono":true,"logo":"<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M31 9C25 19 19 28 16 37M31 9c2 11 6 20 13 28\" stroke=\"#6b8a52\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M31 9c8-6.5 18-5 22 1.5-8.5 4.5-16 3.5-22-1.5Z\" fill=\"#8fb26c\"/><circle cx=\"16\" cy=\"46\" r=\"11.5\" fill=\"var(--accent)\"/><circle cx=\"44\" cy=\"45\" r=\"11.5\" fill=\"var(--accent-strong)\"/><ellipse cx=\"12\" cy=\"41\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/><ellipse cx=\"40\" cy=\"40\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/></svg>","flourish":"<svg viewBox=\"-10 -10 20 20\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1\"><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(288)\"/></g><circle r=\"1.4\" fill=\"var(--accent)\"/></svg>","sideArt":"<svg viewBox=\"0 0 280 240\" aria-hidden=\"true\"><defs>\n<linearGradient id=\"cbP\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e57594\"/><stop offset=\".38\" stop-color=\"#f4b3c4\"/><stop offset=\"1\" stop-color=\"#fff1f4\"/></linearGradient>\n<linearGradient id=\"cbP2\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e98aa3\"/><stop offset=\".45\" stop-color=\"#f8c9d5\"/><stop offset=\"1\" stop-color=\"#fff6f8\"/></linearGradient>\n<linearGradient id=\"cbL\" x1=\"0\" y1=\".5\" x2=\"1\" y2=\".5\"><stop offset=\"0\" stop-color=\"#5f8a45\"/><stop offset=\"1\" stop-color=\"#a7c886\"/></linearGradient>\n<linearGradient id=\"cbB\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8b5642\"/><stop offset=\"1\" stop-color=\"#5e3528\"/></linearGradient>\n<radialGradient id=\"cbBud\" cx=\".4\" cy=\".35\" r=\".7\"><stop offset=\"0\" stop-color=\"#fbd3dd\"/><stop offset=\"1\" stop-color=\"#e2718f\"/></radialGradient>\n</defs>\n<path d=\"M-8 238C30 222 62 214 96 198S160 160 192 128 246 70 288 46\" stroke=\"url(#cbB)\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M190 130C206 128 222 120 236 108\" stroke=\"url(#cbB)\" stroke-width=\"3.6\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M150 168C150 150 156 136 166 124\" stroke=\"url(#cbB)\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M96 198C112 204 132 204 148 196\" stroke=\"url(#cbB)\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M40 222C40 208 46 196 56 188\" stroke=\"url(#cbB)\" stroke-width=\"2.8\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M246 74C258 76 268 72 276 64\" stroke=\"url(#cbB)\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><g transform=\"translate(52 214) rotate(-150)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(100 196) rotate(25)\"><path d=\"M0 0C7.5 -9 21 -9 30 0C21 7.8 7.5 7.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L27.6 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(140 172) rotate(-120)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(168 150) rotate(-35)\"><path d=\"M0 0C7 -8.4 19.6 -8.4 28 0C19.6 7.3 7 7.3 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L25.8 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(210 118) rotate(-160)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(236 96) rotate(-60)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(258 66) rotate(-140)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(120 204) rotate(60)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(18 232) rotate(-20)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(56 186) rotate(15) scale(1.1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(166 122) rotate(25) scale(1.2)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(278 62) rotate(40) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(150 196) rotate(100) scale(0.95)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(222 82) rotate(-10) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(24 212) rotate(10)\"><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.8\" fill=\"#c43d63\"/><path d=\"M0 0L6.9 2.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"2.1\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L4.5 7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.5\" cy=\"7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.2 9.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.2\" cy=\"9.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 4.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"4.9\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.3 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.3\" cy=\"0.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.6 -5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.6\" cy=\"-5.7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.6 -7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.6\" cy=\"-7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 -7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"-7.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L8.8 -3.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8.8\" cy=\"-3.7\" r=\"1\" fill=\"#f2c45a\"/></g><g transform=\"translate(92 224) rotate(-20)\"><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.2\" fill=\"#c43d63\"/><path d=\"M0 0L5.8 1.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.8\" cy=\"1.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 7.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"7.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.5 4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.5\" cy=\"4.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7\" cy=\"0.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.4 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.4\" cy=\"-4.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.2 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.2\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.4 -3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.4\" cy=\"-3.1\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(124 188) rotate(30)\"><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.4\" fill=\"#c43d63\"/><path d=\"M0 0L8 2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8\" cy=\"2.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5.2 8.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.2\" cy=\"8.1\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 10.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"10.9\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.1 5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.1\" cy=\"5.7\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.7 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.7\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.8 -6.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.8\" cy=\"-6.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.9 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.9\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.4 -8.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"-8.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L10.1 -4.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"10.1\" cy=\"-4.3\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(188 156) rotate(-10)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(206 106) rotate(15)\"><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.2\" fill=\"#c43d63\"/><path d=\"M0 0L7.6 2.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.6\" cy=\"2.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5 7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5\" cy=\"7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 10.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"10.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.9 5.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.9\" cy=\"5.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.2 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.2\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.4\" cy=\"-6.3\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.8 -7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.8\" cy=\"-7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.2 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.2\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L9.7 -4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"9.7\" cy=\"-4.1\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(252 92) rotate(40)\"><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3\" fill=\"#c43d63\"/><path d=\"M0 0L5.4 1.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.4\" cy=\"1.7\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3.6 5.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.6\" cy=\"5.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.9 7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.9\" cy=\"7.4\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.2 3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.2\" cy=\"3.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.6 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.6\" cy=\"0.3\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6 -4.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6\" cy=\"-4.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.6\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3\" cy=\"-5.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L6.9 -2.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"-2.9\" r=\"0.8\" fill=\"#f2c45a\"/></g><g transform=\"translate(262 40) rotate(-25)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(72 194) rotate(50)\"><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.6\" fill=\"#c43d63\"/><path d=\"M0 0L4.7 1.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.7\" cy=\"1.5\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L3.1 4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.1\" cy=\"4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.6 3.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.6\" cy=\"3.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.7\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.2 -3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.2\" cy=\"-3.9\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"-4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.6 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.6\" cy=\"-5.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L6 -2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6\" cy=\"-2.5\" r=\"0.7\" fill=\"#f2c45a\"/></g><g transform=\"translate(236 134) rotate(0)\"><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.4\" fill=\"#c43d63\"/><path d=\"M0 0L4.4 1.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"1.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.9 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.9\" cy=\"4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.3 3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.3\" cy=\"3.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.8 -3.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.8\" cy=\"-3.6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 -4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"-4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.4 -4.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.4\" cy=\"-4.7\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L5.5 -2.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.5\" cy=\"-2.3\" r=\"0.7\" fill=\"#f2c45a\"/></g><path d=\"M0 0C-4.3 -1.5 -4.9 -6 -1.4 -7L0 -5.9L1.4 -7C4.9 -6 4.3 -1.5 0 0Z\" transform=\"translate(150 224) rotate(120)\" fill=\"url(#cbP2)\" opacity=\".9\"/><path d=\"M0 0C-3.7 -1.3 -4.2 -5.2 -1.2 -6L0 -5L1.2 -6C4.2 -5.2 3.7 -1.3 0 0Z\" transform=\"translate(196 210) rotate(-40)\" fill=\"url(#cbP2)\" opacity=\".8\"/></svg>"}};
+const __BUILD__ = {"appName":"Cherry Blossom","tagline":"Money in full bloom","storeKey":"cherry-blossom-v1","edition":"demo","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"cherry","monthNav":"bloom","homeLayout":"bloom","navStyle":"lines","headTools":true,"palette":"cherry","chartMono":true,"logo":"<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M31 9C25 19 19 28 16 37M31 9c2 11 6 20 13 28\" stroke=\"#6b8a52\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M31 9c8-6.5 18-5 22 1.5-8.5 4.5-16 3.5-22-1.5Z\" fill=\"#8fb26c\"/><circle cx=\"16\" cy=\"46\" r=\"11.5\" fill=\"var(--accent)\"/><circle cx=\"44\" cy=\"45\" r=\"11.5\" fill=\"var(--accent-strong)\"/><ellipse cx=\"12\" cy=\"41\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/><ellipse cx=\"40\" cy=\"40\" rx=\"3\" ry=\"2.2\" fill=\"#fff\" opacity=\".55\"/></svg>","flourish":"<svg viewBox=\"-10 -10 20 20\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1\"><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(72)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(144)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(216)\"/><ellipse cx=\"0\" cy=\"-4.6\" rx=\"3.2\" ry=\"4.6\" transform=\"rotate(288)\"/></g><circle r=\"1.4\" fill=\"var(--accent)\"/></svg>","sideArt":"<svg viewBox=\"0 0 280 240\" aria-hidden=\"true\"><defs>\n<linearGradient id=\"cbP\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e57594\"/><stop offset=\".38\" stop-color=\"#f4b3c4\"/><stop offset=\"1\" stop-color=\"#fff1f4\"/></linearGradient>\n<linearGradient id=\"cbP2\" x1=\".5\" y1=\"1\" x2=\".5\" y2=\"0\"><stop offset=\"0\" stop-color=\"#e98aa3\"/><stop offset=\".45\" stop-color=\"#f8c9d5\"/><stop offset=\"1\" stop-color=\"#fff6f8\"/></linearGradient>\n<linearGradient id=\"cbL\" x1=\"0\" y1=\".5\" x2=\"1\" y2=\".5\"><stop offset=\"0\" stop-color=\"#5f8a45\"/><stop offset=\"1\" stop-color=\"#a7c886\"/></linearGradient>\n<linearGradient id=\"cbB\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8b5642\"/><stop offset=\"1\" stop-color=\"#5e3528\"/></linearGradient>\n<radialGradient id=\"cbBud\" cx=\".4\" cy=\".35\" r=\".7\"><stop offset=\"0\" stop-color=\"#fbd3dd\"/><stop offset=\"1\" stop-color=\"#e2718f\"/></radialGradient>\n</defs>\n<path d=\"M-8 238C30 222 62 214 96 198S160 160 192 128 246 70 288 46\" stroke=\"url(#cbB)\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M190 130C206 128 222 120 236 108\" stroke=\"url(#cbB)\" stroke-width=\"3.6\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M150 168C150 150 156 136 166 124\" stroke=\"url(#cbB)\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M96 198C112 204 132 204 148 196\" stroke=\"url(#cbB)\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M40 222C40 208 46 196 56 188\" stroke=\"url(#cbB)\" stroke-width=\"2.8\" fill=\"none\" stroke-linecap=\"round\"/>\n<path d=\"M246 74C258 76 268 72 276 64\" stroke=\"url(#cbB)\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><g transform=\"translate(52 214) rotate(-150)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(100 196) rotate(25)\"><path d=\"M0 0C7.5 -9 21 -9 30 0C21 7.8 7.5 7.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L27.6 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(140 172) rotate(-120)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(168 150) rotate(-35)\"><path d=\"M0 0C7 -8.4 19.6 -8.4 28 0C19.6 7.3 7 7.3 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L25.8 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(210 118) rotate(-160)\"><path d=\"M0 0C6.5 -7.8 18.2 -7.8 26 0C18.2 6.8 6.5 6.8 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L23.9 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(236 96) rotate(-60)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(258 66) rotate(-140)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(120 204) rotate(60)\"><path d=\"M0 0C5.5 -6.6 15.4 -6.6 22 0C15.4 5.7 5.5 5.7 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L20.2 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(18 232) rotate(-20)\"><path d=\"M0 0C6 -7.2 16.8 -7.2 24 0C16.8 6.2 6 6.2 0 0Z\" fill=\"url(#cbL)\"/><path d=\"M0 0L22.1 0\" stroke=\"#4f763a\" stroke-width=\".8\" opacity=\".7\"/></g><g transform=\"translate(56 186) rotate(15) scale(1.1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(166 122) rotate(25) scale(1.2)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(278 62) rotate(40) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(150 196) rotate(100) scale(0.95)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(222 82) rotate(-10) scale(1)\"><path d=\"M0 -12C5 -10 6 -3 0 0-6 -3 -5 -10 0 -12Z\" fill=\"url(#cbBud)\"/><path d=\"M-3 -2C-2 2 2 2 3 -2L0 1Z\" fill=\"#6f9a52\"/><path d=\"M0 0V7\" stroke=\"#6b4334\" stroke-width=\"1.2\"/></g><g transform=\"translate(24 212) rotate(10)\"><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-11.8 -4.2 -13.3 -16.3 -3.8 -19L0 -16L3.8 -19C13.3 -16.3 11.8 -4.2 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.8\" fill=\"#c43d63\"/><path d=\"M0 0L6.9 2.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"2.1\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L4.5 7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.5\" cy=\"7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.2 9.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.2\" cy=\"9.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 4.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"4.9\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.3 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.3\" cy=\"0.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.6 -5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.6\" cy=\"-5.7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.6 -7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.6\" cy=\"-7\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 -7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"-7.4\" r=\"1\" fill=\"#f2c45a\"/><path d=\"M0 0L8.8 -3.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8.8\" cy=\"-3.7\" r=\"1\" fill=\"#f2c45a\"/></g><g transform=\"translate(92 224) rotate(-20)\"><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.9 -3.5 -11.2 -13.8 -3.2 -16L0 -13.4L3.2 -16C11.2 -13.8 9.9 -3.5 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.2\" fill=\"#c43d63\"/><path d=\"M0 0L5.8 1.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.8\" cy=\"1.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.8 5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.8\" cy=\"5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 7.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"7.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.5 4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.5\" cy=\"4.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7\" cy=\"0.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.4 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.4\" cy=\"-4.8\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.2 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.2\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.4 -3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.4\" cy=\"-3.1\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(124 188) rotate(30)\"><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13.6 -4.8 -15.4 -18.9 -4.4 -22L0 -18.5L4.4 -22C15.4 -18.9 13.6 -4.8 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.4\" fill=\"#c43d63\"/><path d=\"M0 0L8 2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"8\" cy=\"2.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5.2 8.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.2\" cy=\"8.1\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 10.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"10.9\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.1 5.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.1\" cy=\"5.7\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.7 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.7\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.8 -6.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.8\" cy=\"-6.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.9 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.9\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.4 -8.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"-8.6\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L10.1 -4.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"10.1\" cy=\"-4.3\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(188 156) rotate(-10)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(206 106) rotate(15)\"><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-13 -4.6 -14.7 -18.1 -4.2 -21L0 -17.6L4.2 -21C14.7 -18.1 13 -4.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"4.2\" fill=\"#c43d63\"/><path d=\"M0 0L7.6 2.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.6\" cy=\"2.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L5 7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5\" cy=\"7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 10.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"10.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.9 5.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.9\" cy=\"5.4\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-9.2 0.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-9.2\" cy=\"0.5\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-8.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-8.4\" cy=\"-6.3\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.8 -7.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.8\" cy=\"-7.8\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L4.2 -8.2\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.2\" cy=\"-8.2\" r=\"1.2\" fill=\"#f2c45a\"/><path d=\"M0 0L9.7 -4.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"9.7\" cy=\"-4.1\" r=\"1.2\" fill=\"#f2c45a\"/></g><g transform=\"translate(252 92) rotate(40)\"><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-9.3 -3.3 -10.5 -12.9 -3 -15L0 -12.6L3 -15C10.5 -12.9 9.3 -3.3 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3\" fill=\"#c43d63\"/><path d=\"M0 0L5.4 1.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.4\" cy=\"1.7\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3.6 5.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.6\" cy=\"5.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.9 7.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.9\" cy=\"7.4\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.2 3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.2\" cy=\"3.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.6 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.6\" cy=\"0.3\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-6 -4.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6\" cy=\"-4.5\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.3 -5.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.3\" cy=\"-5.6\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L3 -5.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3\" cy=\"-5.9\" r=\"0.8\" fill=\"#f2c45a\"/><path d=\"M0 0L6.9 -2.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.9\" cy=\"-2.9\" r=\"0.8\" fill=\"#f2c45a\"/></g><g transform=\"translate(262 40) rotate(-25)\"><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-10.5 -3.7 -11.9 -14.6 -3.4 -17L0 -14.3L3.4 -17C11.9 -14.6 10.5 -3.7 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"3.4\" fill=\"#c43d63\"/><path d=\"M0 0L6.2 1.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6.2\" cy=\"1.9\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L4.1 6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.1\" cy=\"6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 8.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"8.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.7 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.7\" cy=\"4.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-7.5 0.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-7.5\" cy=\"0.4\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-6.8 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-6.8\" cy=\"-5.1\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.4 -6.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.4\" cy=\"-6.3\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L3.4 -6.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.4\" cy=\"-6.7\" r=\"0.9\" fill=\"#f2c45a\"/><path d=\"M0 0L7.8 -3.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"7.8\" cy=\"-3.3\" r=\"0.9\" fill=\"#f2c45a\"/></g><g transform=\"translate(72 194) rotate(50)\"><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-8.1 -2.9 -9.1 -11.2 -2.6 -13L0 -10.9L2.6 -13C9.1 -11.2 8.1 -2.9 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP2)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.6\" fill=\"#c43d63\"/><path d=\"M0 0L4.7 1.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.7\" cy=\"1.5\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L3.1 4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"3.1\" cy=\"4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.6 3.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.6\" cy=\"3.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.7 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.7\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.2 -3.9\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.2\" cy=\"-3.9\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1.1 -4.8\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1.1\" cy=\"-4.8\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.6 -5.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.6\" cy=\"-5.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L6 -2.5\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"6\" cy=\"-2.5\" r=\"0.7\" fill=\"#f2c45a\"/></g><g transform=\"translate(236 134) rotate(0)\"><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(0)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(72)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(144)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(216)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><path d=\"M0 0C-7.4 -2.6 -8.4 -10.3 -2.4 -12L0 -10.1L2.4 -12C8.4 -10.3 7.4 -2.6 0 0Z\" transform=\"rotate(288)\" fill=\"url(#cbP)\" stroke=\"#e07f99\" stroke-width=\".6\"/><circle r=\"2.4\" fill=\"#c43d63\"/><path d=\"M0 0L4.4 1.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"4.4\" cy=\"1.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.9 4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.9\" cy=\"4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-0.8 6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-0.8\" cy=\"6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-3.3 3.1\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-3.3\" cy=\"3.1\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-5.3 0.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-5.3\" cy=\"0.3\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-4.8 -3.6\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-4.8\" cy=\"-3.6\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L-1 -4.4\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"-1\" cy=\"-4.4\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L2.4 -4.7\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"2.4\" cy=\"-4.7\" r=\"0.7\" fill=\"#f2c45a\"/><path d=\"M0 0L5.5 -2.3\" stroke=\"#b8345a\" stroke-width=\".7\"/><circle cx=\"5.5\" cy=\"-2.3\" r=\"0.7\" fill=\"#f2c45a\"/></g><path d=\"M0 0C-4.3 -1.5 -4.9 -6 -1.4 -7L0 -5.9L1.4 -7C4.9 -6 4.3 -1.5 0 0Z\" transform=\"translate(150 224) rotate(120)\" fill=\"url(#cbP2)\" opacity=\".9\"/><path d=\"M0 0C-3.7 -1.3 -4.2 -5.2 -1.2 -6L0 -5L1.2 -6C4.2 -5.2 3.7 -1.3 0 0Z\" transform=\"translate(196 210) rotate(-40)\" fill=\"url(#cbP2)\" opacity=\".8\"/></svg>","nookImg":null}};
 /* 01-core.js */
 /* ==========================================================================
    Lumi Budget — core: constants, utilities, dates, money, storage
@@ -1148,7 +1277,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -1173,6 +1302,8 @@ function freshState() {
     envelopes: [], // { id, name, emoji, amount } — money set aside, still in the account
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
+    nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
+    dayClosed: {}, // iso -> true when the evening recap was closed
   };
 }
 
@@ -1210,10 +1341,13 @@ function migrate(data) {
   out.profile = { ...base.profile, ...(data.profile || {}) };
   out.settings = { ...base.settings, ...(data.settings || {}) };
   out.account = { ...base.account, ...(data.account || {}) };
+  out.nook = { ...base.nook, ...(data.nook || {}) };
+  if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
+  if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
   for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
-  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected"]) {
+  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {
     if (!out[k] || typeof out[k] !== "object") out[k] = {};
   }
   return out;
@@ -4087,7 +4221,7 @@ function boot() {
 
 // Small hook used by the automated test suite (scripts/test.mjs).
 window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY,
-  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow };
+  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak };
 
 document.addEventListener("DOMContentLoaded", boot);
 
@@ -4292,15 +4426,9 @@ function homeBalance() {
   const coming = a.due.slice(0, 5);
   const used = a.guide > 0 ? clamp(a.spentToday / a.guide, 0, 1) : 0;
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
-  return `
-  <div class="sage">
-  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
-  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
-  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
-  <div class="sage-grid">
-    <div class="card hero-avail">
+  const numberHTML = `
       <div class="eyebrow">Available until ${relShort(a.h)}</div>
-      <div class="avail ${a.shortBy ? "neg" : ""}">${moneyHTML(a.available)}</div>
+      <div class="avail ${a.shortBy ? "neg" : ""}" data-count="${a.available}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
       <div class="fresh-line">${freshness(a)} <button class="link-btn" data-action="fresh-start">Update balance</button></div>
       <div class="guide">
@@ -4308,15 +4436,34 @@ function homeBalance() {
         <div class="row between"><span><b class="m">${money(Math.max(0, a.leftToday))}</b> left today</span><span class="tiny">Daily guide ${money(a.guide)} · ${plural(a.days, "day")} to go</span></div>
         <div class="bbar sage"><i style="width:${Math.round(used * 100)}%"></i></div>
         <div class="tiny mt-s">${money(a.spentToday)} of ${money(a.guide)} used today${a.leftToday < 0 ? " — tomorrow's guide adjusts, no stress." : ""}</div>`}
-      </div>
+      </div>`;
+  const actionsHTML = `
       <div class="row wrap mt hero-actions">
         <button class="btn primary" data-action="quick-add">${icon("plus")}Add expense</button>
         <button class="btn" data-action="afford">${icon("search")}Can I afford it?</button>
-        <button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>
-      </div>
+        ${NOOK ? "" : `<button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>`}
+        ${NOOK || S.settings.justToday ? "" : `<button class="btn ghost" data-action="just-today" title="Hide everything but today">${icon("sun")}Just today</button>`}
+      </div>`;
+  const oneTapHTML = freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`;
+  if (S.settings.justToday) return homeJustToday(a, { hello, numberHTML, actionsHTML, oneTapHTML });
+  return `
+  <div class="sage">
+  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
+  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
+  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
+  ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
+  <div class="sage-grid">
+    ${NOOK ? `<div class="card hero-quick">
+      <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
+      ${oneTapHTML}
+      <div class="row wrap mt">${ui.showBreakdown ? "" : `<button class="link-btn" data-action="toggle-breakdown">How is today's number worked out?</button>`}<button class="link-btn" data-action="forgot">Forgot to log something?</button><button class="link-btn" data-action="just-today">${icon("sun", 15)} Just today mode</button></div>
       ${ui.showBreakdown ? breakdownHTML(a) : ""}
-      ${freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`}
-    </div>
+    </div>` : `<div class="card hero-avail">
+      ${numberHTML}
+      ${actionsHTML}
+      ${ui.showBreakdown ? breakdownHTML(a) : ""}
+      ${oneTapHTML}
+    </div>`}
     <div class="card">
       <div class="card-head"><h2>${icon("calendar", 20)} Before payday</h2><a class="link-sm" href="#bills">All bills</a></div>
       ${coming.length ? `<div class="list">${coming.map((o) => `<div class="li ${o.date < a.today ? "late" : ""}">
@@ -4328,6 +4475,8 @@ function homeBalance() {
         : empty("🌤️", "Nothing due before payday", "Add your bills so they're protected automatically.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
     </div>
   </div>
+  ${recapCard(a) ? `<div class="mt">${recapCard(a)}</div>` : ""}
+  ${paydayForecast(a) ? `<div class="mt">${forecastCard(a)}</div>` : ""}
   <div class="grid g3 mt">
     <a class="card mini-card" href="#envelopes"><div class="card-head"><h3>${icon("envelope", 18)} Envelopes</h3><span class="tiny">${money(a.reserved)}</span></div>
       ${S.envelopes.length ? S.envelopes.slice(0, 3).map((e) => `<div class="row between mini-row"><span>${esc(e.emoji || "✉️")} ${esc(e.name)}</span><b class="m">${money(e.amount)}</b></div>`).join("") : `<p class="tiny">Set money aside for groceries, gifts or the car.</p>`}</a>
@@ -4481,6 +4630,7 @@ function openEnvelopeForm(env = null) {
       const undo = snapshot();
       if (env) Object.assign(env, { name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
       else S.envelopes.push({ id: uid(), name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
+      if (!env && amount > 0) nookEarn("envelope");
       commit(env ? "Envelope saved" : `${money(amount)} set aside`, undo);
     },
     onMount: (f) => $("[data-del]", f)?.addEventListener("click", () => { const undo = snapshot(); S.envelopes = S.envelopes.filter((x) => x !== env); closeModal(); commit("Envelope deleted — the money is available again", undo); }),
@@ -4496,7 +4646,7 @@ function openEnvelopeMoney(env, mode) {
       const amount = round2(num(d.amount));
       if (!(amount > 0)) { toast("Enter an amount"); return false; }
       const undo = snapshot();
-      if (mode === "add") env.amount = round2(env.amount + amount);
+      if (mode === "add") { env.amount = round2(env.amount + amount); nookEarn("envelope"); }
       else if (mode === "release") env.amount = round2(Math.max(0, env.amount - amount));
       else addTx({ type: "expense", amount, name: (d.name || "").trim() || env.name, date: todayISO(), catId: guessCategory(env.name) || guessCategory(d.name || ""), effect: { envelopeId: env.id } });
       commit(mode === "spend" ? `Spent ${money(amount)} from ${env.name} — your available number didn't change` : "Envelope updated", undo);
@@ -4551,6 +4701,434 @@ Object.assign(ACTIONS, {
   "mb-delete": (el) => { const undo = snapshot(); S.moneyBack = S.moneyBack.filter((x) => x.id !== el.dataset.id); commit("Removed", undo); },
   "fees-to-bill": (el) => openBillForm(null, { name: el.dataset.name, amount: Number(el.dataset.amount), freq: el.dataset.every === "week" ? "weekly" : "monthly", isSub: true }),
   "export-ics": () => { download(`${APP_NAME.replace(/\W+/g, "-")}-bills.ics`, billsICS(), "text/calendar"); toast("Calendar file downloaded — open it to add reminders"); },
+});
+
+/* 09-nook.js */
+/* ==========================================================================
+   The Honey Nook: an illustrated cozy room with a companion who reacts to
+   what you do, and honey drops you earn for small money habits.
+   Only active for editions that ship illustrations (skin.nookImg).
+   ========================================================================== */
+const NOOK = !!(SKIN.nookImg && SKIN.nookImg["room-day"]);
+const nookImg = (k) => (SKIN.nookImg && SKIN.nookImg[k]) || "";
+const NOOK_PETS = {
+  mochi: { name: "Mochi", kind: "capybara", cost: 0, line: "Calm money, sweet days.", poses: { idle: "mochi-idle", coin: "mochi-coin", happy: "mochi-happy", sleep: "mochi-sleep", cheer: "mochi-cheer" } },
+  bun: { name: "Bun", kind: "bunny", cost: 20, line: "Small steps, soft heart.", poses: { idle: "bun-idle", coin: "bun-idle", happy: "bun-idle", sleep: "bun-idle", cheer: "bun-idle" } },
+};
+const NOOK_ROOMS = {
+  "room-day": { name: "Golden hour", cost: 0 },
+  "room-winter": { name: "Snowy evening", cost: 25 },
+};
+// How honey drops are earned (per day caps keep it calm, not grindy).
+const NOOK_EARN = {
+  spend: { label: "Track a spend", n: 1, cap: 5 },
+  bill: { label: "Tick off a bill or payday", n: 2, cap: 6 },
+  checkin: { label: "Daily check-in", n: 2, cap: 2 },
+  envelope: { label: "Set money aside", n: 2, cap: 4 },
+  fresh: { label: "Start from today (balance check)", n: 3, cap: 3 },
+  close: { label: "Close your day (evening recap)", n: 3, cap: 3 },
+  pat: { label: "Say hello to your friend", n: 1, cap: 3 },
+};
+let nookQuiet = false; // no rewards while sample data is being generated
+let nookPending = null; // reaction to play after the next render
+
+const nookPet = () => NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi;
+function nookEarn(reason) {
+  if (!NOOK || nookQuiet || !S.nook) return 0;
+  const rule = NOOK_EARN[reason];
+  if (!rule) return 0;
+  const key = `${todayISO()}:${reason}`;
+  const got = S.nook.log[key] || 0;
+  if (got >= rule.cap) { nookPending ||= { mood: "happy" }; return 0; }
+  const n = Math.min(rule.n, rule.cap - got);
+  S.nook.log[key] = got + n;
+  S.nook.drops = (S.nook.drops || 0) + n;
+  // Keep the log to the last few weeks.
+  const cutoff = addDays(todayISO(), -21);
+  for (const k of Object.keys(S.nook.log)) if (k.slice(0, 10) < cutoff) delete S.nook.log[k];
+  nookPending = { mood: "cheer", text: `+${n} 🍯` };
+  return n;
+}
+/** Morning, day, golden hour or night — the room follows the clock. */
+function nookTime(d = new Date()) {
+  const h = d.getHours();
+  return h >= 21 || h < 6 ? "night" : h < 10 ? "morning" : h >= 17 ? "golden" : "day";
+}
+function nookRoom(d = new Date()) {
+  const pick = S.nook?.room || "auto";
+  if (pick !== "auto" && S.nook.owned.includes(pick) && nookImg(pick)) return pick;
+  const m = d.getMonth();
+  return (m === 11 || m <= 1) && nookImg("room-winter") ? "room-winter" : "room-day";
+}
+function nookLine(a) {
+  const pet = nookPet();
+  if (nookTime() === "night") return `Zzz… your bills are covered. Sleep well.`;
+  if (!a) return pet.line;
+  if (a.checkedDays == null) return "Hi! Tell me your balance and I'll work out today.";
+  if (a.stale) return "Welcome back! Let's start from today — no catching up.";
+  if (a.confirmPayday) return "Is it payday? Let's check it in together!";
+  if (a.shortBy) return "A tight stretch. We'll make room around it, gently.";
+  if (a.leftToday > 0) return `${money(a.leftToday)} left for today. You've got this.`;
+  return "Today's guide is used up — tomorrow resets, no stress.";
+}
+function nookPose(a) {
+  if (nookTime() === "night") return "sleep";
+  if (a && a.leftToday > 0 && !a.shortBy) return "coin";
+  return "idle";
+}
+/** The room, the companion and its speech bubble. `inner` is what floats on the glass card. */
+function nookScene({ a = null, inner = "", size = "hero" } = {}) {
+  const pet = nookPet(), pose = nookPose(a), room = nookRoom(), time = nookTime();
+  const snow = room === "room-winter" ? `<div class="nook-snow" aria-hidden="true">${Array.from({ length: 18 }, (_, i) => `<i style="--x:${(i * 53) % 100}%;--d:${6 + (i % 5)}s;--w:${(i * 7) % 6}s"></i>`).join("")}</div>` : "";
+  const motes = `<div class="nook-motes" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i style="--x:${48 + ((i * 37) % 48)}%;--y:${12 + ((i * 23) % 60)}%;--d:${5 + (i % 4)}s;--w:${(i * 3) % 5}s"></i>`).join("")}</div>`;
+  return `<div class="nook nook-${size}" data-time="${time}" data-room="${room}">
+    <img class="nook-bg" src="${nookImg(room)}" alt="" aria-hidden="true" draggable="false">
+    <div class="nook-light" aria-hidden="true"></div>
+    ${snow}${motes}
+    ${inner ? `<div class="nook-card">${inner}</div>` : ""}
+    <div class="nook-friend">
+      <div class="nook-bubble" role="status">${esc(nookLine(a))}</div>
+      <button class="nook-pet pose-${pose}" data-action="nook-pat" aria-label="Say hello to ${esc(pet.name)}" title="Say hello to ${esc(pet.name)}">
+        <img src="${nookImg(pet.poses[pose])}" alt="" draggable="false">
+      </button>
+      <div class="nook-shadow" aria-hidden="true"></div>
+    </div>
+    <a class="nook-drops" href="#nook" title="Your honey drops">🍯 <b>${S.nook.drops || 0}</b><span>honey drops</span></a>
+  </div>`;
+}
+/** Play the companion's reaction after a render (swap pose, hop, floating reward). */
+function nookAfterRender() {
+  if (!NOOK || !nookPending) return;
+  const p = nookPending;
+  nookPending = null;
+  const btn = $(".nook-pet");
+  if (!btn) return;
+  const pet = nookPet();
+  const img = btn.querySelector("img");
+  const rest = img.getAttribute("src");
+  img.src = nookImg(pet.poses[p.mood] || pet.poses.happy);
+  btn.classList.add("react");
+  if (p.text) {
+    const f = document.createElement("div");
+    f.className = "nook-float";
+    f.textContent = p.text;
+    btn.parentElement.appendChild(f);
+    setTimeout(() => f.remove(), 1600);
+  }
+  if (p.say) { const b = $(".nook-bubble"); if (b) b.textContent = p.say; }
+  setTimeout(() => { btn.classList.remove("react"); if (img.isConnected) img.src = rest; }, 1900);
+}
+
+/* ---------- Page ---------- */
+function viewNook() {
+  const a = SKIN.balance ? availableSummary() : null;
+  const pets = Object.entries(NOOK_PETS).filter(([, p]) => nookImg(p.poses.idle));
+  const today = todayISO();
+  return `
+  ${pageHead("The Honey Nook", "A little room that grows with your money habits. Earn honey drops for small steps — never for being perfect.")}
+  ${nookScene({ a, size: "page" })}
+  <div class="grid g2 mt">
+    <div class="card">
+      <div class="card-head"><h2>Your friends</h2><span class="tiny">🍯 ${S.nook.drops} drops</span></div>
+      <div class="nook-pets">${pets.map(([id, p]) => {
+        const own = S.nook.owned.includes(id), on = S.nook.pet === id;
+        return `<button class="nook-pick ${on ? "on" : ""}" data-action="nook-pet" data-id="${id}" ${!own && S.nook.drops < p.cost ? "disabled" : ""} aria-pressed="${on}">
+          <img src="${nookImg(p.poses.idle)}" alt="">
+          <b>${esc(p.name)}</b><span>${on ? "With you now" : own ? "Tap to switch" : `Unlock · 🍯 ${p.cost}`}</span></button>`;
+      }).join("")}
+        <div class="nook-pick soon" aria-hidden="true"><span class="q">?</span><b>More friends</b><span>Coming in updates</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Rooms</h2></div>
+      <div class="nook-rooms">${[["auto", { name: "Follow the season", cost: 0 }], ...Object.entries(NOOK_ROOMS)].filter(([id]) => id === "auto" || nookImg(id)).map(([id, r]) => {
+        const own = id === "auto" || S.nook.owned.includes(id), on = (S.nook.room || "auto") === id;
+        return `<button class="nook-room ${on ? "on" : ""}" data-action="nook-room" data-id="${id}" ${!own && S.nook.drops < r.cost ? "disabled" : ""} aria-pressed="${on}">
+          ${id === "auto" ? `<span class="nook-room-auto">🍂❄️🌸</span>` : `<img src="${nookImg(id)}" alt="">`}
+          <b>${esc(r.name)}</b><span>${on ? "Showing now" : own ? "Tap to use" : `Unlock · 🍯 ${r.cost}`}</span></button>`;
+      }).join("")}</div>
+    </div>
+  </div>
+  <div class="card mt">
+    <div class="card-head"><h2>How to earn honey drops</h2><span class="tiny">Small daily limits — it's a cozy game, not a chore</span></div>
+    <div class="list">${Object.entries(NOOK_EARN).map(([k, r]) => { const got = S.nook.log[`${today}:${k}`] || 0; return `<div class="li"><div class="name">${esc(r.label)}<small>up to ${r.cap} a day</small></div><div class="amt">+${r.n} 🍯</div><span class="pill ${got >= r.cap ? "good" : "muted"}">${got >= r.cap ? "done today" : `${got}/${r.cap}`}</span></div>`; }).join("")}</div>
+  </div>`;
+}
+
+/* ---------- Wiring ---------- */
+if (NOOK) {
+  // Reward the habits where they happen.
+  const baseAddTx = addTx;
+  addTx = function (tx) {
+    const t = baseAddTx(tx);
+    if (t.link) nookEarn("bill"); else if (t.type === "expense") nookEarn("spend");
+    return t;
+  };
+  const baseCheckBalance = checkBalance;
+  checkBalance = function (amount, openFrom) { baseCheckBalance(amount, openFrom); nookEarn("fresh"); };
+  const baseRender = render;
+  render = function () { baseRender(); nookAfterRender(); };
+  const baseSample = loadSample;
+  loadSample = function () {
+    nookQuiet = true;
+    try { baseSample(); } finally { nookQuiet = false; }
+    S.nook = { pet: "mochi", drops: 38, owned: ["mochi", "room-day"], room: "auto", log: {} };
+    nookPending = null;
+    saveNow();
+    render();
+  };
+  const at = (id) => NAV.findIndex((n) => n.id === id);
+  NAV.splice(at("home") + 1, 0, { id: "nook", label: "Honey Nook", icon: "sparkle" });
+  VIEWS.nook = viewNook;
+  const baseCheckin = ACTIONS.checkin;
+  if (baseCheckin) ACTIONS.checkin = (el, e) => { nookEarn("checkin"); return baseCheckin(el, e); };
+}
+Object.assign(ACTIONS, {
+  "nook-pat": () => {
+    const pet = nookPet();
+    const lines = [`${pet.name} is so happy to see you!`, "You're doing better than you think.", "One small step today is plenty.", "Proud of you for checking in 🍯", pet.line];
+    const n = nookEarn("pat");
+    nookPending = { mood: "happy", text: n ? `+${n} 🍯` : "♡", say: lines[Math.floor(Math.random() * lines.length)] };
+    save();
+    if (n) render(); else nookAfterRender();
+  },
+  "nook-pet": (el) => {
+    const id = el.dataset.id, p = NOOK_PETS[id];
+    if (!p) return;
+    if (!S.nook.owned.includes(id)) {
+      if (S.nook.drops < p.cost) return toast(`Earn ${p.cost - S.nook.drops} more honey drops to meet ${p.name}`);
+      S.nook.drops -= p.cost;
+      S.nook.owned.push(id);
+      celebrate("🍯", `${p.name} moved in!`, p.line);
+    }
+    S.nook.pet = id;
+    nookPending = { mood: "cheer", say: `Hi! I'm ${p.name}. ${p.line}` };
+    commit();
+  },
+  "nook-room": (el) => {
+    const id = el.dataset.id;
+    if (id !== "auto" && !S.nook.owned.includes(id)) {
+      const r = NOOK_ROOMS[id];
+      if (S.nook.drops < r.cost) return toast(`Earn ${r.cost - S.nook.drops} more honey drops for this room`);
+      S.nook.drops -= r.cost;
+      S.nook.owned.push(id);
+      celebrate("✨", `${r.name} unlocked`, "Your nook has a new look.");
+    }
+    S.nook.room = id;
+    commit();
+  },
+});
+
+/* 10-today.js */
+/* ==========================================================================
+   Today tools (balance mode): the animated number, the forecast until
+   payday, "Just today" mode, the evening recap and "I forgot to log".
+   ========================================================================== */
+
+/* ---------- Animated number ---------- */
+let tdShown = null; // last value the big number showed, so it only counts when it changes
+function countUp() {
+  const el = $(".avail[data-count]");
+  if (!el) return;
+  const to = Number(el.dataset.count), from = tdShown;
+  tdShown = to;
+  // Automated screenshots stay still unless a demo recording asks for motion.
+  const still = S.settings.motion === "off" || matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.webdriver && !window.__motionDemo);
+  if (still || from === to) return;
+  const start = from ?? 0, t0 = performance.now(), dur = from == null ? 1100 : 650;
+  el.classList.add("counting");
+  el.innerHTML = moneyHTML(start);
+  const step = (t) => {
+    if (!el.isConnected) return;
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.innerHTML = moneyHTML(k < 1 ? start + (to - start) * e : to);
+    if (k < 1) requestAnimationFrame(step); else el.classList.remove("counting");
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- Forecast until payday ---------- */
+/** End-of-day balance from today to payday if you spend your daily guide and pay every bill on its date. */
+function paydayForecast(a = availableSummary()) {
+  if (a.confirmPayday || a.days <= 0 || a.checkedDays == null) return null;
+  const pts = [], events = [];
+  let bal = a.balance;
+  for (let i = 0; i <= a.days; i++) {
+    const d = addDays(a.today, i);
+    const due = a.due.filter((o) => (i === 0 ? o.date <= d : o.date === d));
+    for (const o of due) bal -= o.amount;
+    if (due.length) events.push({ i, d, items: due });
+    if (i < a.days) bal -= i === 0 ? Math.max(0, a.leftToday) : a.guide;
+    pts.push({ i, d, v: round2(bal) });
+  }
+  const low = pts.reduce((m, p) => (p.v < m.v ? p : m), pts[0]);
+  return { start: a.balance, pts, events, low, end: pts.at(-1).v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
+}
+function forecastChart(f) {
+  // The line stretches with the card (SVG without aspect ratio); dots and labels are HTML so they stay round and readable.
+  const W = 1000, H = 100;
+  const n = f.pts.length;
+  const vals = [f.start, ...f.pts.map((p) => p.v)];
+  const lo = Math.min(0, ...vals), hi = Math.max(...vals) * 1.04 || 1;
+  const xp = (i) => ((i + 0.5) / n) * 100; // percent
+  const yp = (v) => (1 - (v - lo) / (hi - lo || 1)) * 100;
+  const line = [[0, yp(f.start)], ...f.pts.map((p) => [xp(p.i), yp(p.v)])];
+  const path = line.map(([px, py], i) => `${i ? "L" : "M"}${(px * W / 100).toFixed(1)} ${py.toFixed(2)}`).join(" ");
+  const area = `${path} L${(xp(n - 1) * W / 100).toFixed(1)} ${H} L0 ${H} Z`;
+  const zero = lo < 0 ? `<line class="fc-zero" x1="0" x2="${W}" y1="${yp(0).toFixed(2)}" y2="${yp(0).toFixed(2)}" vector-effect="non-scaling-stroke"/>` : "";
+  const pos = (i, v) => `left:${xp(i).toFixed(2)}%;top:${yp(v).toFixed(2)}%`;
+  const marks = f.events.map((e) => {
+    const p = f.pts[e.i];
+    const tip = e.items.map((o) => `${o.name} ${money(o.amount)}`).join(", ");
+    return `<span class="fc-ev" style="${pos(e.i, p.v)}" title="${esc(`${fmtDay(e.d)}: ${tip}`)}"><em>${esc(e.items.map((o) => o.emoji || "•").slice(0, 2).join(""))}</em></span>`;
+  }).join("");
+  const low = f.low.v < f.start && !f.events.some((e) => e.i === f.low.i) ? `<span class="fc-low" style="${pos(f.low.i, f.low.v)}"></span>` : "";
+  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : "Payday"}</b></span>`;
+  const ticks = [...new Set([0, Math.floor((n - 1) / 2), n - 1])].map((i) => `<span style="left:${xp(i).toFixed(2)}%">${i === 0 ? "Today" : esc(fmtDay(f.pts[i].d))}</span>`).join("");
+  return `<div class="fc-plot" role="img" aria-label="Your balance until payday: lowest ${esc(money(f.low.v))} on ${esc(fmtDay(f.low.d))}">
+    <svg class="fc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="fcFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".24"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#fcFill)"/>${zero}<path class="fc-line" d="${path}" vector-effect="non-scaling-stroke"/>
+    </svg>${pay}${marks}${low}
+  </div>
+  <div class="fc-x" aria-hidden="true">${ticks}</div>`;
+}
+function forecastCard(a) {
+  const f = paydayForecast(a);
+  if (!f) return "";
+  const dip = f.low.v < 0;
+  return `<div class="card fc-card focus-hide">
+    <div class="card-head"><h2>${icon("chart", 20)} Until payday</h2><span class="tiny">If you spend your daily guide</span></div>
+    <div class="fc-stats">
+      <div><span class="tiny">Lowest point</span><b class="m ${dip ? "neg" : ""}">${money(f.low.v)}</b><small>${esc(relShort(f.low.d))}</small></div>
+      <div><span class="tiny">Bills on the way</span><b class="m">${money(a.bills)}</b><small>${plural(a.due.length, "payment")}</small></div>
+      <div><span class="tiny">Left on payday</span><b class="m">${money(f.end)}</b><small>before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}</small></div>
+    </div>
+    <div class="fc-chart">${forecastChart(f)}</div>
+    <p class="tiny mt-s">${dip ? "Your account dips below zero before payday — move a bill or an envelope, or update your balance." : "Your account stays above zero all the way to payday. Envelopes and your buffer are still in it."}</p>
+  </div>`;
+}
+
+/* ---------- Evening recap & closing streak ---------- */
+function closedStreak() {
+  let n = 0, d = todayISO();
+  if (!S.dayClosed[d]) d = addDays(d, -1);
+  while (S.dayClosed[d]) { n++; d = addDays(d, -1); }
+  return n;
+}
+const todaysSpends = (today) => S.transactions.filter((t) => t.date === today && t.type === "expense" && !t.link);
+function tomorrowGuide(a) {
+  return a.days > 1 ? Math.floor((a.available * 100) / (a.days - 1)) / 100 : null;
+}
+function recapCard(a, force = false) {
+  if (a.confirmPayday || a.checkedDays == null) return "";
+  const closed = !!S.dayClosed[a.today];
+  if (!force && !closed && new Date().getHours() < 17) return "";
+  const list = todaysSpends(a.today), st = closedStreak(), tg = tomorrowGuide(a);
+  const dots = Array.from({ length: 7 }, (_, i) => addDays(a.today, i - 6)).map((d) => `<i class="${S.dayClosed[d] ? "on" : ""} ${d === a.today ? "now" : ""}" title="${esc(fmtDay(d))}">${DOW[fromISO(d).getDay()][0]}</i>`).join("");
+  const verdict = !list.length ? "A no-spend day 🌿" : a.leftToday >= 0 ? "You stayed within today's guide ✨" : `${money(-a.leftToday)} over today's guide — tomorrow adjusts, no stress.`;
+  const delta = tg != null ? round2(tg - a.guide) : 0;
+  const tomorrow = tg == null ? "Payday is tomorrow 🎉" : `Tomorrow: <b class="m">${money(tg)}</b> a day${delta > 0 ? ` <span class="pos">(+${money(delta)} thanks to today)</span>` : ""}`;
+  return `<div class="card recap ${closed ? "closed" : ""}">
+    <div class="card-head"><h2>${closed ? `${icon("check", 20)} Day closed` : `${icon("moon", 20)} Your day`}</h2><div class="recap-dots" aria-label="Days closed this week">${dots}</div></div>
+    ${closed ? `<p>${verdict} ${tomorrow}.</p>` : `
+    <div class="recap-sum"><b class="m">${money(a.spentToday)}</b><span>spent today · ${plural(list.length, "spend")} · guide ${money(a.guide)}</span></div>
+    <p class="mt-s">${verdict}</p>
+    <p class="tiny mt-s">${tomorrow}.</p>`}
+    <div class="row wrap mt">
+      ${closed ? `<span class="tiny">🔥 ${plural(st, "day")} in a row</span><button class="link-btn" data-action="day-reopen">Reopen</button>`
+        : `<button class="btn primary sm" data-action="day-close">${icon("check")}Close my day</button><button class="btn sm" data-action="forgot">I forgot something</button>${st ? `<span class="tiny">🔥 ${plural(st, "day")} in a row</span>` : ""}`}
+    </div>
+  </div>`;
+}
+
+/* ---------- Just today ---------- */
+function homeJustToday(a, parts) {
+  const list = todaysSpends(a.today).slice().sort(by((t) => -(t.createdAt || 0)));
+  return `
+  <div class="sage just-today">
+  ${pageHead(parts.hello, fmtLong(a.today), `<button class="btn" data-action="just-today">${icon("eye", 18)}Show everything</button>`)}
+  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
+  ${NOOK ? nookScene({ a, inner: parts.numberHTML + parts.actionsHTML }) : `<div class="card hero-avail">${parts.numberHTML}${parts.actionsHTML}</div>`}
+  <div class="sage-grid jt-grid">
+    <div class="card">
+      <div class="card-head"><h2>${icon("list", 20)} Today</h2><button class="link-btn" data-action="forgot">Forgot to log something?</button></div>
+      ${parts.oneTapHTML}
+      ${list.length ? `<div class="list mt">${list.map((t) => `<button class="li jt-li" data-action="edit-tx" data-id="${t.id}"><div class="name">${esc(catById(t.catId)?.emoji || "🧾")} ${esc(t.name)}</div><div class="amt m">${money(t.amount)}</div></button>`).join("")}</div>`
+        : `<p class="muted mt">Nothing tracked yet today. That's okay — one tap when you spend.</p>`}
+    </div>
+    ${recapCard(a, true)}
+  </div>
+  </div>`;
+}
+
+/* ---------- I forgot to log ---------- */
+function openForgot() {
+  const today = todayISO();
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today, -i));
+  const dayOpts = days.map((d, i) => [d, i === 0 ? "Today" : i === 1 ? "Yesterday" : `${DOW[fromISO(d).getDay()]} ${fmtDay(d)}`]);
+  const row = (i, date) => `<div class="fg-row">${sel(`d${i}`, dayOpts, date, 'aria-label="Day"')}${moneyInp(`a${i}`, "", `aria-label="Amount"${i === 0 ? " autofocus" : ""}`)}${inp(`n${i}`, "", 'placeholder="What was it?" maxlength="80" aria-label="What was it?"')}${sel(`c${i}`, catOptions(true), "", 'aria-label="Category"')}</div>`;
+  let count = 4;
+  const checked = S.account.checkedOn;
+  const hint = BAL && checked && days.some((d) => d < checked) ? `<p class="tiny mt">Spends dated before your last balance check (${esc(fmtDay(checked))}) are saved for your history only — they're already in that balance, so today's number stays the same.</p>` : "";
+  const form = openModal({
+    title: "I forgot to log…",
+    wide: true,
+    body: `<p class="muted">Add a few spends at once. Empty rows are skipped.</p>
+      <div class="fg-head tiny" aria-hidden="true"><span>Day</span><span>Amount</span><span>What</span><span>Category</span></div>
+      <div class="fg-rows">${Array.from({ length: count }, (_, i) => row(i, addDays(today, -1))).join("")}</div>
+      <button type="button" class="btn sm mt" data-more>${icon("plus")}Another row</button>${hint}`,
+    foot: `<button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Add spends</button>`,
+    onSubmit: (d) => {
+      const rows = [];
+      for (let i = 0; i < count; i++) {
+        const amount = num(d[`a${i}`]);
+        if (amount > 0) rows.push({ amount, name: (d[`n${i}`] || "").trim(), date: d[`d${i}`] || today, catId: d[`c${i}`] || "" });
+      }
+      if (!rows.length) { toast("Enter at least one amount"); return false; }
+      const undo = snapshot();
+      for (const r of rows) {
+        const catId = r.catId || guessCategory(r.name);
+        const rec = { type: "expense", amount: r.amount, date: r.date, catId, name: r.name || catById(catId)?.name || "Spend", note: "Added later" };
+        if (BAL && checked && r.date < checked) rec.absorbed = true;
+        addTx(rec);
+      }
+      commit(`${plural(rows.length, "spend")} added`, undo);
+    },
+  });
+  form.querySelector("[data-more]").addEventListener("click", () => {
+    const box = form.querySelector(".fg-rows");
+    box.insertAdjacentHTML("beforeend", row(count, box.lastElementChild?.querySelector("select")?.value || addDays(today, -1)));
+    box.lastElementChild.querySelector("input").focus();
+    count++;
+  });
+}
+
+/* ---------- Wiring ---------- */
+if (BAL) {
+  const baseRender = render;
+  render = function () { baseRender(); countUp(); };
+}
+Object.assign(ACTIONS, {
+  "just-today": () => {
+    S.settings.justToday = !S.settings.justToday;
+    ui.view = "home";
+    if (location.hash !== "#home") location.hash = "#home";
+    commit(S.settings.justToday ? "Just today — everything else can wait" : "Showing everything");
+  },
+  "day-close": () => {
+    const today = todayISO();
+    S.dayClosed[today] = true;
+    S.checkins[today] = true;
+    const cutoff = addDays(today, -400);
+    for (const k of Object.keys(S.dayClosed)) if (k < cutoff) delete S.dayClosed[k];
+    nookEarn("close");
+    if (NOOK) nookPending = { ...(nookPending || { mood: "cheer" }), say: "Day closed. Rest easy — I'll keep an eye on the bills 🍯" };
+    const st = closedStreak();
+    commit(st > 1 ? `🔥 ${st} days closed in a row` : "Day closed. See you tomorrow!");
+  },
+  "day-reopen": () => { delete S.dayClosed[todayISO()]; commit("Day reopened"); },
+  forgot: () => openForgot(),
 });
 
 })();

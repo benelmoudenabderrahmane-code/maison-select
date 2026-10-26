@@ -583,6 +583,57 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await ctx.close();
   });
 
+  if (ed.skin?.balance) await step("today tools (forecast, recap, just today, forgot)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    const now = new Date(); now.setHours(19, 10, 0, 0);
+    await page.clock.install({ time: now });
+    await page.goto(full);
+    await page.waitForSelector("[data-ob=sample]");
+    await page.click("[data-ob=sample]");
+    await page.waitForTimeout(300);
+    const f = await page.evaluate(() => { const P = window.__planner, a = P.availableSummary(), f = P.paydayForecast(a); return { n: f.pts.length, days: a.days, end: f.end, keep: a.reserved + a.buffer, low: f.low.v, start: f.start }; });
+    check("forecast covers every day until payday", f.n === f.days + 1, JSON.stringify(f));
+    check("forecast ends with envelopes + buffer left", f.end >= f.keep - 0.01 && f.end - f.keep <= f.days * 0.01 + 0.01, `${f.end} vs ${f.keep}`);
+    check("forecast lowest point is shown", f.low <= f.start && !!(await page.$(".fc-card .fc-plot")));
+    const shown = await page.textContent(".avail");
+    const want = await page.evaluate(() => { const a = window.__planner.availableSummary(); return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(a.available); });
+    check("big number shows the available amount", shown.replace(/\s/g, "") === want, `${shown} vs ${want}`);
+    check("evening recap appears after 5pm", !!(await page.$(".recap:not(.closed)")));
+    const before = await page.evaluate(() => ({ a: window.__planner.availableSummary().available, n: window.__planner.state.transactions.length }));
+    await page.click(".hero-quick [data-action=forgot]");
+    await page.waitForSelector(".modal .fg-row");
+    await page.fill(".modal [name=a0]", "12");
+    await page.fill(".modal [name=n0]", "Pharmacy");
+    await page.fill(".modal [name=a1]", "3");
+    await page.selectOption(".modal [name=d1]", await page.evaluate(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }));
+    await page.click(".modal [data-more]");
+    check("forgot form can add rows", (await page.$$(".modal .fg-row")).length === 5);
+    await page.click(".modal button.primary");
+    await page.waitForTimeout(300);
+    const after = await page.evaluate(() => ({ a: window.__planner.availableSummary().available, n: window.__planner.state.transactions.length, ph: window.__planner.state.transactions.findLast((t) => t.name === "Pharmacy" && t.note === "Added later") }));
+    check("forgot adds several spends at once", after.n === before.n + 2, `${before.n} → ${after.n}`);
+    check("spends before the balance check don't change today's number", Math.abs(before.a - after.a - 3) < 0.005 && after.ph?.absorbed === true, `${before.a} → ${after.a}`);
+    const d0 = await state(page, (S) => S.nook?.drops || 0);
+    await page.click("[data-action=day-close]");
+    await page.waitForTimeout(300);
+    const cl = await state(page, (S) => ({ closed: Object.keys(S.dayClosed).length, drops: S.nook?.drops || 0 }));
+    check("closing the day is remembered", cl.closed === 1 && !!(await page.$(".recap.closed")) && (await page.evaluate(() => window.__planner.closedStreak())) === 1);
+    if (await page.$(".nook")) check("closing the day earns honey", cl.drops === d0 + 3, `${d0} → ${cl.drops}`);
+    await page.click(".hero-quick [data-action=just-today]");
+    await page.waitForTimeout(300);
+    check("just today hides the rest", !!(await page.$(".just-today")) && !(await page.$(".fc-card")) && !(await page.$(".mini-card")));
+    await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
+    await page.reload();
+    await page.waitForTimeout(300);
+    check("just today is kept after reload", !!(await page.$(".just-today")));
+    await page.click(".page-head [data-action=just-today], [data-action=just-today] >> nth=0");
+    await page.waitForTimeout(300);
+    check("show everything brings the home back", !(await page.$(".just-today")) && !!(await page.$(".fc-card")));
+    check("no JavaScript errors (today tools)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await ctx.close();
+  });
+
   await step("small laptop: every menu reachable, strips swipe", async () => {
     const { ctx, page } = await newPage({ width: 1280, height: 660 });
     current = page;

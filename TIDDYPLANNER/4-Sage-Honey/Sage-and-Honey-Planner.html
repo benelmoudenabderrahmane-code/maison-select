@@ -770,6 +770,51 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   @keyframes nookBubble { from { opacity: 0; } to { opacity: 1; } }
 }
 
+/* ---------- Today tools: forecast, evening recap, just today, forgot ---------- */
+.avail.counting { transition: none; }
+.fc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 6px; }
+.fc-stats > div { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); }
+.fc-stats b { font-size: 1.15rem; color: var(--ink); }
+.fc-stats b.neg { color: var(--bad); }
+.fc-stats small { color: var(--ink-3); font-size: .78rem; }
+.fc-chart { color: var(--accent); padding: 34px 0 0; }
+.fc-plot { position: relative; height: 150px; }
+.fc-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fc-line { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.fc-zero { stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.fc-ev, .fc-low { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: var(--surface); border: 2px solid currentColor; }
+.fc-ev em { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 15px; line-height: 1; white-space: nowrap; }
+.fc-low { background: var(--accent-strong); border-color: var(--surface); }
+.fc-pay { position: absolute; top: -26px; bottom: 0; border-left: 1.5px dashed var(--good); }
+.fc-pay b { position: absolute; top: -4px; right: 6px; white-space: nowrap; color: var(--good); font-size: .8rem; font-weight: 650; }
+.fc-x { position: relative; height: 22px; margin-top: 6px; color: var(--ink-3); font-size: .76rem; }
+.fc-x span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.fc-x span:first-child { transform: none; margin-left: -4px; }
+.fc-x span:last-child:not(:first-child) { transform: translateX(-100%); }
+.recap { background: linear-gradient(160deg, var(--accent-softer), var(--surface) 70%); }
+.recap.closed { background: linear-gradient(160deg, var(--good-soft), var(--surface) 70%); }
+.recap-sum { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.recap-sum b { font-size: 1.6rem; font-family: var(--font-head); color: var(--ink); }
+.recap-sum span { color: var(--ink-2); font-size: .9rem; }
+.recap .pos { color: var(--good); font-weight: 600; }
+.recap-dots { display: flex; gap: 5px; }
+.recap-dots i { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 10px var(--font-body); font-style: normal; color: var(--ink-3); background: var(--surface-2); border: 1px solid var(--line); }
+.recap-dots i.on { background: var(--accent); color: var(--accent-ink, #fff); border-color: transparent; }
+.recap-dots i.now { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent); }
+.jt-grid { margin-top: 16px; }
+.jt-li { width: 100%; background: none; border: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.fg-head, .fg-row { display: grid; grid-template-columns: 1.1fr .9fr 1.5fr 1.3fr; gap: 8px; }
+.fg-head { margin: 12px 0 4px; color: var(--ink-3); }
+.fg-rows { display: flex; flex-direction: column; gap: 8px; }
+@media (max-width: 640px) {
+  .fc-stats { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .fc-stats > div:last-child { grid-column: 1 / -1; }
+  .fc-card .card-head .tiny { display: none; }
+  .fg-head { display: none; }
+  .fg-row { grid-template-columns: 1fr 1fr; padding-bottom: 10px; border-bottom: 1px dashed var(--line-2); }
+  .recap .card-head { flex-wrap: wrap; gap: 8px; }
+}
+
 /* ==========================================================================
    Sage & Honey — warm ivory, sage green, honey gold, Fraunces serif
    ========================================================================== */
@@ -1104,7 +1149,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -1130,6 +1175,7 @@ function freshState() {
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
     nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
+    dayClosed: {}, // iso -> true when the evening recap was closed
   };
 }
 
@@ -1173,7 +1219,7 @@ function migrate(data) {
   for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
-  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected"]) {
+  for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {
     if (!out[k] || typeof out[k] !== "object") out[k] = {};
   }
   return out;
@@ -4047,7 +4093,7 @@ function boot() {
 
 // Small hook used by the automated test suite (scripts/test.mjs).
 window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY,
-  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow };
+  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak };
 
 document.addEventListener("DOMContentLoaded", boot);
 
@@ -4254,7 +4300,7 @@ function homeBalance() {
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
   const numberHTML = `
       <div class="eyebrow">Available until ${relShort(a.h)}</div>
-      <div class="avail ${a.shortBy ? "neg" : ""}">${moneyHTML(a.available)}</div>
+      <div class="avail ${a.shortBy ? "neg" : ""}" data-count="${a.available}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
       <div class="fresh-line">${freshness(a)} <button class="link-btn" data-action="fresh-start">Update balance</button></div>
       <div class="guide">
@@ -4268,8 +4314,10 @@ function homeBalance() {
         <button class="btn primary" data-action="quick-add">${icon("plus")}Add expense</button>
         <button class="btn" data-action="afford">${icon("search")}Can I afford it?</button>
         ${NOOK ? "" : `<button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>`}
+        ${NOOK || S.settings.justToday ? "" : `<button class="btn ghost" data-action="just-today" title="Hide everything but today">${icon("sun")}Just today</button>`}
       </div>`;
   const oneTapHTML = freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`;
+  if (S.settings.justToday) return homeJustToday(a, { hello, numberHTML, actionsHTML, oneTapHTML });
   return `
   <div class="sage">
   ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
@@ -4280,7 +4328,8 @@ function homeBalance() {
     ${NOOK ? `<div class="card hero-quick">
       <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
       ${oneTapHTML}
-      ${ui.showBreakdown ? breakdownHTML(a) : `<button class="link-btn mt" data-action="toggle-breakdown">How is today's number worked out?</button>`}
+      <div class="row wrap mt">${ui.showBreakdown ? "" : `<button class="link-btn" data-action="toggle-breakdown">How is today's number worked out?</button>`}<button class="link-btn" data-action="forgot">Forgot to log something?</button><button class="link-btn" data-action="just-today">${icon("sun", 15)} Just today mode</button></div>
+      ${ui.showBreakdown ? breakdownHTML(a) : ""}
     </div>` : `<div class="card hero-avail">
       ${numberHTML}
       ${actionsHTML}
@@ -4298,6 +4347,8 @@ function homeBalance() {
         : empty("🌤️", "Nothing due before payday", "Add your bills so they're protected automatically.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
     </div>
   </div>
+  ${recapCard(a) ? `<div class="mt">${recapCard(a)}</div>` : ""}
+  ${paydayForecast(a) ? `<div class="mt">${forecastCard(a)}</div>` : ""}
   <div class="grid g3 mt">
     <a class="card mini-card" href="#envelopes"><div class="card-head"><h3>${icon("envelope", 18)} Envelopes</h3><span class="tiny">${money(a.reserved)}</span></div>
       ${S.envelopes.length ? S.envelopes.slice(0, 3).map((e) => `<div class="row between mini-row"><span>${esc(e.emoji || "✉️")} ${esc(e.name)}</span><b class="m">${money(e.amount)}</b></div>`).join("") : `<p class="tiny">Set money aside for groceries, gifts or the car.</p>`}</a>
@@ -4547,6 +4598,7 @@ const NOOK_EARN = {
   checkin: { label: "Daily check-in", n: 2, cap: 2 },
   envelope: { label: "Set money aside", n: 2, cap: 4 },
   fresh: { label: "Start from today (balance check)", n: 3, cap: 3 },
+  close: { label: "Close your day (evening recap)", n: 3, cap: 3 },
   pat: { label: "Say hello to your friend", n: 1, cap: 3 },
 };
 let nookQuiet = false; // no rewards while sample data is being generated
@@ -4737,6 +4789,218 @@ Object.assign(ACTIONS, {
     S.nook.room = id;
     commit();
   },
+});
+
+/* 10-today.js */
+/* ==========================================================================
+   Today tools (balance mode): the animated number, the forecast until
+   payday, "Just today" mode, the evening recap and "I forgot to log".
+   ========================================================================== */
+
+/* ---------- Animated number ---------- */
+let tdShown = null; // last value the big number showed, so it only counts when it changes
+function countUp() {
+  const el = $(".avail[data-count]");
+  if (!el) return;
+  const to = Number(el.dataset.count), from = tdShown;
+  tdShown = to;
+  // Automated screenshots stay still unless a demo recording asks for motion.
+  const still = S.settings.motion === "off" || matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.webdriver && !window.__motionDemo);
+  if (still || from === to) return;
+  const start = from ?? 0, t0 = performance.now(), dur = from == null ? 1100 : 650;
+  el.classList.add("counting");
+  el.innerHTML = moneyHTML(start);
+  const step = (t) => {
+    if (!el.isConnected) return;
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.innerHTML = moneyHTML(k < 1 ? start + (to - start) * e : to);
+    if (k < 1) requestAnimationFrame(step); else el.classList.remove("counting");
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- Forecast until payday ---------- */
+/** End-of-day balance from today to payday if you spend your daily guide and pay every bill on its date. */
+function paydayForecast(a = availableSummary()) {
+  if (a.confirmPayday || a.days <= 0 || a.checkedDays == null) return null;
+  const pts = [], events = [];
+  let bal = a.balance;
+  for (let i = 0; i <= a.days; i++) {
+    const d = addDays(a.today, i);
+    const due = a.due.filter((o) => (i === 0 ? o.date <= d : o.date === d));
+    for (const o of due) bal -= o.amount;
+    if (due.length) events.push({ i, d, items: due });
+    if (i < a.days) bal -= i === 0 ? Math.max(0, a.leftToday) : a.guide;
+    pts.push({ i, d, v: round2(bal) });
+  }
+  const low = pts.reduce((m, p) => (p.v < m.v ? p : m), pts[0]);
+  return { start: a.balance, pts, events, low, end: pts.at(-1).v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
+}
+function forecastChart(f) {
+  // The line stretches with the card (SVG without aspect ratio); dots and labels are HTML so they stay round and readable.
+  const W = 1000, H = 100;
+  const n = f.pts.length;
+  const vals = [f.start, ...f.pts.map((p) => p.v)];
+  const lo = Math.min(0, ...vals), hi = Math.max(...vals) * 1.04 || 1;
+  const xp = (i) => ((i + 0.5) / n) * 100; // percent
+  const yp = (v) => (1 - (v - lo) / (hi - lo || 1)) * 100;
+  const line = [[0, yp(f.start)], ...f.pts.map((p) => [xp(p.i), yp(p.v)])];
+  const path = line.map(([px, py], i) => `${i ? "L" : "M"}${(px * W / 100).toFixed(1)} ${py.toFixed(2)}`).join(" ");
+  const area = `${path} L${(xp(n - 1) * W / 100).toFixed(1)} ${H} L0 ${H} Z`;
+  const zero = lo < 0 ? `<line class="fc-zero" x1="0" x2="${W}" y1="${yp(0).toFixed(2)}" y2="${yp(0).toFixed(2)}" vector-effect="non-scaling-stroke"/>` : "";
+  const pos = (i, v) => `left:${xp(i).toFixed(2)}%;top:${yp(v).toFixed(2)}%`;
+  const marks = f.events.map((e) => {
+    const p = f.pts[e.i];
+    const tip = e.items.map((o) => `${o.name} ${money(o.amount)}`).join(", ");
+    return `<span class="fc-ev" style="${pos(e.i, p.v)}" title="${esc(`${fmtDay(e.d)}: ${tip}`)}"><em>${esc(e.items.map((o) => o.emoji || "•").slice(0, 2).join(""))}</em></span>`;
+  }).join("");
+  const low = f.low.v < f.start && !f.events.some((e) => e.i === f.low.i) ? `<span class="fc-low" style="${pos(f.low.i, f.low.v)}"></span>` : "";
+  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : "Payday"}</b></span>`;
+  const ticks = [...new Set([0, Math.floor((n - 1) / 2), n - 1])].map((i) => `<span style="left:${xp(i).toFixed(2)}%">${i === 0 ? "Today" : esc(fmtDay(f.pts[i].d))}</span>`).join("");
+  return `<div class="fc-plot" role="img" aria-label="Your balance until payday: lowest ${esc(money(f.low.v))} on ${esc(fmtDay(f.low.d))}">
+    <svg class="fc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="fcFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".24"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#fcFill)"/>${zero}<path class="fc-line" d="${path}" vector-effect="non-scaling-stroke"/>
+    </svg>${pay}${marks}${low}
+  </div>
+  <div class="fc-x" aria-hidden="true">${ticks}</div>`;
+}
+function forecastCard(a) {
+  const f = paydayForecast(a);
+  if (!f) return "";
+  const dip = f.low.v < 0;
+  return `<div class="card fc-card focus-hide">
+    <div class="card-head"><h2>${icon("chart", 20)} Until payday</h2><span class="tiny">If you spend your daily guide</span></div>
+    <div class="fc-stats">
+      <div><span class="tiny">Lowest point</span><b class="m ${dip ? "neg" : ""}">${money(f.low.v)}</b><small>${esc(relShort(f.low.d))}</small></div>
+      <div><span class="tiny">Bills on the way</span><b class="m">${money(a.bills)}</b><small>${plural(a.due.length, "payment")}</small></div>
+      <div><span class="tiny">Left on payday</span><b class="m">${money(f.end)}</b><small>before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}</small></div>
+    </div>
+    <div class="fc-chart">${forecastChart(f)}</div>
+    <p class="tiny mt-s">${dip ? "Your account dips below zero before payday — move a bill or an envelope, or update your balance." : "Your account stays above zero all the way to payday. Envelopes and your buffer are still in it."}</p>
+  </div>`;
+}
+
+/* ---------- Evening recap & closing streak ---------- */
+function closedStreak() {
+  let n = 0, d = todayISO();
+  if (!S.dayClosed[d]) d = addDays(d, -1);
+  while (S.dayClosed[d]) { n++; d = addDays(d, -1); }
+  return n;
+}
+const todaysSpends = (today) => S.transactions.filter((t) => t.date === today && t.type === "expense" && !t.link);
+function tomorrowGuide(a) {
+  return a.days > 1 ? Math.floor((a.available * 100) / (a.days - 1)) / 100 : null;
+}
+function recapCard(a, force = false) {
+  if (a.confirmPayday || a.checkedDays == null) return "";
+  const closed = !!S.dayClosed[a.today];
+  if (!force && !closed && new Date().getHours() < 17) return "";
+  const list = todaysSpends(a.today), st = closedStreak(), tg = tomorrowGuide(a);
+  const dots = Array.from({ length: 7 }, (_, i) => addDays(a.today, i - 6)).map((d) => `<i class="${S.dayClosed[d] ? "on" : ""} ${d === a.today ? "now" : ""}" title="${esc(fmtDay(d))}">${DOW[fromISO(d).getDay()][0]}</i>`).join("");
+  const verdict = !list.length ? "A no-spend day 🌿" : a.leftToday >= 0 ? "You stayed within today's guide ✨" : `${money(-a.leftToday)} over today's guide — tomorrow adjusts, no stress.`;
+  const delta = tg != null ? round2(tg - a.guide) : 0;
+  const tomorrow = tg == null ? "Payday is tomorrow 🎉" : `Tomorrow: <b class="m">${money(tg)}</b> a day${delta > 0 ? ` <span class="pos">(+${money(delta)} thanks to today)</span>` : ""}`;
+  return `<div class="card recap ${closed ? "closed" : ""}">
+    <div class="card-head"><h2>${closed ? `${icon("check", 20)} Day closed` : `${icon("moon", 20)} Your day`}</h2><div class="recap-dots" aria-label="Days closed this week">${dots}</div></div>
+    ${closed ? `<p>${verdict} ${tomorrow}.</p>` : `
+    <div class="recap-sum"><b class="m">${money(a.spentToday)}</b><span>spent today · ${plural(list.length, "spend")} · guide ${money(a.guide)}</span></div>
+    <p class="mt-s">${verdict}</p>
+    <p class="tiny mt-s">${tomorrow}.</p>`}
+    <div class="row wrap mt">
+      ${closed ? `<span class="tiny">🔥 ${plural(st, "day")} in a row</span><button class="link-btn" data-action="day-reopen">Reopen</button>`
+        : `<button class="btn primary sm" data-action="day-close">${icon("check")}Close my day</button><button class="btn sm" data-action="forgot">I forgot something</button>${st ? `<span class="tiny">🔥 ${plural(st, "day")} in a row</span>` : ""}`}
+    </div>
+  </div>`;
+}
+
+/* ---------- Just today ---------- */
+function homeJustToday(a, parts) {
+  const list = todaysSpends(a.today).slice().sort(by((t) => -(t.createdAt || 0)));
+  return `
+  <div class="sage just-today">
+  ${pageHead(parts.hello, fmtLong(a.today), `<button class="btn" data-action="just-today">${icon("eye", 18)}Show everything</button>`)}
+  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
+  ${NOOK ? nookScene({ a, inner: parts.numberHTML + parts.actionsHTML }) : `<div class="card hero-avail">${parts.numberHTML}${parts.actionsHTML}</div>`}
+  <div class="sage-grid jt-grid">
+    <div class="card">
+      <div class="card-head"><h2>${icon("list", 20)} Today</h2><button class="link-btn" data-action="forgot">Forgot to log something?</button></div>
+      ${parts.oneTapHTML}
+      ${list.length ? `<div class="list mt">${list.map((t) => `<button class="li jt-li" data-action="edit-tx" data-id="${t.id}"><div class="name">${esc(catById(t.catId)?.emoji || "🧾")} ${esc(t.name)}</div><div class="amt m">${money(t.amount)}</div></button>`).join("")}</div>`
+        : `<p class="muted mt">Nothing tracked yet today. That's okay — one tap when you spend.</p>`}
+    </div>
+    ${recapCard(a, true)}
+  </div>
+  </div>`;
+}
+
+/* ---------- I forgot to log ---------- */
+function openForgot() {
+  const today = todayISO();
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today, -i));
+  const dayOpts = days.map((d, i) => [d, i === 0 ? "Today" : i === 1 ? "Yesterday" : `${DOW[fromISO(d).getDay()]} ${fmtDay(d)}`]);
+  const row = (i, date) => `<div class="fg-row">${sel(`d${i}`, dayOpts, date, 'aria-label="Day"')}${moneyInp(`a${i}`, "", `aria-label="Amount"${i === 0 ? " autofocus" : ""}`)}${inp(`n${i}`, "", 'placeholder="What was it?" maxlength="80" aria-label="What was it?"')}${sel(`c${i}`, catOptions(true), "", 'aria-label="Category"')}</div>`;
+  let count = 4;
+  const checked = S.account.checkedOn;
+  const hint = BAL && checked && days.some((d) => d < checked) ? `<p class="tiny mt">Spends dated before your last balance check (${esc(fmtDay(checked))}) are saved for your history only — they're already in that balance, so today's number stays the same.</p>` : "";
+  const form = openModal({
+    title: "I forgot to log…",
+    wide: true,
+    body: `<p class="muted">Add a few spends at once. Empty rows are skipped.</p>
+      <div class="fg-head tiny" aria-hidden="true"><span>Day</span><span>Amount</span><span>What</span><span>Category</span></div>
+      <div class="fg-rows">${Array.from({ length: count }, (_, i) => row(i, addDays(today, -1))).join("")}</div>
+      <button type="button" class="btn sm mt" data-more>${icon("plus")}Another row</button>${hint}`,
+    foot: `<button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Add spends</button>`,
+    onSubmit: (d) => {
+      const rows = [];
+      for (let i = 0; i < count; i++) {
+        const amount = num(d[`a${i}`]);
+        if (amount > 0) rows.push({ amount, name: (d[`n${i}`] || "").trim(), date: d[`d${i}`] || today, catId: d[`c${i}`] || "" });
+      }
+      if (!rows.length) { toast("Enter at least one amount"); return false; }
+      const undo = snapshot();
+      for (const r of rows) {
+        const catId = r.catId || guessCategory(r.name);
+        const rec = { type: "expense", amount: r.amount, date: r.date, catId, name: r.name || catById(catId)?.name || "Spend", note: "Added later" };
+        if (BAL && checked && r.date < checked) rec.absorbed = true;
+        addTx(rec);
+      }
+      commit(`${plural(rows.length, "spend")} added`, undo);
+    },
+  });
+  form.querySelector("[data-more]").addEventListener("click", () => {
+    const box = form.querySelector(".fg-rows");
+    box.insertAdjacentHTML("beforeend", row(count, box.lastElementChild?.querySelector("select")?.value || addDays(today, -1)));
+    box.lastElementChild.querySelector("input").focus();
+    count++;
+  });
+}
+
+/* ---------- Wiring ---------- */
+if (BAL) {
+  const baseRender = render;
+  render = function () { baseRender(); countUp(); };
+}
+Object.assign(ACTIONS, {
+  "just-today": () => {
+    S.settings.justToday = !S.settings.justToday;
+    ui.view = "home";
+    if (location.hash !== "#home") location.hash = "#home";
+    commit(S.settings.justToday ? "Just today — everything else can wait" : "Showing everything");
+  },
+  "day-close": () => {
+    const today = todayISO();
+    S.dayClosed[today] = true;
+    S.checkins[today] = true;
+    const cutoff = addDays(today, -400);
+    for (const k of Object.keys(S.dayClosed)) if (k < cutoff) delete S.dayClosed[k];
+    nookEarn("close");
+    if (NOOK) nookPending = { ...(nookPending || { mood: "cheer" }), say: "Day closed. Rest easy — I'll keep an eye on the bills 🍯" };
+    const st = closedStreak();
+    commit(st > 1 ? `🔥 ${st} days closed in a row` : "Day closed. See you tomorrow!");
+  },
+  "day-reopen": () => { delete S.dayClosed[todayISO()]; commit("Day reopened"); },
+  forgot: () => openForgot(),
 });
 
 })();
