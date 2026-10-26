@@ -754,8 +754,8 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 .nook-pick.soon { cursor: default; border-style: dashed; }
 .nook-pick .q { height: 96px; display: grid; place-items: center; font-family: var(--font-head); font-size: 2.6rem; color: var(--ink-3); }
 .hero-quick .link-btn { display: inline-block; }
-@media (prefers-reduced-motion: reduce) { .nook-bg, .nook-pet, .nook-motes i, .nook-snow i { animation: none !important; } }
-:root[data-motion="off"] .nook-bg, :root[data-motion="off"] .nook-pet, :root[data-motion="off"] .nook-motes i, :root[data-motion="off"] .nook-snow i { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .nook-bg, .nook-pet, .nook-motes i, .nook-snow i, .nook-bubble, .nook-card { animation: none !important; } }
+:root[data-motion="off"] .nook-bg, :root[data-motion="off"] .nook-pet, :root[data-motion="off"] .nook-motes i, :root[data-motion="off"] .nook-snow i, :root[data-motion="off"] .nook-bubble, :root[data-motion="off"] .nook-card { animation: none !important; }
 /* Stack the room above the card when the content area is narrow (phones, tablets in portrait, small windows). */
 @container main (max-width: 860px) {
   .nook, .nook-page { aspect-ratio: auto; min-height: 0; padding-top: 250px; background: var(--surface); }
