@@ -91,6 +91,8 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await page.fill(".modal input[name=name]", "Sam");
     await page.selectOption(".modal select[name=currency]", "EUR");
     await page.click(".modal button.primary");
+    await page.waitForSelector(".modal input[name=amount]");
+    await page.waitForTimeout(80); // the next step opens after a short delay and focuses its first field
     await page.fill(".modal input[name=amount]", "1800");
     await page.click(".modal button.primary");
     await page.click(".modal button.primary");

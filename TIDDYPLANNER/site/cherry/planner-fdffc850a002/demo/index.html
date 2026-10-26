@@ -3155,6 +3155,7 @@ function viewSettings() {
           ${field("Your name", `<input class="input" data-input="name" value="${esc(S.profile.name)}" placeholder="e.g. Alex">`)}
           ${field("Currency", `<select class="input" data-input="currency">${CURRENCIES.map(([c, n]) => `<option value="${c}" ${S.profile.currency === c ? "selected" : ""}>${c} — ${n}</option>`).join("")}</select>`)}
           ${field("Week starts on", `<select class="input" data-input="weekStart"><option value="1" ${S.profile.weekStart === 1 ? "selected" : ""}>Monday</option><option value="0" ${S.profile.weekStart === 0 ? "selected" : ""}>Sunday</option></select>`)}
+          ${SKIN.balance ? field("How you get paid", `<button type="button" class="btn" data-action="pay-style">${icon("wallet")}${S.account.irregular ? "Irregular income" : "Regular paychecks"} · Change</button>`) : ""}
           ${field("Safety buffer", `<input class="input" type="number" min="0" step="10" data-input="buffer" value="${S.profile.buffer || 0}">`, "", "kept out of safe to spend")}
         </div>
       </div>
@@ -3874,7 +3875,8 @@ function openOnboarding(step = 0) {
     SKIN.balance ? {
       title: "Your money right now",
       body: `<p class="muted" style="margin-bottom:14px">Open your banking app. Your daily number starts from what's really in your account — expected pay only counts once it arrives.</p>
-        <div class="form-grid">${field("Balance in your spending account", moneyInp("balance", "", 'autofocus min="-10000000"'), "full")}${field("Amount per paycheck", moneyInp("amount", ""))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>`,
+        <div class="form-grid">${field("Balance in your spending account", moneyInp("balance", "", 'autofocus min="-10000000"'), "full")}${field("Amount per paycheck", moneyInp("amount", ""))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>
+        <div class="mt">${chk("irregular", false, "My income is irregular (freelance, tips, gig work) — I'll choose how long my money lasts")}</div>`,
       foot: `<button type="button" class="btn left" data-ob="skip">Skip for now</button><button class="btn primary">Next</button>`,
     } : {
       title: "Your paycheck",
@@ -3895,7 +3897,8 @@ function openOnboarding(step = 0) {
     foot: st.foot,
     onSubmit: (d) => {
       if (step === 1) { S.profile.name = (d.name || "").trim(); S.profile.currency = d.currency; _fmtCache = {}; }
-      if (step === 2 && num(d.amount) > 0) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "", primary: true });
+      if (step === 2 && SKIN.balance && d.irregular) { S.account.irregular = true; S.account.horizon = addDays(todayISO(), 14); }
+      if (step === 2 && num(d.amount) > 0 && !d.irregular) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "", primary: true });
       if (step === 2 && SKIN.balance && String(d.balance ?? "").trim() !== "") checkBalance(num(d.balance));
       if (step === steps.length - 1) { S.onboarded = true; saveNow(); go("setup"); render(); return; }
       saveNow();
@@ -4287,6 +4290,11 @@ const primaryIncome = () => S.incomes.find((i) => i.primary) || S.incomes[0];
 /** The next payday that hasn't been confirmed yet (today included), or a manual planning date. */
 function nextPayday(today = todayISO()) {
   const inc = primaryIncome();
+  if (S.account.irregular) {
+    // Irregular income: the stretch the user chose; once it's over, the guide waits for a new one.
+    const h = S.account.horizon;
+    return h && h > today ? { date: h, occ: null } : { date: today, occ: null, ended: true };
+  }
   if (inc) {
     const o = scheduleIn(today, addDays(today, 400)).find((x) => x.kind === "income" && x.refId === inc.id && !x.done);
     if (o) return { date: o.date, occ: o };
@@ -4470,12 +4478,12 @@ function homeBalance() {
   const used = a.guide > 0 ? clamp(a.spentToday / a.guide, 0, 1) : 0;
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
   const numberHTML = `
-      <div class="eyebrow">Available until ${relShort(a.h)}</div>
+      <div class="eyebrow">Available until ${relShort(a.h)}${S.account.irregular ? ` · <button class="link-btn" data-action="pay-style">change</button>` : ""}</div>
       <div class="avail ${a.shortBy ? "neg" : ""}" data-count="${a.available}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
       <div class="fresh-line">${freshness(a)} <button class="link-btn" data-action="fresh-start">Update balance</button></div>
       <div class="guide">
-        ${a.confirmPayday ? `<p class="muted">Daily guide pauses until you confirm payday.</p>` : `
+        ${a.confirmPayday ? `<p class="muted">${a.pay.ended ? "Daily guide pauses until you plan your next stretch." : "Daily guide pauses until you confirm payday."}</p>` : `
         <div class="row between"><span><b class="m">${money(Math.max(0, a.leftToday))}</b> left today</span><span class="tiny">Daily guide ${money(a.guide)} · ${plural(a.days, "day")} to go</span></div>
         <div class="bbar sage"><i style="width:${Math.round(used * 100)}%"></i></div>
         <div class="tiny mt-s">${money(a.spentToday)} of ${money(a.guide)} used today${a.leftToday < 0 ? " — tomorrow's guide adjusts, no stress." : ""}</div>`}
@@ -4493,6 +4501,7 @@ function homeBalance() {
   <div class="sage">
   ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
   ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
+  ${stretchBanner(a)}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
   ${headsUp(a)}
@@ -5032,7 +5041,7 @@ function forecastChart(f) {
     return `<span class="fc-ev" style="${pos(e.i, p.v)}" title="${esc(`${fmtDay(e.d)}: ${tip}`)}"><em>${esc(e.items.map((o) => o.emoji || "•").slice(0, 2).join(""))}</em></span>`;
   }).join("");
   const low = f.low.v < f.start && !f.events.some((e) => e.i === f.low.i) ? `<span class="fc-low" style="${pos(f.low.i, f.low.v)}"></span>` : "";
-  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : "Payday"}</b></span>`;
+  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : S.account.irregular ? "Stretch ends" : "Payday"}</b></span>`;
   const ticks = [...new Set([0, Math.floor((n - 1) / 2), n - 1])].map((i) => `<span style="left:${xp(i).toFixed(2)}%">${i === 0 ? "Today" : esc(fmtDay(f.pts[i].d))}</span>`).join("");
   return `<div class="fc-plot" role="img" aria-label="Your balance until payday: lowest ${esc(money(f.low.v))} on ${esc(fmtDay(f.low.d))}">
     <svg class="fc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
@@ -5047,11 +5056,11 @@ function forecastCard(a) {
   if (!f) return "";
   const dip = f.low.v < 0;
   return `<div class="card fc-card focus-hide">
-    <div class="card-head"><h2>${icon("chart", 20)} Until payday</h2><span class="tiny">If you spend your daily guide</span></div>
+    <div class="card-head"><h2>${icon("chart", 20)} ${S.account.irregular ? "Until the stretch ends" : "Until payday"}</h2><span class="tiny">If you spend your daily guide</span></div>
     <div class="fc-stats">
       <div><span class="tiny">Lowest point</span><b class="m ${dip ? "neg" : ""}">${money(f.low.v)}</b><small>${esc(relShort(f.low.d))}</small></div>
       <div><span class="tiny">Bills on the way</span><b class="m">${money(a.bills)}</b><small>${plural(a.due.length, "payment")}</small></div>
-      <div><span class="tiny">Left on payday</span><b class="m">${money(f.end)}</b><small>before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}</small></div>
+      <div><span class="tiny">${S.account.irregular ? "Left at the end" : "Left on payday"}</span><b class="m">${money(f.end)}</b><small>${S.account.irregular ? `on ${esc(fmtDay(f.h))}` : `before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}`}</small></div>
     </div>
     <div class="fc-chart">${forecastChart(f)}</div>
     <p class="tiny mt-s">${dip ? "Your account dips below zero before payday — move a bill or an envelope, or update your balance." : "Your account stays above zero all the way to payday. Envelopes and your buffer are still in it."}</p>
@@ -5097,6 +5106,7 @@ function homeJustToday(a, parts) {
   return `
   <div class="sage just-today">
   ${pageHead(parts.hello, fmtLong(a.today), `<button class="btn" data-action="just-today">${icon("eye", 18)}Show everything</button>`)}
+  ${stretchBanner(a)}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: parts.numberHTML + parts.actionsHTML }) : `<div class="card hero-avail">${parts.numberHTML}${parts.actionsHTML}</div>`}
   ${headsUp(a)}
@@ -5372,6 +5382,63 @@ Object.assign(ACTIONS, {
     celebrate(p.c.e, `${p.c.name} — done!`, NOOK ? `+${p.c.reward} honey drops` : "Another kind habit, unlocked.");
   },
 });
+
+/* 12-income.js */
+/* ==========================================================================
+   Irregular income (balance mode): no fixed payday — freelance, tips or gig
+   work. You choose how long the money in your account has to last.
+   ========================================================================== */
+const IRREG = () => BAL && !!S.account.irregular;
+function stretchChoices(today = todayISO()) {
+  return [
+    ["7", "1 week", addDays(today, 7)],
+    ["14", "2 weeks", addDays(today, 14)],
+    ["28", "4 weeks", addDays(today, 28)],
+    ["eom", "End of month", addDays(monthEnd(monthKey(today)), 1)],
+  ];
+}
+/** The home banner when a stretch is over. */
+function stretchBanner(a) {
+  if (!IRREG() || !a.pay.ended) return "";
+  return `<div class="fresh-banner"><div><b>Your stretch is over 🌱</b><span>How long should the money in your account last now? Update your balance first if money came in.</span></div><button class="btn primary sm" data-action="pay-style">Plan next stretch</button></div>`;
+}
+function openPayStyle() {
+  const today = todayISO();
+  let irregular = !!S.account.irregular;
+  const cur = S.account.horizon && S.account.horizon > today ? S.account.horizon : addDays(today, 14);
+  const picks = stretchChoices(today);
+  const body = () => `
+    <div class="seg" style="margin-bottom:14px">${[["0", "Regular paychecks"], ["1", "Irregular income"]].map(([v, l]) => `<button type="button" class="${(v === "1") === irregular ? "on" : ""}" data-style="${v}">${l}</button>`).join("")}</div>
+    ${irregular ? `<p class="muted">Freelance, tips, gig work or benefits that move around? Choose how long the money in your account has to last. Bills due before then are protected first.</p>
+      <div class="chips mt">${picks.map(([k, l, d]) => `<button type="button" class="chip ${d === cur ? "on" : ""}" data-until="${d}">${l} · ${esc(fmtDay(addDays(d, -1)))}</button>`).join("")}</div>
+      <div class="form-grid mt">${field("Or pick the day money arrives", inp("until", cur, `type="date" min="${addDays(today, 1)}"`), "full")}</div>
+      <p class="tiny mt-s">When money comes in, add it as income or update your balance — your number grows right away.</p>`
+      : `<p class="muted">Your number lasts until your next payday. ${S.incomes.length ? `Main paycheck: <b>${esc(primaryIncome()?.name || "Paycheck")}</b> · ${money(primaryIncome()?.amount || 0)} ${esc((FREQS[primaryIncome()?.freq] || "").toLowerCase())}.` : `Add your paycheck in <a href="#paycheck">Paycheck plan</a>.`}</p>`}`;
+  const form = openModal({
+    title: "How you get paid",
+    body: body(),
+    foot: `<button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save</button>`,
+    onSubmit: (d) => {
+      const undo = snapshot();
+      S.account.irregular = irregular;
+      if (irregular) {
+        const until = d.until && d.until > today ? d.until : addDays(today, 14);
+        S.account.horizon = until;
+        commit(`Your money now lasts until ${fmtDay(until)}`, undo);
+      } else commit("Back to regular paychecks", undo);
+    },
+  });
+  const wire = () => {
+    form.querySelectorAll(".modal-body a[href^='#']").forEach((x) => x.addEventListener("click", closeModal));
+    form.querySelectorAll("[data-style]").forEach((b) => b.addEventListener("click", () => { irregular = b.dataset.style === "1"; form.querySelector(".modal-body").innerHTML = body(); wire(); }));
+    form.querySelectorAll("[data-until]").forEach((b) => b.addEventListener("click", () => {
+      form.querySelector("[name=until]").value = b.dataset.until;
+      form.querySelectorAll("[data-until]").forEach((x) => x.classList.toggle("on", x === b));
+    }));
+  };
+  wire();
+}
+Object.assign(ACTIONS, { "pay-style": () => openPayStyle() });
 
 })();
 </script>
