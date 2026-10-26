@@ -67,6 +67,7 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 📝 "I FORGOT TO LOG" — add a few missed spends at once, no guilt
 🔔 HEADS-UP REMINDERS — bills due today or tomorrow, refund deadlines and backup reminders, right on your home screen
 🔎 SEARCH EVERYTHING — find any spend, bill, envelope or goal in a second (even by amount)
+💼 IRREGULAR INCOME — freelance, tips or gig work? Choose how long your money has to last (1 week, 2 weeks, end of month…)
 🏅 KIND CHALLENGES — 3 no-spend days, coffee at home, no takeout fortnight… finish them to earn honey drops
 🛍️ CAN I AFFORD IT? — type a price before you buy, nothing gets recorded
 🌱 FRESH START — missed a few days? Update your balance and carry on, no catching up
