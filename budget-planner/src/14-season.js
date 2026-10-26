@@ -20,7 +20,7 @@ function seasonNow(d = new Date()) {
   if (m >= 6 && m <= 8) return "summer";
   return "";
 }
-const seasonOn = () => NOOK && S.settings.seasonal !== false && !!seasonNow();
+function seasonOn() { return NOOK && S.settings.seasonal !== false && !!seasonNow(); }
 function seasonLayer(id) {
   const s = SEASONS[id];
   const fall = s.fall ? `<div class="nook-fall fall-${s.fall}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--x:${(i * 41 + 7) % 100}%;--d:${7 + (i % 5)}s;--w:${(i * 1.7) % 7}s;--r:${(i * 67) % 360}deg">${s.fall === "heart" ? "♥" : ""}</i>`).join("")}</div>` : "";

@@ -26,7 +26,7 @@ const NOOK_EARN = {
 let nookQuiet = false; // no rewards while sample data is being generated
 let nookPending = null; // reaction to play after the next render
 
-const nookPet = () => NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi;
+function nookPet() { return NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi; }
 function nookEarn(reason) {
   if (!NOOK || nookQuiet || !S.nook) return 0;
   const rule = NOOK_EARN[reason];
@@ -121,6 +121,7 @@ function viewNook() {
   return `
   ${pageHead("The Honey Nook", "A little room that grows with your money habits. Earn honey drops for small steps — never for being perfect.")}
   ${nookScene({ a, size: "page" })}
+  ${nookStudio()}
   <div class="grid g2 mt">
     <div class="card">
       <div class="card-head"><h2>Your friends</h2><span class="tiny">🍯 ${S.nook.drops} drops</span></div>

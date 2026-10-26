@@ -870,3 +870,11 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
   .nook-page .nook-deco span { top: auto; bottom: 8%; }
 }
+
+/* ---------- Preview studio ---------- */
+.studio-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 0; border-top: 1px dashed var(--line-2); }
+.studio-row:first-of-type { border-top: 0; }
+.studio-label { font-size: .8rem; font-weight: 650; color: var(--ink-2); }
+.studio .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.studio .chip.on { background: var(--accent); color: var(--accent-ink, #fff); border-color: transparent; }
+@media (max-width: 640px) { .studio-row { grid-template-columns: minmax(0, 1fr); gap: 6px; } }

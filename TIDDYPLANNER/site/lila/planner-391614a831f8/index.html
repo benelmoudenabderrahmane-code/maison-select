@@ -890,6 +890,14 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .nook-page .nook-deco span { top: auto; bottom: 8%; }
 }
 
+/* ---------- Preview studio ---------- */
+.studio-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 0; border-top: 1px dashed var(--line-2); }
+.studio-row:first-of-type { border-top: 0; }
+.studio-label { font-size: .8rem; font-weight: 650; color: var(--ink-2); }
+.studio .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.studio .chip.on { background: var(--accent); color: var(--accent-ink, #fff); border-color: transparent; }
+@media (max-width: 640px) { .studio-row { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+
 /* ==========================================================================
    Lila Bloom — soft lavender, white cards, deep plum accents
    ========================================================================== */
@@ -4673,7 +4681,7 @@ const NOOK_EARN = {
 let nookQuiet = false; // no rewards while sample data is being generated
 let nookPending = null; // reaction to play after the next render
 
-const nookPet = () => NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi;
+function nookPet() { return NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi; }
 function nookEarn(reason) {
   if (!NOOK || nookQuiet || !S.nook) return 0;
   const rule = NOOK_EARN[reason];
@@ -4768,6 +4776,7 @@ function viewNook() {
   return `
   ${pageHead("The Honey Nook", "A little room that grows with your money habits. Earn honey drops for small steps — never for being perfect.")}
   ${nookScene({ a, size: "page" })}
+  ${nookStudio()}
   <div class="grid g2 mt">
     <div class="card">
       <div class="card-head"><h2>Your friends</h2><span class="tiny">🍯 ${S.nook.drops} drops</span></div>
@@ -5468,7 +5477,7 @@ function seasonNow(d = new Date()) {
   if (m >= 6 && m <= 8) return "summer";
   return "";
 }
-const seasonOn = () => NOOK && S.settings.seasonal !== false && !!seasonNow();
+function seasonOn() { return NOOK && S.settings.seasonal !== false && !!seasonNow(); }
 function seasonLayer(id) {
   const s = SEASONS[id];
   const fall = s.fall ? `<div class="nook-fall fall-${s.fall}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--x:${(i * 41 + 7) % 100}%;--d:${7 + (i % 5)}s;--w:${(i * 1.7) % 7}s;--r:${(i * 67) % 360}deg">${s.fall === "heart" ? "♥" : ""}</i>`).join("")}</div>` : "";
@@ -5493,6 +5502,65 @@ if (NOOK) {
   };
 }
 Object.assign(INPUTS, { seasonal: (el, ev) => { if (ev.type !== "change") return; S.settings.seasonal = el.checked; commit(el.checked ? "Seasonal touches on" : "Seasonal touches off"); } });
+
+/* 15-studio.js */
+/* ==========================================================================
+   Preview studio (Honey Nook page): try every friend, pose, reaction, time
+   of day, room and season for free. Nothing is unlocked, spent or saved.
+   ========================================================================== */
+const STUDIO = {
+  pet: [["", "Yours"], ...Object.entries(NOOK_PETS).map(([id, p]) => [id, p.name])],
+  pose: [["", "Auto"], ["idle", "Sitting"], ["coin", "Holding a coin"], ["happy", "Happy"], ["cheer", "Cheering"], ["sleep", "Sleeping"]],
+  time: [["", "Now"], ["morning", "Morning"], ["day", "Day"], ["golden", "Golden hour"], ["night", "Night"]],
+  room: [["", "Yours"], ...Object.entries(NOOK_ROOMS).map(([id, r]) => [id, r.name])],
+  season: [["", "Now"], ["none", "No season"], ...Object.entries(SEASONS).map(([id, x]) => [id, `${x.e} ${x.label}`])],
+};
+const studioOn = () => ui.view === "nook" && ui.nookPreview && Object.values(ui.nookPreview).some(Boolean);
+const sp = (k) => (ui.view === "nook" && ui.nookPreview ? ui.nookPreview[k] || "" : "");
+function nookStudio() {
+  const row = (k, label) => `<div class="studio-row"><span class="studio-label">${label}</span><div class="chips">${STUDIO[k].filter(([v]) => k !== "room" || !v || nookImg(v)).map(([v, l]) => `<button type="button" class="chip ${sp(k) === v ? "on" : ""}" data-action="nook-preview" data-k="${k}" data-v="${v}" aria-pressed="${sp(k) === v}">${esc(l)}</button>`).join("")}</div></div>`;
+  const pet = NOOK_PETS[sp("pet")] || nookPet();
+  const soon = Object.values(pet.poses).every((x) => x === pet.poses.idle) ? `<p class="tiny">${esc(pet.name)}'s other poses are coming in an update.</p>` : "";
+  return `<div class="card studio mt">
+    <div class="card-head"><h2>${icon("sparkle", 20)} Preview studio</h2><span class="tiny">Try everything for free — nothing is unlocked or spent</span></div>
+    ${row("pet", "Friend")}${row("pose", "Pose")}
+    <div class="studio-row"><span class="studio-label">Reactions</span><div class="chips">
+      <button type="button" class="chip" data-action="nook-play" data-mood="cheer" data-text="+3 🍯">▶ Hop &amp; cheer</button>
+      <button type="button" class="chip" data-action="nook-play" data-mood="happy" data-text="♡">▶ Happy hello</button>
+      <button type="button" class="chip" data-action="nook-play" data-mood="coin" data-text="+1 🍯">▶ Honey reward</button>
+    </div></div>
+    ${row("time", "Time of day")}${row("room", "Room")}${row("season", "Season")}
+    ${soon}
+    <div class="row wrap mt-s">${studioOn() ? `<button type="button" class="btn sm" data-action="nook-preview-reset">Back to my nook</button>` : ""}<span class="tiny">Your real nook follows the clock, the season and what you've unlocked.</span></div>
+  </div>`;
+}
+
+if (NOOK) {
+  const basePet = nookPet;
+  nookPet = function () { return NOOK_PETS[sp("pet")] || basePet(); };
+  const baseTime = nookTime;
+  nookTime = function (d) { return sp("time") || baseTime(d); };
+  const baseRoom = nookRoom;
+  nookRoom = function (d) { return sp("room") || baseRoom(d); };
+  const basePose = nookPose;
+  nookPose = function (a) { return sp("pose") || basePose(a); };
+  const baseSeason = seasonNow;
+  seasonNow = function (d) { const v = sp("season"); return v === "none" ? "" : v || baseSeason(d); };
+  const baseSeasonOn = seasonOn;
+  seasonOn = function () { return sp("season") && sp("season") !== "none" ? true : baseSeasonOn(); };
+}
+Object.assign(ACTIONS, {
+  "nook-preview": (el) => {
+    ui.nookPreview = { ...(ui.nookPreview || {}), [el.dataset.k]: el.dataset.v };
+    render();
+  },
+  "nook-preview-reset": () => { ui.nookPreview = null; render(); },
+  "nook-play": (el) => {
+    const pet = nookPet();
+    nookPending = { mood: el.dataset.mood, text: el.dataset.text, say: el.dataset.mood === "cheer" ? "Yay! Another small win!" : el.dataset.mood === "happy" ? `${pet.name} is so happy to see you!` : "A honey drop for you 🍯" };
+    nookAfterRender();
+  },
+});
 
 })();
 </script>
