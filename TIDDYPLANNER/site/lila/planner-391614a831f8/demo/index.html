@@ -5092,12 +5092,12 @@ function searchAll(q) {
   const groups = [];
   const add = (label, items) => { if (items.length) groups.push({ label, items: items.slice(0, 6) }); };
   add("Pages", NAV.filter((n) => n.id && VIEWS[n.id] && has(n.label)).map((n) => ({ go: n.id, ic: n.icon, name: n.label, sub: "Open page" })));
-  add("Spends & income", tx.slice(0, 8).map((t) => ({ act: "edit-tx", id: t.id, ic: t.type === "income" ? "wallet" : "receipt", name: `${catById(t.catId)?.emoji || ""} ${t.name}`.trim(), sub: fmtDay(t.date), amt: t.type === "income" ? t.amount : -t.amount })));
   add("Bills & subscriptions", S.bills.filter((b) => has(b.name, b.note)).map((b) => ({ act: "edit-bill", id: b.id, ic: "receipt", name: `${b.emoji || ""} ${b.name}`.trim(), sub: FREQS[b.freq] || "Bill", amt: -b.amount })));
   if (BAL) add("Envelopes", S.envelopes.filter((e) => has(e.name)).map((e) => ({ act: "edit-envelope", id: e.id, ic: "envelope", name: `${e.emoji || "✉️"} ${e.name}`, sub: "Envelope", amt: e.amount })));
   add("Goals & savings", [...S.goals.filter((g) => has(g.name)).map((g) => ({ act: "edit-goal", id: g.id, ic: "target", name: `${g.emoji || ""} ${g.name}`.trim(), sub: "Goal" })),
     ...S.funds.filter((f) => has(f.name)).map((f) => ({ go: "savings", ic: "piggy", name: `${f.emoji || ""} ${f.name}`.trim(), sub: "Savings fund" }))]);
   if (BAL) add("Money back", S.moneyBack.filter((m) => has(m.name, m.note)).map((m) => ({ go: "moneyback", ic: "repeat", name: m.name, sub: m.status === "waiting" ? `Waiting · by ${fmtDay(m.due)}` : "Done", amt: m.amount })));
+  add("Spends & income", tx.slice(0, 8).map((t) => ({ act: "edit-tx", id: t.id, ic: t.type === "income" ? "wallet" : "receipt", name: `${catById(t.catId)?.emoji || ""} ${t.name}`.trim(), sub: fmtDay(t.date), amt: t.type === "income" ? t.amount : -t.amount })));
   return { groups, tx };
 }
 function openSearch(q = "") {
