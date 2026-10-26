@@ -162,7 +162,7 @@ small, .muted { color: var(--ink-2); }
 .sidebar-foot { margin-top: auto; padding-top: 14px; display: flex; gap: 6px; }
 .side-art { margin-top: auto; }
 
-.main { padding: 30px clamp(16px, 3.4vw, 44px) 60px; max-width: 1240px; width: 100%; min-width: 0; }
+.main { padding: 30px clamp(16px, 3.4vw, 44px) 60px; max-width: 1240px; width: 100%; min-width: 0; container: main / inline-size; }
 .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
 .page-head p { color: var(--ink-2); margin-top: 6px; }
 .page-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -688,7 +688,7 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 .short-line { color: var(--bad); margin: -4px 0 10px; font-size: .95rem; }
 
 /* ---------- The Honey Nook: illustrated room + companion ---------- */
-.nook { position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 1; min-height: 330px; isolation: isolate; margin-bottom: 16px;
+.nook { position: relative; width: 100%; max-width: 100%; min-width: 0; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 1; min-height: 330px; isolation: isolate; margin-bottom: 16px;
   box-shadow: 0 2px 4px hsl(30 40% 30% / .06), 0 30px 60px -34px hsl(30 50% 25% / .55); border: 1px solid hsl(40 40% 86%); background: #f3e6cf; }
 .nook-page { aspect-ratio: 2.6 / 1; min-height: 380px; }
 .nook-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; z-index: -2; user-select: none;
@@ -756,12 +756,13 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 .hero-quick .link-btn { display: inline-block; }
 @media (prefers-reduced-motion: reduce) { .nook-bg, .nook-pet, .nook-motes i, .nook-snow i { animation: none !important; } }
 :root[data-motion="off"] .nook-bg, :root[data-motion="off"] .nook-pet, :root[data-motion="off"] .nook-motes i, :root[data-motion="off"] .nook-snow i { animation: none !important; }
-@media (max-width: 760px) {
+/* Stack the room above the card when the content area is narrow (phones, tablets in portrait, small windows). */
+@container main (max-width: 860px) {
   .nook, .nook-page { aspect-ratio: auto; min-height: 0; padding-top: 250px; background: var(--surface); }
   .nook-bg { height: 260px; bottom: auto; object-position: 66% 50%; }
   .nook-light { height: 260px; bottom: auto; }
   .nook-card { position: relative; left: auto; top: auto; transform: none; width: auto; margin: 0 10px 10px; animation: none; background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .nook-friend { left: 64%; bottom: auto; top: 88px; width: 30%; min-width: 0; }
+  .nook-friend { left: 64%; bottom: auto; top: 88px; width: min(30%, 120px); min-width: 0; top: 100px; }
   .nook-drops { right: auto; left: 12px; top: 204px; }
   .nook-page .nook-drops { top: 12px; }
   .nook-page { padding-top: 0; aspect-ratio: 1.45 / 1; }
@@ -852,6 +853,41 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .hu { gap: 10px; padding: 8px 8px 8px 12px; border-radius: 14px; }
   .hu-t { font-size: .84rem; line-height: 1.35; }
   .hu-b .btn.sm { padding: 6px 10px; }
+}
+
+/* ---------- Accounts, move devices, seasonal nook ---------- */
+.acct-card .fund-amt.neg { color: var(--bad); }
+.acct-card.main { background: linear-gradient(160deg, var(--accent-softer), var(--surface) 70%); }
+.acct-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 150px; border: 1.5px dashed var(--line-2); background: none; color: var(--ink-3); font: 600 .9rem var(--font-body); cursor: pointer; box-shadow: none; }
+.acct-add:hover { color: var(--accent-strong); border-color: var(--accent); }
+.steps-list { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: var(--ink-2); }
+.nook-fall { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.nook-fall i { position: absolute; top: -8%; left: var(--x); width: 14px; height: 9px; border-radius: 80% 0 80% 0; opacity: 0; animation: nookFall var(--d) linear var(--w) infinite; }
+.fall-leaf i { background: linear-gradient(135deg, hsl(28 85% 55%), hsl(12 70% 45%)); }
+.fall-leaf i:nth-child(3n) { background: linear-gradient(135deg, hsl(42 90% 58%), hsl(30 80% 48%)); }
+.fall-petal i { width: 11px; height: 8px; border-radius: 60% 40% 60% 40%; background: linear-gradient(135deg, hsl(345 85% 88%), hsl(340 70% 76%)); }
+.fall-heart i { width: auto; height: auto; border-radius: 0; color: hsl(345 80% 68%); font-style: normal; font-size: 13px; background: none; }
+@keyframes nookFall {
+  0% { transform: translate3d(0, 0, 0) rotate(var(--r)); opacity: 0; }
+  10% { opacity: .9; }
+  50% { transform: translate3d(24px, 260px, 0) rotate(calc(var(--r) + 160deg)); }
+  90% { opacity: .85; }
+  100% { transform: translate3d(-10px, 520px, 0) rotate(calc(var(--r) + 320deg)); opacity: 0; }
+}
+.nook-deco { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.nook-deco span { position: absolute; bottom: 9%; font-size: clamp(22px, 3.1vw, 40px); filter: drop-shadow(0 6px 6px hsl(30 40% 20% / .35)) saturate(.9); }
+.nook-deco .d0 { left: 76%; }
+.nook-deco .d1 { left: 81.5%; bottom: 7.5%; font-size: clamp(16px, 2.2vw, 28px); }
+.nook-season-chip { position: absolute; top: 14px; right: 168px; z-index: 4; padding: 6px 12px; border-radius: 999px; background: hsl(0 0% 100% / .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font: 600 .76rem var(--font-body); color: var(--ink); border: 1px solid hsl(0 0% 100% / .6); }
+:root[data-theme="dark"] .nook-season-chip { background: hsl(150 12% 10% / .7); border-color: hsl(0 0% 100% / .12); }
+@media (prefers-reduced-motion: reduce) { .nook-fall { display: none; } }
+:root[data-motion="off"] .nook-fall { display: none; }
+@container main (max-width: 860px) {
+  .nook-season-chip { top: 210px; right: 12px; font-size: .7rem; padding: 5px 10px; }
+  .nook-deco span { bottom: auto; top: 168px; font-size: 28px; }
+  .nook-deco .d0 { left: 30%; }
+  .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
+  .nook-page .nook-deco span { top: auto; bottom: 8%; }
 }
 
 /* ==========================================================================
@@ -1152,7 +1188,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, seasonal: true, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -1181,6 +1217,7 @@ function freshState() {
     dayClosed: {}, // iso -> { g: daily guide, s: spent } when the evening recap was closed
     challenge: null, // { id, start } — the challenge in progress
     challengesDone: [], // [{ id, end }]
+    accounts: [], // other accounts: { id, name, kind: cash|savings|card|other, balance, include, checkedOn }
   };
 }
 
@@ -1221,7 +1258,7 @@ function migrate(data) {
   out.nook = { ...base.nook, ...(data.nook || {}) };
   if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
   if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
-  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack", "challengesDone"]) {
+  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack", "challengesDone", "accounts"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
   for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {
@@ -3006,6 +3043,7 @@ function viewSettings() {
           <div class="field"><span>Text size</span>${seg("size", [["normal", "Comfortable"], ["large", "Large"]])}</div>
           <div class="field"><span>Animations</span>${seg("motion", [["on", "On"], ["off", "Reduced"]])}</div>
           ${chk("celebrate", st.celebrate, "Celebrate wins with confetti 🎉").replace("<input", `<input data-input="celebrate"`)}
+          ${typeof NOOK !== "undefined" && NOOK ? chk("seasonal", st.seasonal, "Seasonal touches in your nook (autumn leaves, Halloween, holidays, spring petals) 🍂").replace("<input", `<input data-input="seasonal"`) : ""}
         </div>
       </div>
     </div>
@@ -3022,6 +3060,7 @@ function viewSettings() {
         <div class="row wrap mt">
           <button class="btn primary" data-action="export-json" ${IS_DEMO ? "disabled" : ""}>${icon("download")}Back up (.json)</button>
           <button class="btn" data-action="import-json" ${IS_DEMO ? "disabled" : ""}>${icon("upload")}Restore backup</button>
+          <button class="btn" data-action="send-device" ${IS_DEMO ? "disabled" : ""}>${icon("repeat")}Send to my other device</button>
           <button class="btn" data-action="export-csv">${icon("download")}Transactions CSV</button>
           <button class="btn" data-action="print">${icon("printer")}Print / PDF</button>
           <button class="btn" data-action="export-ics">${icon("calendar")}Bills to calendar (.ics)</button>
@@ -3891,6 +3930,11 @@ function loadSample() {
     bank("Overdraft fee", 35, addDays(today, -41));
     bank("Foreign transaction fee", 3.12, addDays(today, -19));
     for (let i = 1; i <= 4; i++) bank("Cloud Photos Plus", 2.99, addDays(today, -30 * i + 8));
+    S.accounts = [
+      { id: uid(), name: "Cash wallet", kind: "cash", balance: 64, include: true, checkedOn: addDays(today, -2) },
+      { id: uid(), name: "High-yield savings", kind: "savings", balance: 4800, include: false, checkedOn: addDays(today, -6) },
+      { id: uid(), name: "Rewards card", kind: "card", balance: 286.4, include: false, checkedOn: addDays(today, -3) },
+    ];
     // A realistic balance: everything due before payday is covered, with some room to breathe.
     S.account.balance = round2(S.account.balance - availableSummary(today).margin + 586.34);
   }
@@ -4153,7 +4197,8 @@ function availableSummary(today = todayISO()) {
   const bills = round2(sum(due, (o) => o.amount));
   const reserved = round2(sum(S.envelopes, (e) => e.amount));
   const buffer = round2(S.profile.buffer || 0);
-  const margin = round2(balance - bills - reserved - buffer);
+  const extra = extraBalance(); // cash or other accounts the user counts in
+  const margin = round2(balance + extra - bills - reserved - buffer);
   const available = Math.max(0, margin), shortBy = Math.max(0, -margin);
   const days = diffDays(today, h); // today included, payday excluded
   const todays = S.transactions.filter((t) => t.date === today && t.type === "expense" && !t.link && afterCheck(t));
@@ -4162,7 +4207,7 @@ function availableSummary(today = todayISO()) {
   // The daily guide is recalculated from today: what's left plus what you already spent today, shared out.
   const guide = confirmPayday ? 0 : Math.floor(((available + spentToday) * 100) / days) / 100;
   const checkedDays = S.account.checkedOn ? diffDays(S.account.checkedOn, today) : null;
-  return { today, h, pay, balance, due, bills, reserved, buffer, margin, available, shortBy, days, spentToday, guide, leftToday: round2(guide - spentToday), confirmPayday, checkedDays, stale: checkedDays == null || checkedDays >= 7 };
+  return { today, h, pay, balance, extra, due, bills, reserved, buffer, margin, available, shortBy, days, spentToday, guide, leftToday: round2(guide - spentToday), confirmPayday, checkedDays, stale: checkedDays == null || checkedDays >= 7 };
 }
 /** What a purchase would leave, without recording anything. */
 function previewPurchase(amount) {
@@ -4299,6 +4344,7 @@ function breakdownHTML(a) {
   return `<div class="bd">
     ${row(`Balance you checked${S.account.checkedOn ? ` (${fmtDay(S.account.checkedOn)})` : ""}`, S.account.balance || 0, "#home", "")}
     ${since ? row("Recorded since then", since, "#transactions", since < 0 ? "− " : "+ ") : ""}
+    ${a.extra ? row("Cash & other accounts", a.extra, "#accounts", "+ ") : ""}
     ${row(`Bills & payments until ${fmtDay(a.h)}`, a.bills, "#bills", "− ")}
     ${a.reserved ? row("Set aside in envelopes", a.reserved, "#envelopes", "− ") : ""}
     ${a.buffer ? row("Safety buffer", a.buffer, "#settings", "− ") : ""}
@@ -4847,7 +4893,7 @@ function countUp() {
 function paydayForecast(a = availableSummary()) {
   if (a.confirmPayday || a.days <= 0 || a.checkedDays == null) return null;
   const pts = [], events = [];
-  let bal = a.balance;
+  let bal = a.balance + (a.extra || 0);
   for (let i = 0; i <= a.days; i++) {
     const d = addDays(a.today, i);
     const due = a.due.filter((o) => (i === 0 ? o.date <= d : o.date === d));
@@ -4857,7 +4903,7 @@ function paydayForecast(a = availableSummary()) {
     pts.push({ i, d, v: round2(bal) });
   }
   const low = pts.reduce((m, p) => (p.v < m.v ? p : m), pts[0]);
-  return { start: a.balance, pts, events, low, end: pts.at(-1).v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
+  return { start: a.balance + (a.extra || 0), pts, events, low, end: pts.at(-1).v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
 }
 function forecastChart(f) {
   // The line stretches with the card (SVG without aspect ratio); dots and labels are HTML so they stay round and readable.
@@ -5276,6 +5322,177 @@ function openPayStyle() {
   wire();
 }
 Object.assign(ACTIONS, { "pay-style": () => openPayStyle() });
+
+/* 13-accounts.js */
+/* ==========================================================================
+   Move to another device (share the backup file), and other accounts in
+   balance mode: cash, savings and cards next to the spending account.
+   ========================================================================== */
+
+/* ---------- Send to my other device ---------- */
+async function sendToDevice() {
+  if (IS_DEMO) return toast("Moving devices is part of the full version");
+  const name = `${APP_NAME.replace(/\s/g, "-").toLowerCase()}-backup-${todayISO()}.json`;
+  const text = JSON.stringify(S, null, 1);
+  S.settings.lastBackup = todayISO();
+  saveNow();
+  let file = null;
+  try { file = new File([text], name, { type: "application/json" }); } catch { file = null; }
+  if (file && navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: `${APP_NAME} backup`, text: `Open your planner on the other device → Settings → Restore backup, then choose this file.` });
+      render();
+      toast("Sent! On the other device: Settings → Restore backup");
+      return;
+    } catch (e) { if (e?.name === "AbortError") { render(); return; } }
+  }
+  download(name, text);
+  render();
+  openModal({
+    title: "Move to another device",
+    body: `<p class="muted">Your planner was saved as a file. Three small steps:</p>
+      <ol class="steps-list mt">
+        <li><b>Send the file to yourself</b> — AirDrop, email, WhatsApp, Google Drive or a USB stick.</li>
+        <li><b>Open your planner on the other device</b> — the same private link or the offline file.</li>
+        <li><b>Settings → Restore backup</b> and choose the file. Everything appears, exactly as here.</li>
+      </ol>
+      <p class="tiny mt">There's no account and no cloud: your budget only moves when you move it.</p>`,
+    foot: `<button class="btn primary">Got it</button>`,
+  });
+}
+
+/* ---------- Other accounts (balance mode) ---------- */
+const ACCOUNT_KINDS = { cash: ["💵", "Cash"], savings: ["🐷", "Savings"], card: ["💳", "Credit card"], other: ["🏦", "Other account"] };
+/** Money in other accounts that counts in today's number (never cards). */
+function extraBalance() { return round2(sum((S.accounts || []).filter((x) => x.include && x.kind !== "card"), (x) => x.balance)); }
+function accountsTotals() {
+  const main = balanceNow();
+  const have = round2(main + sum(S.accounts.filter((x) => x.kind !== "card"), (x) => x.balance));
+  const owed = round2(sum(S.accounts.filter((x) => x.kind === "card"), (x) => x.balance));
+  return { main, have, owed, net: round2(have - owed), counted: extraBalance() };
+}
+function viewAccounts() {
+  const t = accountsTotals(), a = availableSummary();
+  const row = (x) => {
+    const [e, k] = ACCOUNT_KINDS[x.kind] || ACCOUNT_KINDS.other;
+    return `<div class="card acct-card">
+      <div class="card-head"><h3>${e} ${esc(x.name)}</h3><button class="btn ghost icon-btn" data-action="edit-account" data-id="${x.id}" aria-label="Edit ${esc(x.name)}">${icon("edit")}</button></div>
+      <div class="fund-amt ${x.kind === "card" ? "neg" : ""}">${moneyHTML(x.balance)}</div>
+      <p class="tiny">${k}${x.kind === "card" ? " · owed" : ""}${x.checkedOn ? ` · updated ${esc(fmtDay(x.checkedOn))}` : ""}</p>
+      ${x.kind === "card" ? `<p class="tiny mt-s">Card payments come from your bills — add the payment as a bill or debt so it's protected.</p>`
+        : `<label class="check mt-s"><input type="checkbox" data-input="acct-include" data-id="${x.id}" ${x.include ? "checked" : ""}> Count in today's number</label>`}
+    </div>`;
+  };
+  return `
+  ${pageHead("Accounts", "Your spending account powers today's number. Add cash, savings or cards to see everything in one place.", `<button class="btn primary" data-action="add-account">${icon("plus")}Add account</button>`)}
+  <div class="grid g3">
+    <div class="tile accent"><div class="label">Everything you have</div><div class="value">${moneyHTML(t.have)}</div><div class="sub">across ${plural(1 + S.accounts.filter((x) => x.kind !== "card").length, "account")}</div></div>
+    <div class="tile ${t.owed ? "" : "good"}"><div class="label">Owed on cards</div><div class="value">${moneyHTML(t.owed)}</div><div class="sub">${t.owed ? "not part of today's number" : "nothing owed 🎉"}</div></div>
+    <div class="tile good"><div class="label">Available until ${esc(fmtDay(a.h))}</div><div class="value">${moneyHTML(a.available)}</div><div class="sub">${t.counted ? `includes ${money(t.counted)} from other accounts` : "from your spending account"}</div></div>
+  </div>
+  <div class="grid g3 mt">
+    <div class="card acct-card main">
+      <div class="card-head"><h3>🌿 ${esc(S.account.name || "Spending account")}</h3><span class="tiny">Main</span></div>
+      <div class="fund-amt">${moneyHTML(t.main)}</div>
+      <div class="fresh-line tiny">${freshness(a)}</div>
+      <button class="btn sm mt-s" data-action="fresh-start">Update balance</button>
+    </div>
+    ${S.accounts.map(row).join("")}
+    <button class="card acct-add" data-action="add-account">${icon("plus", 22)}<span>Add cash, savings or a card</span></button>
+  </div>
+  <p class="tiny mt">Spending from cash? Track it as usual, then update the cash balance when you count it — your number stays right in between.</p>`;
+}
+function openAccountForm(acc = null) {
+  const x = acc || { name: "", kind: "cash", balance: "", include: true };
+  openModal({
+    title: acc ? "Edit account" : "Add an account",
+    body: `<div class="form-grid">
+      ${field("Name", inp("name", x.name, 'placeholder="e.g. Cash wallet" maxlength="40" required autofocus'))}
+      ${field("Type", sel("kind", Object.entries(ACCOUNT_KINDS).map(([k, [e, l]]) => [k, `${e} ${l}`]), x.kind))}
+      ${field("Balance right now", moneyInp("balance", x.balance, 'min="0"'), "full", "for a card: what you owe")}
+      <div class="full">${chk("include", x.include, "Count it in today's number (cash you can spend)")}</div>
+    </div>`,
+    foot: `${acc ? `<button type="button" class="btn danger left" data-del>${icon("trash")}Delete</button>` : ""}<button type="button" class="btn" data-close>Cancel</button><button class="btn primary">${acc ? "Save" : "Add"}</button>`,
+    onSubmit: (d) => {
+      const name = (d.name || "").trim();
+      if (!name) { toast("Give it a name"); return false; }
+      const rec = { name, kind: d.kind, balance: round2(Math.max(0, num(d.balance))), include: d.kind !== "card" && !!d.include, checkedOn: todayISO() };
+      const undo = snapshot();
+      if (acc) Object.assign(acc, rec); else S.accounts.push({ id: uid(), ...rec });
+      commit(acc ? "Account saved" : `${name} added`, undo);
+    },
+    onMount: (form) => form.querySelector("[data-del]")?.addEventListener("click", () => {
+      const undo = snapshot();
+      S.accounts = S.accounts.filter((y) => y !== acc);
+      closeModal();
+      commit(`${acc.name} removed`, undo);
+    }),
+  });
+}
+
+/* ---------- Wiring ---------- */
+if (BAL) {
+  const at = (id) => NAV.findIndex((n) => n.id === id);
+  NAV.splice(at("envelopes") + 1, 0, { id: "accounts", label: "Accounts", icon: "wallet" });
+  VIEWS.accounts = viewAccounts;
+}
+Object.assign(ACTIONS, {
+  "send-device": () => sendToDevice(),
+  "add-account": () => openAccountForm(),
+  "edit-account": (el) => openAccountForm(S.accounts.find((x) => x.id === el.dataset.id)),
+});
+Object.assign(INPUTS, {
+  "acct-include": (el, ev) => { if (ev.type !== "change") return; const x = S.accounts.find((y) => y.id === el.dataset.id); if (x) { x.include = el.checked; commit(el.checked ? `${x.name} counts in today's number` : `${x.name} left out of today's number`); } },
+});
+
+/* 14-season.js */
+/* ==========================================================================
+   Seasonal touches in the Honey Nook: falling leaves, Halloween pumpkins,
+   holiday gifts, Valentine hearts and spring petals (Settings → Appearance).
+   ========================================================================== */
+const SEASONS = {
+  halloween: { label: "Halloween week", e: "🎃", fall: "leaf", deco: ["🎃", "🎃"], line: "Happy Halloween! Treats fit in your guide 🎃" },
+  autumn: { label: "Cozy autumn", e: "🍂", fall: "leaf", line: "Cozy season — a warm drink at home is a small win 🍂" },
+  holidays: { label: "Holiday season", e: "🎄", fall: "", deco: ["🎁", "🎄"], line: "Gifts feel lighter with an envelope for them 🎁" },
+  valentine: { label: "Valentine's", e: "💕", fall: "heart", line: "Loving yourself includes your future self 💕" },
+  spring: { label: "Spring", e: "🌸", fall: "petal", line: "Fresh start season — perfect for a balance check 🌸" },
+  summer: { label: "Summer", e: "☀️", fall: "", line: "Sunny days, calm money ☀️" },
+};
+function seasonNow(d = new Date()) {
+  const m = d.getMonth() + 1, day = d.getDate();
+  if (m === 10 && day >= 15) return "halloween";
+  if (m === 12) return "holidays";
+  if (m === 2 && day <= 14) return "valentine";
+  if ((m === 3 && day >= 20) || m === 4 || m === 5) return "spring";
+  if ((m === 9 && day >= 22) || m === 10 || m === 11) return "autumn";
+  if (m >= 6 && m <= 8) return "summer";
+  return "";
+}
+const seasonOn = () => NOOK && S.settings.seasonal !== false && !!seasonNow();
+function seasonLayer(id) {
+  const s = SEASONS[id];
+  const fall = s.fall ? `<div class="nook-fall fall-${s.fall}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--x:${(i * 41 + 7) % 100}%;--d:${7 + (i % 5)}s;--w:${(i * 1.7) % 7}s;--r:${(i * 67) % 360}deg">${s.fall === "heart" ? "♥" : ""}</i>`).join("")}</div>` : "";
+  const deco = s.deco ? `<div class="nook-deco" aria-hidden="true">${s.deco.map((e, i) => `<span class="d${i}">${e}</span>`).join("")}</div>` : "";
+  return `${fall}${deco}<span class="nook-season-chip" title="${esc(s.label)}">${s.e} ${esc(s.label)}</span>`;
+}
+
+if (NOOK) {
+  const baseScene = nookScene;
+  nookScene = function (opts) {
+    const html = baseScene(opts);
+    if (!seasonOn()) return html;
+    const id = seasonNow();
+    return html.replace('<div class="nook ', `<div data-season="${id}" class="nook `).replace('<div class="nook-light" aria-hidden="true"></div>', `<div class="nook-light" aria-hidden="true"></div>${seasonLayer(id)}`);
+  };
+  const baseLine = nookLine;
+  nookLine = function (a) {
+    const line = baseLine(a);
+    // Every other hour, a seasonal hello replaces the everyday encouragement (never over a real heads-up).
+    if (seasonOn() && a && a.leftToday > 0 && !a.stale && !a.shortBy && !a.confirmPayday && nookTime() !== "night" && new Date().getHours() % 2 === 0) return SEASONS[seasonNow()].line;
+    return line;
+  };
+}
+Object.assign(INPUTS, { seasonal: (el, ev) => { if (ev.type !== "change") return; S.settings.seasonal = el.checked; commit(el.checked ? "Seasonal touches on" : "Seasonal touches off"); } });
 
 })();
 </script>

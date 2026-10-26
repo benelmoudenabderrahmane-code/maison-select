@@ -42,7 +42,8 @@ function availableSummary(today = todayISO()) {
   const bills = round2(sum(due, (o) => o.amount));
   const reserved = round2(sum(S.envelopes, (e) => e.amount));
   const buffer = round2(S.profile.buffer || 0);
-  const margin = round2(balance - bills - reserved - buffer);
+  const extra = extraBalance(); // cash or other accounts the user counts in
+  const margin = round2(balance + extra - bills - reserved - buffer);
   const available = Math.max(0, margin), shortBy = Math.max(0, -margin);
   const days = diffDays(today, h); // today included, payday excluded
   const todays = S.transactions.filter((t) => t.date === today && t.type === "expense" && !t.link && afterCheck(t));
@@ -51,7 +52,7 @@ function availableSummary(today = todayISO()) {
   // The daily guide is recalculated from today: what's left plus what you already spent today, shared out.
   const guide = confirmPayday ? 0 : Math.floor(((available + spentToday) * 100) / days) / 100;
   const checkedDays = S.account.checkedOn ? diffDays(S.account.checkedOn, today) : null;
-  return { today, h, pay, balance, due, bills, reserved, buffer, margin, available, shortBy, days, spentToday, guide, leftToday: round2(guide - spentToday), confirmPayday, checkedDays, stale: checkedDays == null || checkedDays >= 7 };
+  return { today, h, pay, balance, extra, due, bills, reserved, buffer, margin, available, shortBy, days, spentToday, guide, leftToday: round2(guide - spentToday), confirmPayday, checkedDays, stale: checkedDays == null || checkedDays >= 7 };
 }
 /** What a purchase would leave, without recording anything. */
 function previewPurchase(amount) {
@@ -188,6 +189,7 @@ function breakdownHTML(a) {
   return `<div class="bd">
     ${row(`Balance you checked${S.account.checkedOn ? ` (${fmtDay(S.account.checkedOn)})` : ""}`, S.account.balance || 0, "#home", "")}
     ${since ? row("Recorded since then", since, "#transactions", since < 0 ? "− " : "+ ") : ""}
+    ${a.extra ? row("Cash & other accounts", a.extra, "#accounts", "+ ") : ""}
     ${row(`Bills & payments until ${fmtDay(a.h)}`, a.bills, "#bills", "− ")}
     ${a.reserved ? row("Set aside in envelopes", a.reserved, "#envelopes", "− ") : ""}
     ${a.buffer ? row("Safety buffer", a.buffer, "#settings", "− ") : ""}

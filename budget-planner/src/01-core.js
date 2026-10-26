@@ -222,7 +222,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, seasonal: true, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -251,6 +251,7 @@ function freshState() {
     dayClosed: {}, // iso -> { g: daily guide, s: spent } when the evening recap was closed
     challenge: null, // { id, start } — the challenge in progress
     challengesDone: [], // [{ id, end }]
+    accounts: [], // other accounts: { id, name, kind: cash|savings|card|other, balance, include, checkedOn }
   };
 }
 
@@ -291,7 +292,7 @@ function migrate(data) {
   out.nook = { ...base.nook, ...(data.nook || {}) };
   if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
   if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
-  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack", "challengesDone"]) {
+  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack", "challengesDone", "accounts"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
   for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {

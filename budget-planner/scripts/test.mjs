@@ -747,6 +747,78 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await ctx.close();
   });
 
+  if (ed.skin?.balance) await step("accounts, move devices, seasons", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.clock.install({ time: new Date(new Date().getFullYear(), 9, 26, 18, 10) });
+    await page.goto(full);
+    await page.waitForSelector("[data-ob=sample]");
+    await page.click("[data-ob=sample]");
+    await page.waitForTimeout(300);
+    const a0 = await page.evaluate(() => window.__planner.availableSummary());
+    check("cash counted in today's number", a0.extra === 64 && Math.abs(a0.available - 586.34) < 0.005, JSON.stringify([a0.extra, a0.available]));
+    await go(page, "accounts");
+    check("accounts page lists the other accounts", (await page.$$(".acct-card")).length === 4);
+    await page.click(".acct-card [data-input=acct-include] >> nth=0");
+    await page.waitForTimeout(250);
+    const a1 = await page.evaluate(() => window.__planner.availableSummary());
+    check("leaving cash out lowers the number", Math.abs(a0.available - a1.available - 64) < 0.005 && a1.extra === 0, `${a0.available} → ${a1.available}`);
+    await page.click(".acct-add");
+    await page.waitForSelector(".modal [name=name]");
+    await page.waitForTimeout(80);
+    await page.fill(".modal [name=name]", "Tip jar");
+    await page.fill(".modal [name=balance]", "40");
+    await page.click(".modal button.primary");
+    await page.waitForTimeout(250);
+    const a2 = await page.evaluate(() => window.__planner.availableSummary());
+    check("a new cash account counts right away", Math.abs(a2.available - a1.available - 40) < 0.005, `${a1.available} → ${a2.available}`);
+    await page.click("[data-action=edit-account] >> nth=2");
+    await page.waitForSelector(".modal [name=kind]");
+    const cardInc = await page.evaluate(() => window.__planner.state.accounts.find((x) => x.kind === "card").include);
+    check("cards never count in today's number", cardInc === false);
+    await page.keyboard.press("Escape");
+    await go(page, "settings");
+    const dl = page.waitForEvent("download", { timeout: 3000 }).catch(() => null);
+    await page.click("[data-action=send-device]");
+    check("send to my other device saves the file", !!(await dl));
+    check("…and explains the next steps", !!(await page.$(".modal .steps-list")));
+    await page.keyboard.press("Escape");
+    await go(page, "home");
+    check("seasonal touches in October", !!(await page.$(".nook[data-season] .nook-season-chip")) && !!(await page.$(".nook-deco")));
+    await go(page, "settings");
+    await page.click("[data-input=seasonal]");
+    await page.waitForTimeout(200);
+    await go(page, "home");
+    check("seasonal touches can be turned off", !(await page.$(".nook[data-season]")));
+    check("no JavaScript errors (accounts & seasons)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await ctx.close();
+  });
+
+  await step("tablet: portrait and landscape fit", async () => {
+    for (const vp of [{ width: 820, height: 1180 }, { width: 1180, height: 820 }, { width: 1024, height: 768 }]) {
+      const { ctx, page } = await newPage(vp);
+      current = page;
+      await page.goto(full);
+      await page.waitForSelector("[data-ob=sample]");
+      await page.click("[data-ob=sample]");
+      await page.waitForTimeout(300);
+      const bad = [];
+      for (const v of ["home", "transactions", "budget", "bills", "calendar", "settings", ...(ed.skin?.balance ? ["accounts", "challenges", "nook", "envelopes"] : [])]) {
+        await go(page, v);
+        const w = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        if (w > 0) bad.push(`${v}:${w}px`);
+      }
+      check(`tablet ${vp.width}×${vp.height}: no sideways scrolling`, !bad.length, bad.join(" "));
+      if (ed.skin?.balance) {
+        const fit = await page.evaluate(() => { const n = document.querySelector(".nook"), c = document.querySelector(".nook-card"); if (!n || !c) return true; const a = n.getBoundingClientRect(), b = c.getBoundingClientRect(); return b.top >= a.top - 1 && b.bottom <= a.bottom + 1; });
+        await go(page, "home");
+        check(`tablet ${vp.width}×${vp.height}: today's card fits in the room`, await page.evaluate(() => { const n = document.querySelector(".nook"), c = document.querySelector(".nook-card"); const a = n.getBoundingClientRect(), b = c.getBoundingClientRect(); return b.top >= a.top - 1 && b.bottom <= a.bottom + 1; }) && fit);
+      }
+      check(`no JavaScript errors (tablet ${vp.width})`, page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+      await ctx.close();
+    }
+  });
+
   await step("small laptop: every menu reachable, strips swipe", async () => {
     const { ctx, page } = await newPage({ width: 1280, height: 660 });
     current = page;

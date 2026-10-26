@@ -1066,6 +1066,7 @@ function viewSettings() {
           <div class="field"><span>Text size</span>${seg("size", [["normal", "Comfortable"], ["large", "Large"]])}</div>
           <div class="field"><span>Animations</span>${seg("motion", [["on", "On"], ["off", "Reduced"]])}</div>
           ${chk("celebrate", st.celebrate, "Celebrate wins with confetti 🎉").replace("<input", `<input data-input="celebrate"`)}
+          ${typeof NOOK !== "undefined" && NOOK ? chk("seasonal", st.seasonal, "Seasonal touches in your nook (autumn leaves, Halloween, holidays, spring petals) 🍂").replace("<input", `<input data-input="seasonal"`) : ""}
         </div>
       </div>
     </div>
@@ -1082,6 +1083,7 @@ function viewSettings() {
         <div class="row wrap mt">
           <button class="btn primary" data-action="export-json" ${IS_DEMO ? "disabled" : ""}>${icon("download")}Back up (.json)</button>
           <button class="btn" data-action="import-json" ${IS_DEMO ? "disabled" : ""}>${icon("upload")}Restore backup</button>
+          <button class="btn" data-action="send-device" ${IS_DEMO ? "disabled" : ""}>${icon("repeat")}Send to my other device</button>
           <button class="btn" data-action="export-csv">${icon("download")}Transactions CSV</button>
           <button class="btn" data-action="print">${icon("printer")}Print / PDF</button>
           <button class="btn" data-action="export-ics">${icon("calendar")}Bills to calendar (.ics)</button>

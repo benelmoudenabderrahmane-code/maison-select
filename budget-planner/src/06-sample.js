@@ -142,6 +142,11 @@ function loadSample() {
     bank("Overdraft fee", 35, addDays(today, -41));
     bank("Foreign transaction fee", 3.12, addDays(today, -19));
     for (let i = 1; i <= 4; i++) bank("Cloud Photos Plus", 2.99, addDays(today, -30 * i + 8));
+    S.accounts = [
+      { id: uid(), name: "Cash wallet", kind: "cash", balance: 64, include: true, checkedOn: addDays(today, -2) },
+      { id: uid(), name: "High-yield savings", kind: "savings", balance: 4800, include: false, checkedOn: addDays(today, -6) },
+      { id: uid(), name: "Rewards card", kind: "card", balance: 286.4, include: false, checkedOn: addDays(today, -3) },
+    ];
     // A realistic balance: everything due before payday is covered, with some room to breathe.
     S.account.balance = round2(S.account.balance - availableSummary(today).margin + 586.34);
   }
