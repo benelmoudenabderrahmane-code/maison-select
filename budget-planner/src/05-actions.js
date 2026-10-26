@@ -641,7 +641,7 @@ function openMoreSheet() {
   openModal({
     title: "Menu",
     body: `<div class="sheet-nav">${NAV.filter((n) => n.id && !(S.settings.focus && n.nf)).map((n) => `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""}" data-close>${icon(n.icon)}${n.label}</a>`).join("")}</div>
-      <div class="row wrap mt"><button type="button" class="btn sm" data-action="toggle-theme">${icon(isDark() ? "sun" : "moon")}${isDark() ? "Day" : "Night"} mode</button><button type="button" class="btn sm" data-action="toggle-privacy">${icon("eye")}Privacy</button><button type="button" class="btn sm" data-action="toggle-focus">${icon("focus")}Focus</button></div>`,
+      <div class="row wrap mt"><button type="button" class="btn sm" data-action="toggle-theme">${icon(isDark() ? "sun" : "moon")}${isDark() ? "Day" : "Night"} mode</button><button type="button" class="btn sm" data-action="toggle-privacy">${icon("eye")}Privacy</button><button type="button" class="btn sm" data-action="toggle-focus">${icon("focus")}Focus</button><button type="button" class="btn sm" data-action="search" data-close>${icon("search")}Search</button></div>`,
   });
 }
 
@@ -662,7 +662,8 @@ function openOnboarding(step = 0) {
     SKIN.balance ? {
       title: "Your money right now",
       body: `<p class="muted" style="margin-bottom:14px">Open your banking app. Your daily number starts from what's really in your account — expected pay only counts once it arrives.</p>
-        <div class="form-grid">${field("Balance in your spending account", moneyInp("balance", "", 'autofocus min="-10000000"'), "full")}${field("Amount per paycheck", moneyInp("amount", ""))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>`,
+        <div class="form-grid">${field("Balance in your spending account", moneyInp("balance", "", 'autofocus min="-10000000"'), "full")}${field("Amount per paycheck", moneyInp("amount", ""))}${field("How often", sel("freq", freqOptions(["weekly", "biweekly", "semimonthly", "monthly"]), "biweekly"))}${field("Next payday", inp("anchor", addDays(todayISO(), 7), 'type="date"'), "full")}</div>
+        <div class="mt">${chk("irregular", false, "My income is irregular (freelance, tips, gig work) — I'll choose how long my money lasts")}</div>`,
       foot: `<button type="button" class="btn left" data-ob="skip">Skip for now</button><button class="btn primary">Next</button>`,
     } : {
       title: "Your paycheck",
@@ -683,7 +684,8 @@ function openOnboarding(step = 0) {
     foot: st.foot,
     onSubmit: (d) => {
       if (step === 1) { S.profile.name = (d.name || "").trim(); S.profile.currency = d.currency; _fmtCache = {}; }
-      if (step === 2 && num(d.amount) > 0) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "", primary: true });
+      if (step === 2 && SKIN.balance && d.irregular) { S.account.irregular = true; S.account.horizon = addDays(todayISO(), 14); }
+      if (step === 2 && num(d.amount) > 0 && !d.irregular) S.incomes.push({ id: uid(), name: "Paycheck", emoji: "💰", amount: round2(num(d.amount)), freq: d.freq, anchor: d.anchor || todayISO(), endDate: "", primary: true });
       if (step === 2 && SKIN.balance && String(d.balance ?? "").trim() !== "") checkBalance(num(d.balance));
       if (step === steps.length - 1) { S.onboarded = true; saveNow(); go("setup"); render(); return; }
       saveNow();

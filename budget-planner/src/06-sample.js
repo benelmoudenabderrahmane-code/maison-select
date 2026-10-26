@@ -123,6 +123,8 @@ function loadSample() {
   S.incomes[0].primary = true;
   if (SKIN.balance) {
     // Balance mode: a balance confirmed this morning, money set aside, refunds to chase.
+    S.challenge = { id: "nospend3", start: addDays(today, -3) };
+    S.challengesDone = [{ id: "log7", end: addDays(today, -9) }];
     S.account = { name: "Checking", balance: 1842.35, checkedAt: fromISO(today).getTime() + 1, checkedOn: today, openFrom: today };
     for (const t of S.transactions) if (t.date === today) t.createdAt = Date.now() - 1000; else t.createdAt = Math.min(t.createdAt, fromISO(today).getTime() - 1);
     S.envelopes = [

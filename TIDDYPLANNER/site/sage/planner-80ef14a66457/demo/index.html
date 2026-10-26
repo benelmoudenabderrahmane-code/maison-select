@@ -815,6 +815,44 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .recap .card-head { flex-wrap: wrap; gap: 8px; }
 }
 
+/* ---------- Search everything, heads-up, challenges ---------- */
+.gs-box { position: relative; }
+.gs-res { max-height: min(56vh, 460px); overflow-y: auto; margin: 0 -6px; padding: 0 6px; }
+.gs-hint { padding: 10px 2px; }
+.gs-group + .gs-group { margin-top: 12px; }
+.gs-label { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); font-weight: 650; margin: 0 4px 4px; }
+.gs-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: 12px; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.gs-item svg { color: var(--accent); flex: none; }
+.gs-item:hover, .gs-item.on { background: var(--accent-softer); }
+.gs-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gs-name small { display: block; color: var(--ink-3); font-size: .78rem; }
+.gs-all { display: block; width: 100%; margin-top: 12px; padding: 10px; border: 1px dashed var(--line-2); border-radius: 12px; background: none; color: var(--accent-strong); font: 600 .86rem var(--font-body); cursor: pointer; }
+.heads-up { display: flex; flex-direction: column; gap: 8px; margin: 14px 0 16px; }
+.hu { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.hu.late { border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); background: color-mix(in srgb, var(--bad-soft) 55%, var(--surface)); }
+.hu-e { font-size: 1.2rem; }
+.hu-t { flex: 1; min-width: 0; font-size: .92rem; color: var(--ink-2); }
+.hu-t b { color: var(--ink); }
+.hu-b { display: flex; gap: 6px; flex: none; }
+.ch-e { font-size: 1.1em; }
+.ch-e.big { font-size: 2rem; line-height: 1; margin-bottom: 8px; }
+.ch-dots { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 8px; }
+.ch-dots i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 650 11px var(--font-body); font-style: normal; color: var(--ink-3); background: var(--surface-2); border: 1px solid var(--line); }
+.ch-dots i.ok { background: var(--good); color: #fff; border-color: transparent; }
+.ch-dots i.miss { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.ch-dots i.today { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent); }
+.ch-dots i.future { opacity: .6; }
+.ch-card.done { background: linear-gradient(160deg, var(--good-soft), var(--surface) 70%); }
+.ch-state { font-weight: 600; color: var(--ink-2); }
+.ch-state.good { color: var(--good); }
+.ch-pick h3 { margin-bottom: 4px; }
+@media (max-width: 640px) {
+  .heads-up { gap: 6px; margin: 12px 0; }
+  .hu { gap: 10px; padding: 8px 8px 8px 12px; border-radius: 14px; }
+  .hu-t { font-size: .84rem; line-height: 1.35; }
+  .hu-b .btn.sm { padding: 6px 10px; }
+}
+
 /* ==========================================================================
    Sage & Honey — warm ivory, sage green, honey gold, Fraunces serif
    ========================================================================== */
@@ -1175,7 +1213,9 @@ function freshState() {
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
     nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
-    dayClosed: {}, // iso -> true when the evening recap was closed
+    dayClosed: {}, // iso -> { g: daily guide, s: spent } when the evening recap was closed
+    challenge: null, // { id, start } — the challenge in progress
+    challengesDone: [], // [{ id, end }]
   };
 }
 
@@ -1216,7 +1256,7 @@ function migrate(data) {
   out.nook = { ...base.nook, ...(data.nook || {}) };
   if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
   if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
-  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
+  for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack", "challengesDone"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
   for (const k of ["budgets", "links", "noSpend", "checkins", "moods", "badges", "collected", "dayClosed"]) {
@@ -1984,6 +2024,7 @@ function pageHead(title, sub, actions = "", { month } = {}) {
 /** Night mode, privacy blur and focus mode, for skins that keep the sidebar to navigation only. */
 function headTools() {
   return `<div class="head-tools">
+    <button class="btn ghost icon-btn" data-action="search" title="Search everything (K)" aria-label="Search everything">${icon("search")}</button>
     <button class="btn ghost icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
     <button class="btn ghost icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
     <button class="btn ghost icon-btn ${S.settings.focus ? "on" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode" aria-pressed="${!!S.settings.focus}">${icon("focus")}</button>
@@ -3684,7 +3725,7 @@ function openMoreSheet() {
   openModal({
     title: "Menu",
     body: `<div class="sheet-nav">${NAV.filter((n) => n.id && !(S.settings.focus && n.nf)).map((n) => `<a href="#${n.id}" class="${ui.view === n.id ? "active" : ""}" data-close>${icon(n.icon)}${n.label}</a>`).join("")}</div>
-      <div class="row wrap mt"><button type="button" class="btn sm" data-action="toggle-theme">${icon(isDark() ? "sun" : "moon")}${isDark() ? "Day" : "Night"} mode</button><button type="button" class="btn sm" data-action="toggle-privacy">${icon("eye")}Privacy</button><button type="button" class="btn sm" data-action="toggle-focus">${icon("focus")}Focus</button></div>`,
+      <div class="row wrap mt"><button type="button" class="btn sm" data-action="toggle-theme">${icon(isDark() ? "sun" : "moon")}${isDark() ? "Day" : "Night"} mode</button><button type="button" class="btn sm" data-action="toggle-privacy">${icon("eye")}Privacy</button><button type="button" class="btn sm" data-action="toggle-focus">${icon("focus")}Focus</button><button type="button" class="btn sm" data-action="search" data-close>${icon("search")}Search</button></div>`,
   });
 }
 
@@ -3863,6 +3904,8 @@ function loadSample() {
   S.incomes[0].primary = true;
   if (SKIN.balance) {
     // Balance mode: a balance confirmed this morning, money set aside, refunds to chase.
+    S.challenge = { id: "nospend3", start: addDays(today, -3) };
+    S.challengesDone = [{ id: "log7", end: addDays(today, -9) }];
     S.account = { name: "Checking", balance: 1842.35, checkedAt: fromISO(today).getTime() + 1, checkedOn: today, openFrom: today };
     for (const t of S.transactions) if (t.date === today) t.createdAt = Date.now() - 1000; else t.createdAt = Math.min(t.createdAt, fromISO(today).getTime() - 1);
     S.envelopes = [
@@ -4093,7 +4136,7 @@ function boot() {
 
 // Small hook used by the automated test suite (scripts/test.mjs).
 window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY,
-  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak };
+  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak, challengeProgress };
 
 document.addEventListener("DOMContentLoaded", boot);
 
@@ -4324,6 +4367,7 @@ function homeBalance() {
   ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
+  ${headsUp(a)}
   <div class="sage-grid">
     ${NOOK ? `<div class="card hero-quick">
       <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
@@ -4347,7 +4391,7 @@ function homeBalance() {
         : empty("🌤️", "Nothing due before payday", "Add your bills so they're protected automatically.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
     </div>
   </div>
-  ${recapCard(a) ? `<div class="mt">${recapCard(a)}</div>` : ""}
+  ${homeExtrasRow(a)}
   ${paydayForecast(a) ? `<div class="mt">${forecastCard(a)}</div>` : ""}
   <div class="grid g3 mt">
     <a class="card mini-card" href="#envelopes"><div class="card-head"><h3>${icon("envelope", 18)} Envelopes</h3><span class="tiny">${money(a.reserved)}</span></div>
@@ -4358,6 +4402,11 @@ function homeBalance() {
   </div>
   <div class="grid g2 mt">${goalsMini()}<div class="card focus-hide"><div class="card-head"><h2>This month</h2><a class="link-sm" href="#budget">Budget</a></div>${spendingDonut(txInMonth(monthKey(a.today)))}</div></div>
   </div>`;
+}
+/** The evening recap and the running challenge, side by side when both are there. */
+function homeExtrasRow(a) {
+  const cards = [recapCard(a), S.challenge ? challengeCard(challengeProgress(), true) : ""].filter(Boolean);
+  return cards.length ? `<div class="grid ${cards.length > 1 ? "g2" : ""} mt">${cards.join("")}</div>` : "";
 }
 function greeting() { const h = new Date().getHours(); return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"; }
 
@@ -4922,6 +4971,7 @@ function homeJustToday(a, parts) {
   ${pageHead(parts.hello, fmtLong(a.today), `<button class="btn" data-action="just-today">${icon("eye", 18)}Show everything</button>`)}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: parts.numberHTML + parts.actionsHTML }) : `<div class="card hero-avail">${parts.numberHTML}${parts.actionsHTML}</div>`}
+  ${headsUp(a)}
   <div class="sage-grid jt-grid">
     <div class="card">
       <div class="card-head"><h2>${icon("list", 20)} Today</h2><button class="link-btn" data-action="forgot">Forgot to log something?</button></div>
@@ -4990,7 +5040,8 @@ Object.assign(ACTIONS, {
   },
   "day-close": () => {
     const today = todayISO();
-    S.dayClosed[today] = true;
+    const a = availableSummary();
+    S.dayClosed[today] = { g: a.guide, s: a.spentToday }; // remembered for the "stay within the guide" challenge
     S.checkins[today] = true;
     const cutoff = addDays(today, -400);
     for (const k of Object.keys(S.dayClosed)) if (k < cutoff) delete S.dayClosed[k];
@@ -5001,6 +5052,197 @@ Object.assign(ACTIONS, {
   },
   "day-reopen": () => { delete S.dayClosed[todayISO()]; commit("Day reopened"); },
   forgot: () => openForgot(),
+});
+
+/* 11-extras.js */
+/* ==========================================================================
+   Search everything (K or Ctrl/⌘+K), heads-up reminders on the balance
+   home, and gentle money challenges.
+   ========================================================================== */
+
+/* ---------- Search everything ---------- */
+function searchAll(q) {
+  const s = q.trim().toLowerCase();
+  if (!s) return { groups: [], tx: [] };
+  const has = (...v) => v.some((x) => String(x || "").toLowerCase().includes(s));
+  const amt = /^[\d.,]+$/.test(s) ? parseAmount(s) : NaN;
+  const tx = S.transactions
+    .filter((t) => has(t.name, t.note, catById(t.catId)?.name) || (amt > 0 && Math.abs(t.amount - amt) < 0.005))
+    .sort(by((t) => (t.date === undefined ? "" : t.date))).reverse();
+  const groups = [];
+  const add = (label, items) => { if (items.length) groups.push({ label, items: items.slice(0, 6) }); };
+  add("Pages", NAV.filter((n) => n.id && VIEWS[n.id] && has(n.label)).map((n) => ({ go: n.id, ic: n.icon, name: n.label, sub: "Open page" })));
+  add("Spends & income", tx.slice(0, 8).map((t) => ({ act: "edit-tx", id: t.id, ic: t.type === "income" ? "wallet" : "receipt", name: `${catById(t.catId)?.emoji || ""} ${t.name}`.trim(), sub: fmtDay(t.date), amt: t.type === "income" ? t.amount : -t.amount })));
+  add("Bills & subscriptions", S.bills.filter((b) => has(b.name, b.note)).map((b) => ({ act: "edit-bill", id: b.id, ic: "receipt", name: `${b.emoji || ""} ${b.name}`.trim(), sub: FREQS[b.freq] || "Bill", amt: -b.amount })));
+  if (BAL) add("Envelopes", S.envelopes.filter((e) => has(e.name)).map((e) => ({ act: "edit-envelope", id: e.id, ic: "envelope", name: `${e.emoji || "✉️"} ${e.name}`, sub: "Envelope", amt: e.amount })));
+  add("Goals & savings", [...S.goals.filter((g) => has(g.name)).map((g) => ({ act: "edit-goal", id: g.id, ic: "target", name: `${g.emoji || ""} ${g.name}`.trim(), sub: "Goal" })),
+    ...S.funds.filter((f) => has(f.name)).map((f) => ({ go: "savings", ic: "piggy", name: `${f.emoji || ""} ${f.name}`.trim(), sub: "Savings fund" }))]);
+  if (BAL) add("Money back", S.moneyBack.filter((m) => has(m.name, m.note)).map((m) => ({ go: "moneyback", ic: "repeat", name: m.name, sub: m.status === "waiting" ? `Waiting · by ${fmtDay(m.due)}` : "Done", amt: m.amount })));
+  return { groups, tx };
+}
+function openSearch(q = "") {
+  let flat = [], sel = 0, last = null;
+  const draw = (form) => {
+    const r = searchAll(form.querySelector("[name=q]").value);
+    last = r;
+    flat = r.groups.flatMap((g) => g.items);
+    sel = Math.min(sel, Math.max(0, flat.length - 1));
+    let i = 0;
+    const total = sum(r.tx.filter((t) => t.type === "expense"), (t) => t.amount);
+    form.querySelector(".gs-res").innerHTML = !form.querySelector("[name=q]").value.trim()
+      ? `<p class="tiny gs-hint">Try a shop, a category, a bill or an amount like <b>12.50</b>.</p>`
+      : flat.length ? r.groups.map((g) => `<div class="gs-group"><div class="gs-label">${esc(g.label)}</div>${g.items.map((it) => `<button type="button" class="gs-item ${i === sel ? "on" : ""}" data-gs="${i++}">${icon(it.ic, 17)}<span class="gs-name">${esc(it.name)}<small>${esc(it.sub || "")}</small></span>${it.amt != null ? `<b class="m">${money(it.amt)}</b>` : ""}</button>`).join("")}</div>`).join("")
+        + (r.tx.length ? `<button type="button" class="gs-all" data-gs-all>${plural(r.tx.length, "entry", "entries")} match${total ? ` · ${money(total)} spent` : ""} — see them all in Transactions</button>` : "")
+        : `<p class="muted gs-hint">Nothing found. Check the spelling, or search a smaller word.</p>`;
+  };
+  const open = (it) => {
+    closeModal();
+    if (!it) return;
+    if (it.go) go(it.go);
+    else ACTIONS[it.act]?.({ dataset: { id: it.id } });
+  };
+  openModal({
+    title: "Search everything",
+    body: `<div class="search-box gs-box"><input class="input" name="q" value="${esc(q)}" placeholder="Search spends, bills, envelopes, goals, pages…" autocomplete="off" autofocus aria-label="Search"><span>${icon("search", 18)}</span></div><div class="gs-res mt" role="listbox"></div>`,
+    onSubmit: () => { open(flat[sel]); return false; },
+    onMount: (form) => {
+      const input = form.querySelector("[name=q]");
+      input.focus(); // right away, so fast typing after K isn't lost
+      draw(form);
+      input.addEventListener("input", () => { sel = 0; draw(form); });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          sel = clamp(sel + (e.key === "ArrowDown" ? 1 : -1), 0, Math.max(0, flat.length - 1));
+          draw(form);
+          form.querySelector(".gs-item.on")?.scrollIntoView({ block: "nearest" });
+        }
+      });
+      form.querySelector(".gs-res").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-gs]");
+        if (b) return open(flat[Number(b.dataset.gs)]);
+        if (e.target.closest("[data-gs-all]")) { ui.txQuery = input.value.trim(); closeModal(); go("transactions"); }
+      });
+    },
+  });
+}
+
+/* ---------- Heads-up reminders (balance home) ---------- */
+function headsUp(a) {
+  const out = [];
+  const soon = addDays(a.today, 1);
+  for (const o of a.due.filter((x) => x.date <= soon).slice(0, 3)) {
+    const when = o.date < a.today ? `was due ${relDay(o.date).toLowerCase()}` : o.date === a.today ? "is due today" : "is due tomorrow";
+    out.push({ e: o.date < a.today ? "⏰" : "🔔", cls: o.date < a.today ? "late" : "", html: `<b>${esc(o.name)}</b> ${when} · <b class="m">${money(o.amount)}</b>`, btn: `<button class="btn sm" data-action="toggle-occ" data-key="${esc(o.key)}">${icon("check", 15)}Paid</button>` });
+  }
+  for (const m of S.moneyBack.filter((x) => x.status === "waiting" && x.due && diffDays(a.today, x.due) <= 3).slice(0, 2)) {
+    const d = diffDays(a.today, m.due);
+    out.push({ e: "↩️", html: `<b>${esc(m.name)}</b> — ${d < 0 ? "deadline passed" : d === 0 ? "last day today" : `${plural(d, "day")} left`}`, btn: `<a class="btn sm" href="#moneyback">Open</a>` });
+  }
+  const lb = S.settings.lastBackup;
+  if (!IS_DEMO && S.transactions.length >= 10 && (!lb || diffDays(lb, a.today) >= 14)) {
+    out.push({ e: "💾", html: `${lb ? `Last backup ${plural(diffDays(lb, a.today), "day")} ago.` : "No backup yet."} Your budget lives only in this browser — save a copy.`, btn: `<button class="btn sm" data-action="export-json">${icon("download", 15)}Back up</button>` });
+  }
+  if (!S.settings.icsDone && S.bills.length >= 3 && !IS_DEMO) {
+    out.push({ e: "📅", html: "Get a reminder the day before each bill — add them to your phone's calendar.", btn: `<button class="btn sm" data-action="export-ics">Add to calendar</button><button class="btn ghost sm" data-action="ics-later" aria-label="Not now">${icon("x", 15)}</button>` });
+  }
+  if (!out.length) return "";
+  return `<div class="heads-up" role="region" aria-label="Heads up">${out.slice(0, 4).map((n) => `<div class="hu ${n.cls || ""}"><span class="hu-e" aria-hidden="true">${n.e}</span><span class="hu-t">${n.html}</span><span class="hu-b">${n.btn}</span></div>`).join("")}</div>`;
+}
+
+/* ---------- Challenges ---------- */
+const isTakeout = (t) => /deliver|doordash|uber ?eats|deliveroo|grubhub|just ?eat|takeaway|takeout/i.test(t.name) || /dining/i.test(catById(t.catId)?.name || "");
+const spendsOn = (d) => S.transactions.filter((t) => t.date === d && t.type === "expense" && !t.link);
+const CHALLENGES = [
+  { id: "nospend3", e: "🧺", name: "3 no-spend days", desc: "Have 3 days this week without a single spend. Bills don't count.", len: 7, need: 3, reward: 10, test: (d) => !spendsOn(d).length },
+  { id: "guide5", e: "🍯", name: "Within the guide", desc: "Close 5 days out of 7 at or under your daily guide.", len: 7, need: 5, reward: 15, test: (d) => !!S.dayClosed[d] && typeof S.dayClosed[d] === "object" && S.dayClosed[d].s <= S.dayClosed[d].g + 0.004 },
+  { id: "coffee7", e: "☕", name: "Coffee at home", desc: "One week with no coffee-shop or treat spends.", len: 7, need: 7, reward: 12, test: (d) => !spendsOn(d).some((t) => /coffee|treat/i.test(catById(t.catId)?.name || "") || /coffee|cafe|café|latte|starbucks/i.test(t.name)) },
+  { id: "log7", e: "✍️", name: "Track every day", desc: "Open your planner and track or close your day 7 days in a row.", len: 7, need: 7, reward: 10, test: (d) => !!(S.checkins[d] || S.dayClosed[d]) },
+  { id: "takeout14", e: "🥡", name: "No takeout fortnight", desc: "Two weeks without delivery apps or eating out.", len: 14, need: 14, reward: 20, test: (d) => !spendsOn(d).some(isTakeout) },
+];
+const challengeById = (id) => CHALLENGES.find((c) => c.id === id);
+/** Day-by-day status of a challenge. Past days are final; today counts once the day is closed (or already met for "track every day"). */
+function challengeProgress(cur = S.challenge, today = todayISO()) {
+  const c = cur && challengeById(cur.id);
+  if (!c) return null;
+  const days = Array.from({ length: c.len }, (_, i) => addDays(cur.start, i)).map((d) => {
+    if (d > today) return { d, st: "future" };
+    const ok = c.test(d);
+    if (d < today) return { d, st: ok ? "ok" : "miss" };
+    return { d, st: ok && (S.dayClosed[d] || c.id === "log7") ? "ok" : "today" };
+  });
+  const ok = days.filter((x) => x.st === "ok").length;
+  const open = days.filter((x) => x.st === "future" || x.st === "today").length;
+  return { c, start: cur.start, days, ok, open, done: ok >= c.need, failed: ok + open < c.need, end: addDays(cur.start, c.len - 1) };
+}
+function challengeDots(p) {
+  return `<div class="ch-dots">${p.days.map((x) => `<i class="${x.st}" title="${esc(fmtDay(x.d))}">${x.st === "ok" ? "✓" : DOW[fromISO(x.d).getDay()][0]}</i>`).join("")}</div>`;
+}
+function challengeCard(p, compact = false) {
+  const { c } = p;
+  const state = p.done ? `<p class="ch-state good">Challenge complete! ${NOOK ? `Claim your ${c.reward} honey drops.` : "Claim your badge."}</p>`
+    : p.failed ? `<p class="ch-state">Not this time — that's okay. Every try teaches you something.</p>`
+    : `<p class="tiny">${p.ok} of ${c.need} done · ends ${esc(fmtDay(p.end))}</p>`;
+  const btn = p.done ? `<button class="btn primary sm" data-action="ch-claim">${NOOK ? `Claim ${c.reward} 🍯` : "Claim"}</button>`
+    : p.failed ? `<button class="btn sm" data-action="ch-start" data-id="${c.id}">Try again</button><button class="link-btn" data-action="ch-stop">Pick another</button>`
+    : compact ? `<a class="link-sm" href="#challenges">Details</a>` : `<button class="link-btn" data-action="ch-stop">Stop this challenge</button>`;
+  return `<div class="card ch-card ${p.done ? "done" : ""}">
+    <div class="card-head"><h2><span class="ch-e">${c.e}</span> ${esc(c.name)}</h2>${compact ? `<span class="tiny">Challenge</span>` : ""}</div>
+    ${compact ? "" : `<p class="muted">${esc(c.desc)}</p>`}
+    ${challengeDots(p)}
+    ${state}
+    <div class="row wrap mt-s">${btn}</div>
+  </div>`;
+}
+function viewChallenges() {
+  const p = challengeProgress();
+  const doneCount = (id) => S.challengesDone.filter((x) => x.id === id).length;
+  return `
+  ${pageHead("Challenges", "One small, kind challenge at a time. Finish it to earn a reward — miss a day and simply try again.")}
+  ${p ? challengeCard(p) : `<div class="card">${empty("🌱", "No challenge running", "Pick one below — they last one or two weeks.")}</div>`}
+  <div class="grid g3 mt">${CHALLENGES.filter((c) => c.id !== p?.c.id).map((c) => `<div class="card ch-pick">
+      <div class="ch-e big">${c.e}</div>
+      <h3>${esc(c.name)}</h3>
+      <p class="tiny">${esc(c.desc)}</p>
+      <div class="row between mt"><span class="tiny">${plural(c.len, "day")}${NOOK ? ` · ${c.reward} 🍯` : ""}${doneCount(c.id) ? ` · done ${doneCount(c.id)}×` : ""}</span><button class="btn sm" data-action="ch-start" data-id="${c.id}">${p ? "Switch" : "Start"}</button></div>
+    </div>`).join("")}</div>
+  <p class="tiny mt">${S.challengesDone.length ? `🏆 ${plural(S.challengesDone.length, "challenge")} completed so far.` : "Your completed challenges will be counted here."}</p>`;
+}
+
+/* ---------- Wiring ---------- */
+if (BAL) {
+  const at = (id) => NAV.findIndex((n) => n.id === id);
+  NAV.splice(at("impulse") + 1, 0, { id: "challenges", label: "Challenges", icon: "leaf", nf: true });
+  VIEWS.challenges = viewChallenges;
+}
+document.addEventListener("keydown", (e) => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
+  const k = e.key.toLowerCase();
+  if ((e.metaKey || e.ctrlKey) && k === "k") { e.preventDefault(); openSearch(); return; }
+  if (!typing && k === "k" && !e.metaKey && !e.ctrlKey && !e.altKey && !$(".overlay")) { e.preventDefault(); openSearch(); }
+});
+const baseIcs = ACTIONS["export-ics"];
+if (baseIcs) ACTIONS["export-ics"] = (el, e) => { const r = baseIcs(el, e); if (!S.settings.icsDone) { S.settings.icsDone = true; commit(); } return r; };
+Object.assign(ACTIONS, {
+  search: () => openSearch(),
+  "ics-later": () => { S.settings.icsDone = true; commit(); },
+  "ch-start": (el) => {
+    const c = challengeById(el.dataset.id);
+    if (!c) return;
+    S.challenge = { id: c.id, start: todayISO() };
+    if (NOOK) nookPending = { mood: "cheer", say: `${c.name}? Let's do it together! ${c.e}` };
+    commit(`${c.e} ${c.name} started — ${plural(c.len, "day")} to go`);
+  },
+  "ch-stop": () => { S.challenge = null; commit("Challenge stopped"); },
+  "ch-claim": () => {
+    const p = challengeProgress();
+    if (!p?.done) return;
+    S.challengesDone.push({ id: p.c.id, end: todayISO() });
+    S.challenge = null;
+    if (NOOK) { S.nook.drops = (S.nook.drops || 0) + p.c.reward; nookPending = { mood: "cheer", text: `+${p.c.reward} 🍯`, say: "You did it! I'm so proud of you." }; }
+    commit();
+    celebrate(p.c.e, `${p.c.name} — done!`, NOOK ? `+${p.c.reward} honey drops` : "Another kind habit, unlocked.");
+  },
 });
 
 })();

@@ -16,6 +16,11 @@ const primaryIncome = () => S.incomes.find((i) => i.primary) || S.incomes[0];
 /** The next payday that hasn't been confirmed yet (today included), or a manual planning date. */
 function nextPayday(today = todayISO()) {
   const inc = primaryIncome();
+  if (S.account.irregular) {
+    // Irregular income: the stretch the user chose; once it's over, the guide waits for a new one.
+    const h = S.account.horizon;
+    return h && h > today ? { date: h, occ: null } : { date: today, occ: null, ended: true };
+  }
   if (inc) {
     const o = scheduleIn(today, addDays(today, 400)).find((x) => x.kind === "income" && x.refId === inc.id && !x.done);
     if (o) return { date: o.date, occ: o };
@@ -199,12 +204,12 @@ function homeBalance() {
   const used = a.guide > 0 ? clamp(a.spentToday / a.guide, 0, 1) : 0;
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
   const numberHTML = `
-      <div class="eyebrow">Available until ${relShort(a.h)}</div>
+      <div class="eyebrow">Available until ${relShort(a.h)}${S.account.irregular ? ` · <button class="link-btn" data-action="pay-style">change</button>` : ""}</div>
       <div class="avail ${a.shortBy ? "neg" : ""}" data-count="${a.available}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
       <div class="fresh-line">${freshness(a)} <button class="link-btn" data-action="fresh-start">Update balance</button></div>
       <div class="guide">
-        ${a.confirmPayday ? `<p class="muted">Daily guide pauses until you confirm payday.</p>` : `
+        ${a.confirmPayday ? `<p class="muted">${a.pay.ended ? "Daily guide pauses until you plan your next stretch." : "Daily guide pauses until you confirm payday."}</p>` : `
         <div class="row between"><span><b class="m">${money(Math.max(0, a.leftToday))}</b> left today</span><span class="tiny">Daily guide ${money(a.guide)} · ${plural(a.days, "day")} to go</span></div>
         <div class="bbar sage"><i style="width:${Math.round(used * 100)}%"></i></div>
         <div class="tiny mt-s">${money(a.spentToday)} of ${money(a.guide)} used today${a.leftToday < 0 ? " — tomorrow's guide adjusts, no stress." : ""}</div>`}
@@ -222,8 +227,10 @@ function homeBalance() {
   <div class="sage">
   ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
   ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
+  ${stretchBanner(a)}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
+  ${headsUp(a)}
   <div class="sage-grid">
     ${NOOK ? `<div class="card hero-quick">
       <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
@@ -247,7 +254,7 @@ function homeBalance() {
         : empty("🌤️", "Nothing due before payday", "Add your bills so they're protected automatically.", `<button class="btn primary" data-action="add-bill">Add a bill</button>`)}
     </div>
   </div>
-  ${recapCard(a) ? `<div class="mt">${recapCard(a)}</div>` : ""}
+  ${homeExtrasRow(a)}
   ${paydayForecast(a) ? `<div class="mt">${forecastCard(a)}</div>` : ""}
   <div class="grid g3 mt">
     <a class="card mini-card" href="#envelopes"><div class="card-head"><h3>${icon("envelope", 18)} Envelopes</h3><span class="tiny">${money(a.reserved)}</span></div>
@@ -258,6 +265,11 @@ function homeBalance() {
   </div>
   <div class="grid g2 mt">${goalsMini()}<div class="card focus-hide"><div class="card-head"><h2>This month</h2><a class="link-sm" href="#budget">Budget</a></div>${spendingDonut(txInMonth(monthKey(a.today)))}</div></div>
   </div>`;
+}
+/** The evening recap and the running challenge, side by side when both are there. */
+function homeExtrasRow(a) {
+  const cards = [recapCard(a), S.challenge ? challengeCard(challengeProgress(), true) : ""].filter(Boolean);
+  return cards.length ? `<div class="grid ${cards.length > 1 ? "g2" : ""} mt">${cards.join("")}</div>` : "";
 }
 function greeting() { const h = new Date().getHours(); return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"; }
 

@@ -61,7 +61,7 @@ function forecastChart(f) {
     return `<span class="fc-ev" style="${pos(e.i, p.v)}" title="${esc(`${fmtDay(e.d)}: ${tip}`)}"><em>${esc(e.items.map((o) => o.emoji || "•").slice(0, 2).join(""))}</em></span>`;
   }).join("");
   const low = f.low.v < f.start && !f.events.some((e) => e.i === f.low.i) ? `<span class="fc-low" style="${pos(f.low.i, f.low.v)}"></span>` : "";
-  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : "Payday"}</b></span>`;
+  const pay = `<span class="fc-pay" style="left:${xp(n - 1).toFixed(2)}%"><b>${f.pay ? `Payday +${esc(moneyRound(f.pay))}` : S.account.irregular ? "Stretch ends" : "Payday"}</b></span>`;
   const ticks = [...new Set([0, Math.floor((n - 1) / 2), n - 1])].map((i) => `<span style="left:${xp(i).toFixed(2)}%">${i === 0 ? "Today" : esc(fmtDay(f.pts[i].d))}</span>`).join("");
   return `<div class="fc-plot" role="img" aria-label="Your balance until payday: lowest ${esc(money(f.low.v))} on ${esc(fmtDay(f.low.d))}">
     <svg class="fc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
@@ -76,11 +76,11 @@ function forecastCard(a) {
   if (!f) return "";
   const dip = f.low.v < 0;
   return `<div class="card fc-card focus-hide">
-    <div class="card-head"><h2>${icon("chart", 20)} Until payday</h2><span class="tiny">If you spend your daily guide</span></div>
+    <div class="card-head"><h2>${icon("chart", 20)} ${S.account.irregular ? "Until the stretch ends" : "Until payday"}</h2><span class="tiny">If you spend your daily guide</span></div>
     <div class="fc-stats">
       <div><span class="tiny">Lowest point</span><b class="m ${dip ? "neg" : ""}">${money(f.low.v)}</b><small>${esc(relShort(f.low.d))}</small></div>
       <div><span class="tiny">Bills on the way</span><b class="m">${money(a.bills)}</b><small>${plural(a.due.length, "payment")}</small></div>
-      <div><span class="tiny">Left on payday</span><b class="m">${money(f.end)}</b><small>before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}</small></div>
+      <div><span class="tiny">${S.account.irregular ? "Left at the end" : "Left on payday"}</span><b class="m">${money(f.end)}</b><small>${S.account.irregular ? `on ${esc(fmtDay(f.h))}` : `before your pay${f.pay ? ` of ${esc(moneyRound(f.pay))}` : ""}`}</small></div>
     </div>
     <div class="fc-chart">${forecastChart(f)}</div>
     <p class="tiny mt-s">${dip ? "Your account dips below zero before payday — move a bill or an envelope, or update your balance." : "Your account stays above zero all the way to payday. Envelopes and your buffer are still in it."}</p>
@@ -126,8 +126,10 @@ function homeJustToday(a, parts) {
   return `
   <div class="sage just-today">
   ${pageHead(parts.hello, fmtLong(a.today), `<button class="btn" data-action="just-today">${icon("eye", 18)}Show everything</button>`)}
+  ${stretchBanner(a)}
   ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
   ${NOOK ? nookScene({ a, inner: parts.numberHTML + parts.actionsHTML }) : `<div class="card hero-avail">${parts.numberHTML}${parts.actionsHTML}</div>`}
+  ${headsUp(a)}
   <div class="sage-grid jt-grid">
     <div class="card">
       <div class="card-head"><h2>${icon("list", 20)} Today</h2><button class="link-btn" data-action="forgot">Forgot to log something?</button></div>
@@ -196,7 +198,8 @@ Object.assign(ACTIONS, {
   },
   "day-close": () => {
     const today = todayISO();
-    S.dayClosed[today] = true;
+    const a = availableSummary();
+    S.dayClosed[today] = { g: a.guide, s: a.spentToday }; // remembered for the "stay within the guide" challenge
     S.checkins[today] = true;
     const cutoff = addDays(today, -400);
     for (const k of Object.keys(S.dayClosed)) if (k < cutoff) delete S.dayClosed[k];

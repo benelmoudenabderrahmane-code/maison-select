@@ -197,6 +197,6 @@ function boot() {
 
 // Small hook used by the automated test suite (scripts/test.mjs).
 window.__planner = { get state() { return S; }, occurrences, monthSummary, todaySummary, simulateDebts, scheduleIn, render, edition: EDITION, storeKey: STORE_KEY,
-  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak };
+  availableSummary, previewPurchase, checkBalance, toggleOccurrence, addTx, feesScan, parseCollected, billsICS, balanceNow, paydayForecast, closedStreak, challengeProgress };
 
 document.addEventListener("DOMContentLoaded", boot);

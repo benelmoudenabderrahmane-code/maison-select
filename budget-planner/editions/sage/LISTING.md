@@ -65,6 +65,9 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 ☀️ JUST TODAY MODE — hide everything but today's number when your brain is full
 🌙 EVENING RECAP — close your day in one tap, see tomorrow's guide, build a gentle streak
 📝 "I FORGOT TO LOG" — add a few missed spends at once, no guilt
+🔔 HEADS-UP REMINDERS — bills due today or tomorrow, refund deadlines and backup reminders, right on your home screen
+🔎 SEARCH EVERYTHING — find any spend, bill, envelope or goal in a second (even by amount)
+🏅 KIND CHALLENGES — 3 no-spend days, coffee at home, no takeout fortnight… finish them to earn honey drops
 🛍️ CAN I AFFORD IT? — type a price before you buy, nothing gets recorded
 🌱 FRESH START — missed a few days? Update your balance and carry on, no catching up
 ⚡ QUICK ENTRY — two taps, one-tap favourites, Undo, and Apple Pay quick entry on iPhone

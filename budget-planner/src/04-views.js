@@ -49,6 +49,7 @@ function pageHead(title, sub, actions = "", { month } = {}) {
 /** Night mode, privacy blur and focus mode, for skins that keep the sidebar to navigation only. */
 function headTools() {
   return `<div class="head-tools">
+    <button class="btn ghost icon-btn" data-action="search" title="Search everything (K)" aria-label="Search everything">${icon("search")}</button>
     <button class="btn ghost icon-btn" data-action="toggle-theme" title="Day / night (D)" aria-label="Toggle night mode">${icon(isDark() ? "sun" : "moon")}</button>
     <button class="btn ghost icon-btn" data-action="toggle-privacy" title="Privacy blur (P)" aria-label="Toggle privacy blur">${icon(S.settings.privacy ? "eyeoff" : "eye")}</button>
     <button class="btn ghost icon-btn ${S.settings.focus ? "on" : ""}" data-action="toggle-focus" title="Focus mode" aria-label="Toggle focus mode" aria-pressed="${!!S.settings.focus}">${icon("focus")}</button>
@@ -1051,6 +1052,7 @@ function viewSettings() {
           ${field("Your name", `<input class="input" data-input="name" value="${esc(S.profile.name)}" placeholder="e.g. Alex">`)}
           ${field("Currency", `<select class="input" data-input="currency">${CURRENCIES.map(([c, n]) => `<option value="${c}" ${S.profile.currency === c ? "selected" : ""}>${c} — ${n}</option>`).join("")}</select>`)}
           ${field("Week starts on", `<select class="input" data-input="weekStart"><option value="1" ${S.profile.weekStart === 1 ? "selected" : ""}>Monday</option><option value="0" ${S.profile.weekStart === 0 ? "selected" : ""}>Sunday</option></select>`)}
+          ${SKIN.balance ? field("How you get paid", `<button type="button" class="btn" data-action="pay-style">${icon("wallet")}${S.account.irregular ? "Irregular income" : "Regular paychecks"} · Change</button>`) : ""}
           ${field("Safety buffer", `<input class="input" type="number" min="0" step="10" data-input="buffer" value="${S.profile.buffer || 0}">`, "", "kept out of safe to spend")}
         </div>
       </div>
