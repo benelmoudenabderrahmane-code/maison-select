@@ -61,6 +61,10 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 ━━━━━━━━━━━━━━━━━━
 🍯 TODAY — available until payday + a daily guide that adjusts by itself
 🔍 HOW IS THIS WORKED OUT? — every line of the maths, shown
+📈 UNTIL PAYDAY — see your balance day by day, every bill on its date and your lowest point
+☀️ JUST TODAY MODE — hide everything but today's number when your brain is full
+🌙 EVENING RECAP — close your day in one tap, see tomorrow's guide, build a gentle streak
+📝 "I FORGOT TO LOG" — add a few missed spends at once, no guilt
 🛍️ CAN I AFFORD IT? — type a price before you buy, nothing gets recorded
 🌱 FRESH START — missed a few days? Update your balance and carry on, no catching up
 ⚡ QUICK ENTRY — two taps, one-tap favourites, Undo, and Apple Pay quick entry on iPhone
@@ -68,6 +72,7 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 ✉️ ENVELOPES — set money aside for groceries, gifts or car repairs
 🔁 MONEY BACK — returns, refunds and free trials with deadlines
 🔎 FEES CHECK — spot repeat charges, bank fees and double payments (import your bank CSV)
+🦫 THE HONEY NOOK — a cozy illustrated room with Mochi the capybara, who cheers you on; earn honey drops to unlock friends and rooms
 🐷 SAVINGS GOALS · 💳 DEBT PAYOFF · ⏸️ IMPULSE PAUSE · 🏆 STREAKS & BADGES · 📈 YEAR IN REVIEW
 
 ━━━━━━━━━━━━━━━━━━
