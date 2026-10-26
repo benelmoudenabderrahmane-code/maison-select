@@ -247,6 +247,7 @@ function freshState() {
     envelopes: [], // { id, name, emoji, amount } — money set aside, still in the account
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
+    nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
   };
 }
 
@@ -284,6 +285,9 @@ function migrate(data) {
   out.profile = { ...base.profile, ...(data.profile || {}) };
   out.settings = { ...base.settings, ...(data.settings || {}) };
   out.account = { ...base.account, ...(data.account || {}) };
+  out.nook = { ...base.nook, ...(data.nook || {}) };
+  if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
+  if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
   for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }

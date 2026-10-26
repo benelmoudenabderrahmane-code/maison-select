@@ -198,13 +198,7 @@ function homeBalance() {
   const coming = a.due.slice(0, 5);
   const used = a.guide > 0 ? clamp(a.spentToday / a.guide, 0, 1) : 0;
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
-  return `
-  <div class="sage">
-  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
-  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
-  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
-  <div class="sage-grid">
-    <div class="card hero-avail">
+  const numberHTML = `
       <div class="eyebrow">Available until ${relShort(a.h)}</div>
       <div class="avail ${a.shortBy ? "neg" : ""}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
@@ -214,15 +208,31 @@ function homeBalance() {
         <div class="row between"><span><b class="m">${money(Math.max(0, a.leftToday))}</b> left today</span><span class="tiny">Daily guide ${money(a.guide)} · ${plural(a.days, "day")} to go</span></div>
         <div class="bbar sage"><i style="width:${Math.round(used * 100)}%"></i></div>
         <div class="tiny mt-s">${money(a.spentToday)} of ${money(a.guide)} used today${a.leftToday < 0 ? " — tomorrow's guide adjusts, no stress." : ""}</div>`}
-      </div>
+      </div>`;
+  const actionsHTML = `
       <div class="row wrap mt hero-actions">
         <button class="btn primary" data-action="quick-add">${icon("plus")}Add expense</button>
         <button class="btn" data-action="afford">${icon("search")}Can I afford it?</button>
-        <button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>
-      </div>
+        ${NOOK ? "" : `<button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>`}
+      </div>`;
+  const oneTapHTML = freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`;
+  return `
+  <div class="sage">
+  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
+  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
+  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
+  ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
+  <div class="sage-grid">
+    ${NOOK ? `<div class="card hero-quick">
+      <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
+      ${oneTapHTML}
+      ${ui.showBreakdown ? breakdownHTML(a) : `<button class="link-btn mt" data-action="toggle-breakdown">How is today's number worked out?</button>`}
+    </div>` : `<div class="card hero-avail">
+      ${numberHTML}
+      ${actionsHTML}
       ${ui.showBreakdown ? breakdownHTML(a) : ""}
-      ${freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`}
-    </div>
+      ${oneTapHTML}
+    </div>`}
     <div class="card">
       <div class="card-head"><h2>${icon("calendar", 20)} Before payday</h2><a class="link-sm" href="#bills">All bills</a></div>
       ${coming.length ? `<div class="list">${coming.map((o) => `<div class="li ${o.date < a.today ? "late" : ""}">
@@ -387,6 +397,7 @@ function openEnvelopeForm(env = null) {
       const undo = snapshot();
       if (env) Object.assign(env, { name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
       else S.envelopes.push({ id: uid(), name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
+      if (!env && amount > 0) nookEarn("envelope");
       commit(env ? "Envelope saved" : `${money(amount)} set aside`, undo);
     },
     onMount: (f) => $("[data-del]", f)?.addEventListener("click", () => { const undo = snapshot(); S.envelopes = S.envelopes.filter((x) => x !== env); closeModal(); commit("Envelope deleted — the money is available again", undo); }),
@@ -402,7 +413,7 @@ function openEnvelopeMoney(env, mode) {
       const amount = round2(num(d.amount));
       if (!(amount > 0)) { toast("Enter an amount"); return false; }
       const undo = snapshot();
-      if (mode === "add") env.amount = round2(env.amount + amount);
+      if (mode === "add") { env.amount = round2(env.amount + amount); nookEarn("envelope"); }
       else if (mode === "release") env.amount = round2(Math.max(0, env.amount - amount));
       else addTx({ type: "expense", amount, name: (d.name || "").trim() || env.name, date: todayISO(), catId: guessCategory(env.name) || guessCategory(d.name || ""), effect: { envelopeId: env.id } });
       commit(mode === "spend" ? `Spent ${money(amount)} from ${env.name} — your available number didn't change` : "Envelope updated", undo);

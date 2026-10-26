@@ -27,6 +27,8 @@ function build(ed, edition, { pwa }) {
     logo: readIf(edFile(ed, "logo.svg")),
     flourish: readIf(edFile(ed, "flourish.svg")),
     sideArt: readIf(edFile(ed, "side-art.svg")),
+    // Illustrations for the cozy room and companions (editions/<id>/nook/*.webp), inlined so the file works offline.
+    nookImg: existsSync(edFile(ed, "nook")) ? Object.fromEntries(readdirSync(edFile(ed, "nook")).filter((f) => /\.(webp|png|jpg)$/.test(f)).map((f) => [f.replace(/\.\w+$/, ""), `data:image/${f.endsWith(".jpg") ? "jpeg" : f.split(".").pop()};base64,${readFileSync(join(edFile(ed, "nook"), f)).toString("base64")}`])) : null,
   };
   const buildInfo = { appName: ed.appName, tagline: ed.tagline, storeKey: ed.storeKey, edition, shopUrl: config.shopUrl, skin };
   const js = `const __BUILD__ = ${JSON.stringify(buildInfo)};\n` + jsFiles.map((f) => `/* ${f} */\n${src(f)}`).join("\n");

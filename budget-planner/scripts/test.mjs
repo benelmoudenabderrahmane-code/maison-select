@@ -2,7 +2,7 @@
 // and the main user flows. Run after a build:
 //   node budget-planner/scripts/build.mjs && node budget-planner/scripts/test.mjs
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -544,6 +544,42 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await page.click("[data-action=mb-done][data-s=received] >> nth=0");
     check("money back received adds the money", (await state(page, (S) => S.transactions.length)) === before + 1);
     check("no JavaScript errors (balance)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await ctx.close();
+  });
+
+  if (existsSync(join(root, "editions", ed.id, "nook"))) await step("honey nook (companion & rewards)", async () => {
+    const { ctx, page } = await newPage();
+    current = page;
+    await page.goto(full);
+    await page.waitForSelector("[data-ob=sample]");
+    await page.click("[data-ob=sample]");
+    await page.waitForTimeout(300);
+    check("nook scene with room + companion", !!(await page.$(".nook .nook-bg")) && !!(await page.$(".nook-pet img")));
+    const d0 = await state(page, (S) => S.nook.drops);
+    for (let i = 0; i < 5; i++) { await page.click(".nook-pet", { force: true }); await page.waitForTimeout(60); }
+    const d1 = await state(page, (S) => S.nook.drops);
+    check("saying hello earns drops, capped per day", d1 - d0 === 3, `${d0} → ${d1}`);
+    await page.keyboard.press("n");
+    await page.waitForSelector(".modal");
+    await page.fill(".modal [name=amount]", "2.50");
+    await page.click(".modal button.primary");
+    await page.waitForTimeout(300);
+    check("tracking a spend earns a drop", (await state(page, (S) => S.nook.drops)) === d1 + 1);
+    await go(page, "nook");
+    await page.evaluate(() => { window.__planner.state.nook.drops = 5; window.__planner.render(); });
+    check("locked friend can't be picked without drops", await page.isDisabled("[data-action=nook-pet][data-id=bun]"));
+    await page.evaluate(() => { window.__planner.state.nook.drops = 30; window.__planner.render(); });
+    await page.click("[data-action=nook-pet][data-id=bun]");
+    await page.keyboard.press("Escape");
+    const st = await state(page, (S) => ({ pet: S.nook.pet, drops: S.nook.drops, owned: S.nook.owned.includes("bun") }));
+    check("unlocking a friend spends drops and switches", st.pet === "bun" && st.drops === 10 && st.owned, JSON.stringify(st));
+    await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
+    await page.reload();
+    await page.waitForTimeout(300);
+    check("companion choice kept after reload", (await state(page, (S) => S.nook.pet)) === "bun");
+    const w = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check("nook page fits the screen", w <= 0, `${w}px`);
+    check("no JavaScript errors (nook)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
     await ctx.close();
   });
 

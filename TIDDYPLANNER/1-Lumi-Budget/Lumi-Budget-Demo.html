@@ -686,6 +686,90 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 }
 .short-line { color: var(--bad); margin: -4px 0 10px; font-size: .95rem; }
 
+/* ---------- The Honey Nook: illustrated room + companion ---------- */
+.nook { position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 1; min-height: 330px; isolation: isolate; margin-bottom: 16px;
+  box-shadow: 0 2px 4px hsl(30 40% 30% / .06), 0 30px 60px -34px hsl(30 50% 25% / .55); border: 1px solid hsl(40 40% 86%); background: #f3e6cf; }
+.nook-page { aspect-ratio: 2.6 / 1; min-height: 380px; }
+.nook-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; z-index: -2; user-select: none;
+  animation: nookDrift 26s ease-in-out infinite alternate; transform-origin: 62% 60%; }
+@keyframes nookDrift { from { transform: scale(1.02); } to { transform: scale(1.06) translateX(-.6%); } }
+.nook-light { position: absolute; inset: 0; z-index: -1; pointer-events: none; transition: background .6s; }
+.nook[data-time="morning"] .nook-light { background: linear-gradient(180deg, hsl(200 80% 92% / .28), transparent 60%); }
+.nook[data-time="golden"] .nook-light { background: radial-gradient(60% 90% at 62% 30%, hsl(38 100% 70% / .22), transparent 70%); }
+.nook[data-time="night"] .nook-bg { filter: brightness(.48) saturate(.8) hue-rotate(-8deg); }
+.nook[data-time="night"] .nook-light { background: radial-gradient(22% 46% at 84% 44%, hsl(40 100% 70% / .55), transparent 70%), radial-gradient(40% 60% at 62% 32%, hsl(230 60% 70% / .18), transparent 70%), linear-gradient(180deg, hsl(235 45% 18% / .25), hsl(30 40% 10% / .15)); mix-blend-mode: screen; }
+/* glass card with today's number */
+.nook-card { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); width: min(440px, 44%); z-index: 3;
+  background: hsl(45 60% 99% / .74); -webkit-backdrop-filter: blur(16px) saturate(1.25); backdrop-filter: blur(16px) saturate(1.25);
+  border: 1px solid hsl(0 0% 100% / .75); border-radius: 26px; padding: 22px 26px 20px; box-shadow: 0 24px 50px -28px hsl(30 50% 20% / .55); animation: nookIn .7s var(--ease) both; }
+.nook-card .avail { font-family: var(--font-head); font-size: clamp(2.6rem, 5.4vw, 4.2rem); font-weight: 650; color: var(--head); line-height: 1; margin: 8px 0 10px; letter-spacing: -.02em; font-variant-numeric: lining-nums tabular-nums; }
+.nook-card .avail .m small { font-size: .5em; }
+.nook-card .eyebrow { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); font-weight: 650; }
+.nook-card .guide { margin-top: 12px; padding-top: 12px; }
+.nook-card .hero-actions { margin-top: 14px; }
+:root[data-theme="dark"] .nook-card { background: hsl(150 12% 10% / .72); border-color: hsl(0 0% 100% / .12); }
+@keyframes nookIn { from { opacity: 0; transform: translateY(calc(-50% + 14px)); } to { opacity: 1; transform: translateY(-50%); } }
+/* companion */
+.nook-friend { position: absolute; left: 61%; bottom: 8%; width: 10.5%; min-width: 96px; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; }
+.nook-page .nook-friend { width: 10%; }
+.nook-pet { border: 0; background: none; padding: 0; cursor: pointer; width: 100%; transform-origin: 50% 100%; animation: nookBreathe 3.4s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
+.nook-pet img { width: 100%; height: auto; display: block; filter: drop-shadow(0 10px 10px hsl(30 50% 25% / .18)); user-select: none; pointer-events: none; }
+.nook-pet.pose-sleep { width: 128%; animation: nookSleep 4.6s ease-in-out infinite; }
+.nook-pet:hover { animation-duration: 1.6s; }
+.nook-pet:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; border-radius: 20px; }
+.nook-pet.react { animation: nookHop .9s var(--ease) 2; }
+@keyframes nookBreathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.03); } }
+@keyframes nookSleep { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, 1.045); } }
+@keyframes nookHop { 0% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(0) scale(1.08, .92); } 45% { transform: translateY(-22%) scale(.96, 1.06); } 70% { transform: translateY(0) scale(1.06, .94); } 100% { transform: translateY(0) scale(1, 1); } }
+.nook-shadow { width: 70%; height: 14px; margin-top: -10px; border-radius: 50%; background: radial-gradient(closest-side, hsl(30 40% 20% / .28), transparent); z-index: -1; }
+.nook-bubble { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-30%); width: max-content; max-width: 250px; background: hsl(45 80% 99% / .95); color: var(--ink);
+  border-radius: 18px 18px 18px 6px; padding: 10px 14px; font-family: var(--font-head); font-style: italic; font-size: .98rem; line-height: 1.3; box-shadow: 0 14px 30px -18px hsl(30 50% 20% / .6); animation: nookBubble .6s .3s var(--ease) both; }
+:root[data-theme="dark"] .nook-bubble { background: hsl(150 10% 14% / .95); color: var(--ink); }
+@keyframes nookBubble { from { opacity: 0; transform: translateX(-30%) translateY(8px) scale(.96); } to { opacity: 1; transform: translateX(-30%) translateY(0) scale(1); } }
+.nook-float { position: absolute; left: 50%; top: 10%; transform: translateX(-50%); font-weight: 800; color: hsl(36 80% 34%); font-size: 1.2rem; pointer-events: none; animation: nookFloat 1.6s ease-out forwards; text-shadow: 0 2px 0 #fff; }
+@keyframes nookFloat { from { opacity: 0; transform: translate(-50%, 10px); } 20% { opacity: 1; } to { opacity: 0; transform: translate(-50%, -60px); } }
+.nook-drops { position: absolute; right: 16px; top: 14px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; text-decoration: none; color: var(--ink);
+  background: hsl(45 60% 99% / .7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid hsl(0 0% 100% / .7); font-size: .9rem; }
+.nook-drops span { color: var(--ink-2); font-size: .8rem; }
+:root[data-theme="dark"] .nook-drops { background: hsl(150 12% 10% / .7); border-color: hsl(0 0% 100% / .12); }
+/* atmosphere */
+.nook-motes, .nook-snow { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.nook-motes i { position: absolute; left: var(--x); top: var(--y); width: 5px; height: 5px; border-radius: 50%; background: hsl(45 100% 80%); box-shadow: 0 0 10px 3px hsl(45 100% 75% / .6); opacity: 0; animation: nookMote var(--d) ease-in-out var(--w) infinite; }
+@keyframes nookMote { 0%, 100% { opacity: 0; transform: translateY(0); } 50% { opacity: .85; transform: translateY(-16px); } }
+.nook[data-time="night"] .nook-motes i { background: hsl(55 100% 85%); }
+.nook-snow i { position: absolute; top: -10px; left: var(--x); width: 6px; height: 6px; border-radius: 50%; background: #fff; opacity: .9; animation: nookSnow var(--d) linear var(--w) infinite; }
+@keyframes nookSnow { to { transform: translate(24px, 360px); opacity: 0; } }
+/* nook page pickers */
+.nook-pets, .nook-rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.nook-pick, .nook-room { border: 1px solid var(--line); background: var(--surface-2); border-radius: 20px; padding: 14px 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--ink); text-align: center; transition: transform .15s, border-color .15s; }
+.nook-pick:hover:not(:disabled), .nook-room:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); }
+.nook-pick.on, .nook-room.on { border: 2px solid var(--accent); background: var(--accent-softer); }
+.nook-pick:disabled, .nook-room:disabled { opacity: .6; cursor: not-allowed; }
+.nook-pick img { height: 96px; width: auto; }
+.nook-room img { width: 100%; height: 70px; object-fit: cover; border-radius: 12px; }
+.nook-room-auto { height: 70px; display: grid; place-items: center; font-size: 1.6rem; }
+.nook-pick b, .nook-room b { font-family: var(--font-head); font-size: 1.05rem; }
+.nook-pick span, .nook-room span { font-size: .78rem; color: var(--ink-2); }
+.nook-pick.soon { cursor: default; border-style: dashed; }
+.nook-pick .q { height: 96px; display: grid; place-items: center; font-family: var(--font-head); font-size: 2.6rem; color: var(--ink-3); }
+.hero-quick .link-btn { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .nook-bg, .nook-pet, .nook-motes i, .nook-snow i { animation: none !important; } }
+:root[data-motion="off"] .nook-bg, :root[data-motion="off"] .nook-pet, :root[data-motion="off"] .nook-motes i, :root[data-motion="off"] .nook-snow i { animation: none !important; }
+@media (max-width: 760px) {
+  .nook, .nook-page { aspect-ratio: auto; min-height: 0; padding-top: 250px; background: var(--surface); }
+  .nook-bg { height: 260px; bottom: auto; object-position: 66% 50%; }
+  .nook-light { height: 260px; bottom: auto; }
+  .nook-card { position: relative; left: auto; top: auto; transform: none; width: auto; margin: 0 10px 10px; animation: none; background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nook-friend { left: 64%; bottom: auto; top: 88px; width: 30%; min-width: 0; }
+  .nook-drops { right: auto; left: 12px; top: 204px; }
+  .nook-page .nook-drops { top: 12px; }
+  .nook-page { padding-top: 0; aspect-ratio: 1.45 / 1; }
+  .nook-page .nook-bg, .nook-page .nook-light { height: 100%; bottom: 0; }
+  .nook-page .nook-friend { top: auto; bottom: 7%; width: 24%; left: 62%; }
+  .nook-bubble { max-width: 170px; font-size: .82rem; transform: translateX(-70%); }
+  @keyframes nookBubble { from { opacity: 0; } to { opacity: 1; } }
+}
+
 /* Lumi uses the base theme as-is. */
 </style>
 </head>
@@ -694,7 +778,7 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
 <script>
 "use strict";
 (() => {
-const __BUILD__ = {"appName":"Lumi Budget","tagline":"Calm money planner","storeKey":"lumi-budget-v1","edition":"demo","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"lumi","monthNav":"chips","homeLayout":"split","palette":"rose","logo":"","flourish":"","sideArt":""}};
+const __BUILD__ = {"appName":"Lumi Budget","tagline":"Calm money planner","storeKey":"lumi-budget-v1","edition":"demo","shopUrl":"https://tidyplannercoart.etsy.com","skin":{"id":"lumi","monthNav":"chips","homeLayout":"split","palette":"rose","logo":"","flourish":"","sideArt":"","nookImg":null}};
 /* 01-core.js */
 /* ==========================================================================
    Lumi Budget — core: constants, utilities, dates, money, storage
@@ -945,6 +1029,7 @@ function freshState() {
     envelopes: [], // { id, name, emoji, amount } — money set aside, still in the account
     moneyBack: [], // { id, name, kind, amount, due, status, txId }
     collected: {}, // Apple Pay lines already imported
+    nook: { pet: "mochi", drops: 0, owned: ["mochi", "room-day"], room: "auto", log: {} }, // cozy room & companion
   };
 }
 
@@ -982,6 +1067,9 @@ function migrate(data) {
   out.profile = { ...base.profile, ...(data.profile || {}) };
   out.settings = { ...base.settings, ...(data.settings || {}) };
   out.account = { ...base.account, ...(data.account || {}) };
+  out.nook = { ...base.nook, ...(data.nook || {}) };
+  if (!Array.isArray(out.nook.owned)) out.nook.owned = base.nook.owned;
+  if (!out.nook.log || typeof out.nook.log !== "object") out.nook.log = {};
   for (const k of ["incomes", "bills", "debts", "funds", "goals", "transactions", "wishlist", "categories", "envelopes", "moneyBack"]) {
     if (!Array.isArray(out[k])) out[k] = base[k];
   }
@@ -4064,13 +4152,7 @@ function homeBalance() {
   const coming = a.due.slice(0, 5);
   const used = a.guide > 0 ? clamp(a.spentToday / a.guide, 0, 1) : 0;
   const mb = S.moneyBack.filter((m) => m.status === "waiting");
-  return `
-  <div class="sage">
-  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
-  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
-  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
-  <div class="sage-grid">
-    <div class="card hero-avail">
+  const numberHTML = `
       <div class="eyebrow">Available until ${relShort(a.h)}</div>
       <div class="avail ${a.shortBy ? "neg" : ""}">${moneyHTML(a.available)}</div>
       ${a.shortBy ? `<p class="short-line">Your bills before payday need another <b class="m">${money(a.shortBy)}</b>. <button class="link-btn" data-action="toggle-breakdown">See why</button></p>` : ""}
@@ -4080,15 +4162,31 @@ function homeBalance() {
         <div class="row between"><span><b class="m">${money(Math.max(0, a.leftToday))}</b> left today</span><span class="tiny">Daily guide ${money(a.guide)} · ${plural(a.days, "day")} to go</span></div>
         <div class="bbar sage"><i style="width:${Math.round(used * 100)}%"></i></div>
         <div class="tiny mt-s">${money(a.spentToday)} of ${money(a.guide)} used today${a.leftToday < 0 ? " — tomorrow's guide adjusts, no stress." : ""}</div>`}
-      </div>
+      </div>`;
+  const actionsHTML = `
       <div class="row wrap mt hero-actions">
         <button class="btn primary" data-action="quick-add">${icon("plus")}Add expense</button>
         <button class="btn" data-action="afford">${icon("search")}Can I afford it?</button>
-        <button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>
-      </div>
+        ${NOOK ? "" : `<button class="btn ghost" data-action="toggle-breakdown" aria-expanded="${!!ui.showBreakdown}">${icon("info")}How is this worked out?</button>`}
+      </div>`;
+  const oneTapHTML = freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`;
+  return `
+  <div class="sage">
+  ${pageHead(hello, fmtLong(a.today), `<button class="btn primary add-spend" data-action="quick-add">${icon("plus", 20)}Add expense</button>`)}
+  ${a.stale && a.checkedDays != null ? `<div class="fresh-banner"><div><b>Missed a few days? Start from today.</b><span>Update your balance and we'll work out your number from now — no catching up.</span></div><button class="btn primary sm" data-action="fresh-start">Start from today</button></div>` : ""}
+  ${a.confirmPayday && a.pay.occ ? `<div class="fresh-banner"><div><b>Is it payday?</b><span>Mark your ${esc(a.pay.occ.name.toLowerCase())} received to see your next period.</span></div><button class="btn primary sm" data-action="toggle-occ" data-key="${esc(a.pay.occ.key)}">Mark received · ${money(a.pay.occ.amount)}</button></div>` : ""}
+  ${NOOK ? nookScene({ a, inner: numberHTML + actionsHTML }) : ""}
+  <div class="sage-grid">
+    ${NOOK ? `<div class="card hero-quick">
+      <div class="card-head"><h2>${icon("bolt", 20)} Quick add</h2><span class="tiny">One tap, then carry on</span></div>
+      ${oneTapHTML}
+      ${ui.showBreakdown ? breakdownHTML(a) : `<button class="link-btn mt" data-action="toggle-breakdown">How is today's number worked out?</button>`}
+    </div>` : `<div class="card hero-avail">
+      ${numberHTML}
+      ${actionsHTML}
       ${ui.showBreakdown ? breakdownHTML(a) : ""}
-      ${freq.length ? `<div class="one-tap mt"><span class="tiny">One tap</span>${freq.map((f, i) => `<button class="chip" data-action="repeat-spend" data-i="${i}">${esc(catById(f.catId)?.emoji || "")} ${esc(f.name)} · <b class="m">${money(f.amount)}</b></button>`).join("")}<button class="chip apple" data-action="collect-applepay" title="Collect spends your iPhone Shortcut saved">${icon("download", 15)} Apple Pay</button></div>` : `<div class="one-tap mt"><button class="chip apple" data-action="collect-applepay">${icon("download", 15)} Collect Apple Pay spends</button></div>`}
-    </div>
+      ${oneTapHTML}
+    </div>`}
     <div class="card">
       <div class="card-head"><h2>${icon("calendar", 20)} Before payday</h2><a class="link-sm" href="#bills">All bills</a></div>
       ${coming.length ? `<div class="list">${coming.map((o) => `<div class="li ${o.date < a.today ? "late" : ""}">
@@ -4253,6 +4351,7 @@ function openEnvelopeForm(env = null) {
       const undo = snapshot();
       if (env) Object.assign(env, { name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
       else S.envelopes.push({ id: uid(), name: d.name.trim(), emoji: d.emoji.trim() || "✉️", amount });
+      if (!env && amount > 0) nookEarn("envelope");
       commit(env ? "Envelope saved" : `${money(amount)} set aside`, undo);
     },
     onMount: (f) => $("[data-del]", f)?.addEventListener("click", () => { const undo = snapshot(); S.envelopes = S.envelopes.filter((x) => x !== env); closeModal(); commit("Envelope deleted — the money is available again", undo); }),
@@ -4268,7 +4367,7 @@ function openEnvelopeMoney(env, mode) {
       const amount = round2(num(d.amount));
       if (!(amount > 0)) { toast("Enter an amount"); return false; }
       const undo = snapshot();
-      if (mode === "add") env.amount = round2(env.amount + amount);
+      if (mode === "add") { env.amount = round2(env.amount + amount); nookEarn("envelope"); }
       else if (mode === "release") env.amount = round2(Math.max(0, env.amount - amount));
       else addTx({ type: "expense", amount, name: (d.name || "").trim() || env.name, date: todayISO(), catId: guessCategory(env.name) || guessCategory(d.name || ""), effect: { envelopeId: env.id } });
       commit(mode === "spend" ? `Spent ${money(amount)} from ${env.name} — your available number didn't change` : "Envelope updated", undo);
@@ -4323,6 +4422,221 @@ Object.assign(ACTIONS, {
   "mb-delete": (el) => { const undo = snapshot(); S.moneyBack = S.moneyBack.filter((x) => x.id !== el.dataset.id); commit("Removed", undo); },
   "fees-to-bill": (el) => openBillForm(null, { name: el.dataset.name, amount: Number(el.dataset.amount), freq: el.dataset.every === "week" ? "weekly" : "monthly", isSub: true }),
   "export-ics": () => { download(`${APP_NAME.replace(/\W+/g, "-")}-bills.ics`, billsICS(), "text/calendar"); toast("Calendar file downloaded — open it to add reminders"); },
+});
+
+/* 09-nook.js */
+/* ==========================================================================
+   The Honey Nook: an illustrated cozy room with a companion who reacts to
+   what you do, and honey drops you earn for small money habits.
+   Only active for editions that ship illustrations (skin.nookImg).
+   ========================================================================== */
+const NOOK = !!(SKIN.nookImg && SKIN.nookImg["room-day"]);
+const nookImg = (k) => (SKIN.nookImg && SKIN.nookImg[k]) || "";
+const NOOK_PETS = {
+  mochi: { name: "Mochi", kind: "capybara", cost: 0, line: "Calm money, sweet days.", poses: { idle: "mochi-idle", coin: "mochi-coin", happy: "mochi-happy", sleep: "mochi-sleep", cheer: "mochi-cheer" } },
+  bun: { name: "Bun", kind: "bunny", cost: 20, line: "Small steps, soft heart.", poses: { idle: "bun-idle", coin: "bun-idle", happy: "bun-idle", sleep: "bun-idle", cheer: "bun-idle" } },
+};
+const NOOK_ROOMS = {
+  "room-day": { name: "Golden hour", cost: 0 },
+  "room-winter": { name: "Snowy evening", cost: 25 },
+};
+// How honey drops are earned (per day caps keep it calm, not grindy).
+const NOOK_EARN = {
+  spend: { label: "Track a spend", n: 1, cap: 5 },
+  bill: { label: "Tick off a bill or payday", n: 2, cap: 6 },
+  checkin: { label: "Daily check-in", n: 2, cap: 2 },
+  envelope: { label: "Set money aside", n: 2, cap: 4 },
+  fresh: { label: "Start from today (balance check)", n: 3, cap: 3 },
+  pat: { label: "Say hello to your friend", n: 1, cap: 3 },
+};
+let nookQuiet = false; // no rewards while sample data is being generated
+let nookPending = null; // reaction to play after the next render
+
+const nookPet = () => NOOK_PETS[S.nook?.pet] || NOOK_PETS.mochi;
+function nookEarn(reason) {
+  if (!NOOK || nookQuiet || !S.nook) return 0;
+  const rule = NOOK_EARN[reason];
+  if (!rule) return 0;
+  const key = `${todayISO()}:${reason}`;
+  const got = S.nook.log[key] || 0;
+  if (got >= rule.cap) { nookPending ||= { mood: "happy" }; return 0; }
+  const n = Math.min(rule.n, rule.cap - got);
+  S.nook.log[key] = got + n;
+  S.nook.drops = (S.nook.drops || 0) + n;
+  // Keep the log to the last few weeks.
+  const cutoff = addDays(todayISO(), -21);
+  for (const k of Object.keys(S.nook.log)) if (k.slice(0, 10) < cutoff) delete S.nook.log[k];
+  nookPending = { mood: "cheer", text: `+${n} 🍯` };
+  return n;
+}
+/** Morning, day, golden hour or night — the room follows the clock. */
+function nookTime(d = new Date()) {
+  const h = d.getHours();
+  return h >= 21 || h < 6 ? "night" : h < 10 ? "morning" : h >= 17 ? "golden" : "day";
+}
+function nookRoom(d = new Date()) {
+  const pick = S.nook?.room || "auto";
+  if (pick !== "auto" && S.nook.owned.includes(pick) && nookImg(pick)) return pick;
+  const m = d.getMonth();
+  return (m === 11 || m <= 1) && nookImg("room-winter") ? "room-winter" : "room-day";
+}
+function nookLine(a) {
+  const pet = nookPet();
+  if (nookTime() === "night") return `Zzz… your bills are covered. Sleep well.`;
+  if (!a) return pet.line;
+  if (a.checkedDays == null) return "Hi! Tell me your balance and I'll work out today.";
+  if (a.stale) return "Welcome back! Let's start from today — no catching up.";
+  if (a.confirmPayday) return "Is it payday? Let's check it in together!";
+  if (a.shortBy) return "A tight stretch. We'll make room around it, gently.";
+  if (a.leftToday > 0) return `${money(a.leftToday)} left for today. You've got this.`;
+  return "Today's guide is used up — tomorrow resets, no stress.";
+}
+function nookPose(a) {
+  if (nookTime() === "night") return "sleep";
+  if (a && a.leftToday > 0 && !a.shortBy) return "coin";
+  return "idle";
+}
+/** The room, the companion and its speech bubble. `inner` is what floats on the glass card. */
+function nookScene({ a = null, inner = "", size = "hero" } = {}) {
+  const pet = nookPet(), pose = nookPose(a), room = nookRoom(), time = nookTime();
+  const snow = room === "room-winter" ? `<div class="nook-snow" aria-hidden="true">${Array.from({ length: 18 }, (_, i) => `<i style="--x:${(i * 53) % 100}%;--d:${6 + (i % 5)}s;--w:${(i * 7) % 6}s"></i>`).join("")}</div>` : "";
+  const motes = `<div class="nook-motes" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i style="--x:${48 + ((i * 37) % 48)}%;--y:${12 + ((i * 23) % 60)}%;--d:${5 + (i % 4)}s;--w:${(i * 3) % 5}s"></i>`).join("")}</div>`;
+  return `<div class="nook nook-${size}" data-time="${time}" data-room="${room}">
+    <img class="nook-bg" src="${nookImg(room)}" alt="" aria-hidden="true" draggable="false">
+    <div class="nook-light" aria-hidden="true"></div>
+    ${snow}${motes}
+    ${inner ? `<div class="nook-card">${inner}</div>` : ""}
+    <div class="nook-friend">
+      <div class="nook-bubble" role="status">${esc(nookLine(a))}</div>
+      <button class="nook-pet pose-${pose}" data-action="nook-pat" aria-label="Say hello to ${esc(pet.name)}" title="Say hello to ${esc(pet.name)}">
+        <img src="${nookImg(pet.poses[pose])}" alt="" draggable="false">
+      </button>
+      <div class="nook-shadow" aria-hidden="true"></div>
+    </div>
+    <a class="nook-drops" href="#nook" title="Your honey drops">🍯 <b>${S.nook.drops || 0}</b><span>honey drops</span></a>
+  </div>`;
+}
+/** Play the companion's reaction after a render (swap pose, hop, floating reward). */
+function nookAfterRender() {
+  if (!NOOK || !nookPending) return;
+  const p = nookPending;
+  nookPending = null;
+  const btn = $(".nook-pet");
+  if (!btn) return;
+  const pet = nookPet();
+  const img = btn.querySelector("img");
+  const rest = img.getAttribute("src");
+  img.src = nookImg(pet.poses[p.mood] || pet.poses.happy);
+  btn.classList.add("react");
+  if (p.text) {
+    const f = document.createElement("div");
+    f.className = "nook-float";
+    f.textContent = p.text;
+    btn.parentElement.appendChild(f);
+    setTimeout(() => f.remove(), 1600);
+  }
+  if (p.say) { const b = $(".nook-bubble"); if (b) b.textContent = p.say; }
+  setTimeout(() => { btn.classList.remove("react"); if (img.isConnected) img.src = rest; }, 1900);
+}
+
+/* ---------- Page ---------- */
+function viewNook() {
+  const a = SKIN.balance ? availableSummary() : null;
+  const pets = Object.entries(NOOK_PETS).filter(([, p]) => nookImg(p.poses.idle));
+  const today = todayISO();
+  return `
+  ${pageHead("The Honey Nook", "A little room that grows with your money habits. Earn honey drops for small steps — never for being perfect.")}
+  ${nookScene({ a, size: "page" })}
+  <div class="grid g2 mt">
+    <div class="card">
+      <div class="card-head"><h2>Your friends</h2><span class="tiny">🍯 ${S.nook.drops} drops</span></div>
+      <div class="nook-pets">${pets.map(([id, p]) => {
+        const own = S.nook.owned.includes(id), on = S.nook.pet === id;
+        return `<button class="nook-pick ${on ? "on" : ""}" data-action="nook-pet" data-id="${id}" ${!own && S.nook.drops < p.cost ? "disabled" : ""} aria-pressed="${on}">
+          <img src="${nookImg(p.poses.idle)}" alt="">
+          <b>${esc(p.name)}</b><span>${on ? "With you now" : own ? "Tap to switch" : `Unlock · 🍯 ${p.cost}`}</span></button>`;
+      }).join("")}
+        <div class="nook-pick soon" aria-hidden="true"><span class="q">?</span><b>More friends</b><span>Coming in updates</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Rooms</h2></div>
+      <div class="nook-rooms">${[["auto", { name: "Follow the season", cost: 0 }], ...Object.entries(NOOK_ROOMS)].filter(([id]) => id === "auto" || nookImg(id)).map(([id, r]) => {
+        const own = id === "auto" || S.nook.owned.includes(id), on = (S.nook.room || "auto") === id;
+        return `<button class="nook-room ${on ? "on" : ""}" data-action="nook-room" data-id="${id}" ${!own && S.nook.drops < r.cost ? "disabled" : ""} aria-pressed="${on}">
+          ${id === "auto" ? `<span class="nook-room-auto">🍂❄️🌸</span>` : `<img src="${nookImg(id)}" alt="">`}
+          <b>${esc(r.name)}</b><span>${on ? "Showing now" : own ? "Tap to use" : `Unlock · 🍯 ${r.cost}`}</span></button>`;
+      }).join("")}</div>
+    </div>
+  </div>
+  <div class="card mt">
+    <div class="card-head"><h2>How to earn honey drops</h2><span class="tiny">Small daily limits — it's a cozy game, not a chore</span></div>
+    <div class="list">${Object.entries(NOOK_EARN).map(([k, r]) => { const got = S.nook.log[`${today}:${k}`] || 0; return `<div class="li"><div class="name">${esc(r.label)}<small>up to ${r.cap} a day</small></div><div class="amt">+${r.n} 🍯</div><span class="pill ${got >= r.cap ? "good" : "muted"}">${got >= r.cap ? "done today" : `${got}/${r.cap}`}</span></div>`; }).join("")}</div>
+  </div>`;
+}
+
+/* ---------- Wiring ---------- */
+if (NOOK) {
+  // Reward the habits where they happen.
+  const baseAddTx = addTx;
+  addTx = function (tx) {
+    const t = baseAddTx(tx);
+    if (t.link) nookEarn("bill"); else if (t.type === "expense") nookEarn("spend");
+    return t;
+  };
+  const baseCheckBalance = checkBalance;
+  checkBalance = function (amount, openFrom) { baseCheckBalance(amount, openFrom); nookEarn("fresh"); };
+  const baseRender = render;
+  render = function () { baseRender(); nookAfterRender(); };
+  const baseSample = loadSample;
+  loadSample = function () {
+    nookQuiet = true;
+    try { baseSample(); } finally { nookQuiet = false; }
+    S.nook = { pet: "mochi", drops: 38, owned: ["mochi", "room-day"], room: "auto", log: {} };
+    nookPending = null;
+    saveNow();
+    render();
+  };
+  const at = (id) => NAV.findIndex((n) => n.id === id);
+  NAV.splice(at("home") + 1, 0, { id: "nook", label: "Honey Nook", icon: "sparkle" });
+  VIEWS.nook = viewNook;
+  const baseCheckin = ACTIONS.checkin;
+  if (baseCheckin) ACTIONS.checkin = (el, e) => { nookEarn("checkin"); return baseCheckin(el, e); };
+}
+Object.assign(ACTIONS, {
+  "nook-pat": () => {
+    const pet = nookPet();
+    const lines = [`${pet.name} is so happy to see you!`, "You're doing better than you think.", "One small step today is plenty.", "Proud of you for checking in 🍯", pet.line];
+    const n = nookEarn("pat");
+    nookPending = { mood: "happy", text: n ? `+${n} 🍯` : "♡", say: lines[Math.floor(Math.random() * lines.length)] };
+    save();
+    if (n) render(); else nookAfterRender();
+  },
+  "nook-pet": (el) => {
+    const id = el.dataset.id, p = NOOK_PETS[id];
+    if (!p) return;
+    if (!S.nook.owned.includes(id)) {
+      if (S.nook.drops < p.cost) return toast(`Earn ${p.cost - S.nook.drops} more honey drops to meet ${p.name}`);
+      S.nook.drops -= p.cost;
+      S.nook.owned.push(id);
+      celebrate("🍯", `${p.name} moved in!`, p.line);
+    }
+    S.nook.pet = id;
+    nookPending = { mood: "cheer", say: `Hi! I'm ${p.name}. ${p.line}` };
+    commit();
+  },
+  "nook-room": (el) => {
+    const id = el.dataset.id;
+    if (id !== "auto" && !S.nook.owned.includes(id)) {
+      const r = NOOK_ROOMS[id];
+      if (S.nook.drops < r.cost) return toast(`Earn ${r.cost - S.nook.drops} more honey drops for this room`);
+      S.nook.drops -= r.cost;
+      S.nook.owned.push(id);
+      celebrate("✨", `${r.name} unlocked`, "Your nook has a new look.");
+    }
+    S.nook.room = id;
+    commit();
+  },
 });
 
 })();
