@@ -68,6 +68,9 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 🔔 HEADS-UP REMINDERS — bills due today or tomorrow, refund deadlines and backup reminders, right on your home screen
 🔎 SEARCH EVERYTHING — find any spend, bill, envelope or goal in a second (even by amount)
 💼 IRREGULAR INCOME — freelance, tips or gig work? Choose how long your money has to last (1 week, 2 weeks, end of month…)
+🏦 ACCOUNTS — add cash, savings and cards; choose what counts in today's number, see everything you have
+📲 MOVE DEVICES — "Send to my other device" shares your backup by AirDrop, email or WhatsApp
+🍂 SEASONAL TOUCHES — falling leaves, Halloween pumpkins, holiday gifts, Valentine hearts and spring petals in your nook
 🏅 KIND CHALLENGES — 3 no-spend days, coffee at home, no takeout fortnight… finish them to earn honey drops
 🛍️ CAN I AFFORD IT? — type a price before you buy, nothing gets recorded
 🌱 FRESH START — missed a few days? Update your balance and carry on, no catching up
@@ -99,7 +102,7 @@ A one-time iPhone Shortcut (step-by-step guide included, about 3 minutes) saves 
 2. Open the private link in the PDF — start with today's balance and your paycheck
 3. On your phone: Share → Add to Home Screen. It opens like an app, even offline.
 
-✅ iPhone, iPad, Android, Windows, Mac, Chromebook
+✅ iPhone, iPad & tablets (portrait and landscape), Android, Windows, Mac, Chromebook
 ✅ Chrome, Safari, Edge, Firefox
 ✅ 24 currencies
 
