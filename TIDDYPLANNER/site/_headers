@@ -1,8 +1,16 @@
 /lumi/*
   X-Robots-Tag: noindex, nofollow
+/lumi/planner-ec98eebc3064/download/*
+  Content-Disposition: attachment; filename="Lumi-Budget-Planner.html"
 /lila/*
   X-Robots-Tag: noindex, nofollow
+/lila/planner-391614a831f8/download/*
+  Content-Disposition: attachment; filename="Lila-Bloom-Planner.html"
 /cherry/*
   X-Robots-Tag: noindex, nofollow
+/cherry/planner-fdffc850a002/download/*
+  Content-Disposition: attachment; filename="Cherry-Blossom-Planner.html"
 /sage/*
   X-Robots-Tag: noindex, nofollow
+/sage/planner-80ef14a66457/download/*
+  Content-Disposition: attachment; filename="Sage-and-Honey-Planner.html"

@@ -38,8 +38,8 @@ Rotate in after 30 days: `floral planner`, `girly planner`, `budget tracker app`
 
 ## Files to upload
 
-1. `Cherry-Blossom-Buyer-Guide.pdf` — private online link + instructions (buyers open this first)
-2. `Cherry-Blossom-Planner.html` — the offline app (zip it if Etsy refuses `.html`)
+1. `Cherry-Blossom-Buyer-Guide.pdf` — **the only file buyers need.** It holds the private online link, the button to download the offline version and every setup step.
+2. *(optional backup)* `Cherry-Blossom-Planner.html` — the same offline app, in case a buyer can't download it from the guide (zip it if Etsy refuses `.html`).
 
 ## Pricing (suggestion)
 
@@ -86,7 +86,7 @@ Use it ONLINE on any device or OFFLINE with the downloadable HTML file. No subsc
 ━━━━━━━━━━━━━━━━━━
 📲 HOW IT WORKS
 ━━━━━━━━━━━━━━━━━━
-1. Download your files (PDF guide + HTML planner)
+1. Download your PDF guide — it has everything
 2. Open the private link in the PDF — or double-click the HTML file
 3. On your phone: Share → Add to Home Screen. It works like an app, even offline.
 
@@ -116,9 +116,9 @@ Same as Lumi Budget — see `1-Lumi-Budget/LISTING.md`.
 ```
 Thank you so much for your order! 🌸
 
-Your download has 2 files:
-1) Cherry-Blossom-Buyer-Guide.pdf — open this first. It has your private online link and step-by-step instructions.
-2) Cherry-Blossom-Planner.html — the offline version for your computer.
+Your download is one PDF: Cherry-Blossom-Buyer-Guide.pdf — open it first.
+• Tap the first button to open your planner online (phone, tablet or computer).
+• Tap "Download the offline version" to keep a copy on your computer that works without internet.
 
 Tip: on your phone, open the link and tap Share → Add to Home Screen.
 Questions? Just message me — happy to help!

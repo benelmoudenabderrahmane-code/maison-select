@@ -8,21 +8,21 @@
   @page { size: Letter; margin: 0; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: "Inter", sans-serif; color: {{INK}}; font-size: 11.5pt; line-height: 1.5; }
-  .page { width: 8.5in; height: 11in; padding: .7in .75in; position: relative; overflow: hidden; page-break-after: always; background: linear-gradient(160deg, {{BG1}}, {{BG2}}); }
+  .page { width: 8.5in; height: 11in; padding: .55in .75in; position: relative; overflow: hidden; page-break-after: always; background: linear-gradient(160deg, {{BG1}}, {{BG2}}); }
   .page:last-child { page-break-after: auto; }
   h1, h2, h3 { font-family: "{{HEAD}}", Georgia, serif; color: {{HEADCOLOR}}; margin: 0; letter-spacing: -.01em; }
-  h1 { font-size: 40pt; line-height: 1; }
+  h1 { font-size: 34pt; line-height: 1; }
   h1 em { font-weight: 500; }
-  h2 { font-size: 17pt; margin-bottom: 8pt; }
+  h2 { font-size: 15pt; margin-bottom: 5pt; }
   .eyebrow { letter-spacing: .35em; text-transform: uppercase; font-family: "{{HEAD}}", Georgia, serif; font-size: 10pt; color: {{MUTED}}; }
   
-  .card { background: #fffaf9; border-radius: 16pt; padding: 14pt 18pt; margin-top: 12pt; box-shadow: 0 6pt 18pt -10pt rgba(80, 30, 45, .25); }
-  .link { display: block; background: {{ACCENT}}; color: #fff; text-decoration: none; border-radius: 12pt; padding: 13pt 16pt; font-weight: 700; font-size: 12.5pt; text-align: center; margin-top: 8pt; word-break: break-all; }
+  .card { background: #fffaf9; border-radius: 16pt; padding: 11pt 16pt; margin-top: 9pt; box-shadow: 0 6pt 18pt -10pt rgba(80, 30, 45, .25); }
+  .link { display: block; background: {{ACCENT}}; color: #fff; text-decoration: none; border-radius: 12pt; padding: 10pt 14pt; font-weight: 700; font-size: 12pt; text-align: center; margin-top: 8pt; word-break: break-all; }
   .link.alt { background: {{SOFT}}; color: {{INK}}; }
   .steps { counter-reset: s; margin: 6pt 0 0; padding: 0; list-style: none; }
-  .steps li { counter-increment: s; position: relative; padding-left: 28pt; margin-top: 8pt; }
+  .steps li { counter-increment: s; position: relative; padding-left: 28pt; margin-top: 5pt; }
   .steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 19pt; height: 19pt; border-radius: 50%; background: {{SOFT}}; font-weight: 700; font-size: 9.5pt; display: grid; place-items: center; }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12pt; }
   .muted { color: {{MUTED}}; }
   .small { font-size: 9.5pt; }
   .foot { position: absolute; left: .75in; right: .75in; bottom: .45in; display: flex; justify-content: space-between; font-size: 9pt; color: {{MUTED}}; }
@@ -46,9 +46,10 @@
   </div>
 
   <div class="card">
-    <h2>💾 Use it offline — on your computer</h2>
-    <p class="muted small">Your download also includes <b>{{FILE}}</b>. Save it anywhere (Desktop, Documents) and double-click to open it in your browser. No internet needed.</p>
-    <p class="muted small" style="margin-top:6pt">Tip: always open the same file in the same browser, so your data is there each time.</p>
+    <h2>💾 Use it offline — no internet needed</h2>
+    <p class="muted small">On a computer, download your offline file <b>{{FILE}}</b>, save it anywhere (Desktop, Documents) and double-click it to open it in your browser.</p>
+    <a class="link" href="{{OFFLINE_URL}}">⬇ Download the offline version</a>
+    <p class="muted small" style="margin-top:6pt">On a phone or tablet, the app you added to your Home Screen keeps working offline too. Tip: always open the same file in the same browser, so your data is there each time.</p>
   </div>
 
   <div class="card">
@@ -88,13 +89,14 @@
 
   <div class="card">
     <h2>✨ Features made for busy brains</h2>
-    <p class="small muted"><b>Today</b> — one daily number you can spend. <b>Paycheck plan</b> — which bills each paycheck covers. <b>Impulse Pause</b> — wait 24h–7 days before buying. <b>Focus mode</b> — hides everything but the essentials. <b>Privacy blur</b> — hides amounts. <b>Readable font &amp; large text</b> in Settings. <b>Streaks, badges &amp; confetti</b> for small wins.</p>
+    <p class="small muted">{{FEATURES}}</p>
   </div>
 
   <div class="card">
     <h2>💌 Need help?</h2>
     <p class="small muted">Message me through Etsy any time — I'm happy to help you get set up. If you enjoy your planner, a review means the world to a small shop. ♡</p>
     <a class="link alt" href="{{SHOP}}">{{SHOP}}</a>
+    <p class="muted small" style="margin-top:8pt">Want to show a friend? Share the free demo — not your private link: <a href="{{DEMO_URL}}" style="color:inherit">{{DEMO_URL}}</a></p>
     <p class="muted" style="font-size:8.5pt;margin-top:10pt">For personal use only — please don't share or resell your link or file. {{APP}} is a budgeting tool and does not provide financial advice.</p>
   </div>
 

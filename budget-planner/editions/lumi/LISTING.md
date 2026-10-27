@@ -46,10 +46,10 @@ Alternatives to rotate in after 30 days (check Etsy stats → keep what converts
 - Who made it: **I did** · What is it: **A finished product** · When was it made: **Made to order / 2020–2026**
 - Attributes: Digital planner · Budget · Personal finance · Color: Pink
 
-## Files to upload (Etsy allows 5 files)
+## Files to upload
 
-1. `Lumi-Budget-Buyer-Guide.pdf` — your private online link + instructions (the main thing buyers open)
-2. `Lumi-Budget-Planner.html` — the offline app (from `budget-planner/dist/`)
+1. `Lumi-Budget-Buyer-Guide.pdf` — **the only file buyers need.** It holds the private online link, the button to download the offline version and every setup step.
+2. *(optional backup)* `Lumi-Budget-Planner.html` — the same offline app, in case a buyer can't download it from the guide (zip it if Etsy refuses `.html`).
 
 Tip: Etsy accepts `.html` files. If it ever refuses, zip it (`Lumi-Budget-Planner.zip`).
 
@@ -168,9 +168,9 @@ This planner is a budgeting tool and does not provide financial advice.
 ```
 Thank you so much for your order! 💗
 
-Your download has 2 files:
-1) Lumi-Budget-Buyer-Guide.pdf — open this first. It has your private online link and step-by-step instructions.
-2) Lumi-Budget-Planner.html — the offline version for your computer.
+Your download is one PDF: Lumi-Budget-Buyer-Guide.pdf — open it first.
+• Tap the first button to open your planner online (phone, tablet or computer).
+• Tap "Download the offline version" to keep a copy on your computer that works without internet.
 
 Tip: on your phone, open the link and tap Share → Add to Home Screen.
 

@@ -6,6 +6,7 @@
 //   <folder>/LISTING.md            Etsy listing copy
 //   site/<hostedDir>/              online version (+ PWA manifest, service worker, icons)
 //   site/<hostedDir>/demo/         online demo
+//   site/<hostedDir>/download/     the offline file, linked from the buyer guide
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +20,8 @@ const edFile = (ed, f) => join(root, "editions", ed.id, f);
 const readIf = (p) => (existsSync(p) ? readFileSync(p, "utf8").trim() : "");
 const jsFiles = readdirSync(join(root, "src")).filter((f) => /^\d\d-.*\.js$/.test(f)).sort();
 export const fileBase = (ed) => ed.appName.replace(/\s*&\s*/g, " and ").replace(/\s+/g, "-");
+/** Where the offline file lives on the site: site/<hostedDir>/download/<slug> (lowercase, no .html in links). */
+export const downloadSlug = (ed) => `${fileBase(ed).toLowerCase()}-planner`;
 
 function build(ed, edition, { pwa }) {
   const skin = {
@@ -51,6 +54,10 @@ function writeSite(ed) {
   mkdirSync(join(dir, "demo"), { recursive: true });
   writeFileSync(join(dir, "index.html"), build(ed, "full", { pwa: true }));
   writeFileSync(join(dir, "demo", "index.html"), build(ed, "demo", { pwa: false }));
+  // The offline file, downloadable from the buyer guide (so the guide PDF is the only file buyers need).
+  mkdirSync(join(dir, "download"), { recursive: true });
+  // Netlify serves /x.html as /x (lowercase), so the file is stored that way and the header gives the real name.
+  writeFileSync(join(dir, "download", `${downloadSlug(ed)}.html`), build(ed, "full", { pwa: false }));
   copyFileSync(edFile(ed, "icon.svg"), join(dir, "icon.svg"));
   for (const png of ["icon-180.png", "icon-192.png", "icon-512.png"]) {
     if (existsSync(edFile(ed, png))) copyFileSync(edFile(ed, png), join(dir, png));
@@ -96,7 +103,7 @@ function writeSiteRoot() {
   writeFileSync(join(site, "index.html"), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Budget planner demos</title>
 <style>body{margin:0;font-family:system-ui,sans-serif;background:#fbf7f5;color:#2a1a20;display:grid;place-items:center;min-height:100vh;padding:24px;box-sizing:border-box}main{max-width:560px;width:100%}h1{font-family:Georgia,serif;font-size:2rem;margin:0 0 6px}p{color:#6e5a61;margin:0 0 22px}a{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #eadfe2;border-left:6px solid var(--c);border-radius:16px;padding:16px 18px;margin-bottom:12px}a:hover{border-color:var(--c)}b{display:block;font-size:1.1rem}span{color:#6e5a61;font-size:.92rem}footer{margin-top:18px;font-size:.85rem}footer a{display:inline;border:0;padding:0;background:none;color:#b0425f;text-decoration:underline}</style></head>
 <body><main><h1>Budget planner demos</h1><p>Calm, ADHD-friendly budget planners that work online and offline.</p>${cards}<footer>Get the full planners on <a href="${config.shopUrl}">Etsy</a>.</footer></main></body></html>`);
-  writeFileSync(join(site, "_headers"), config.editions.map((ed) => `/${ed.hostedDir.split("/")[0]}/*\n  X-Robots-Tag: noindex, nofollow\n`).join(""));
+  writeFileSync(join(site, "_headers"), config.editions.map((ed) => `/${ed.hostedDir.split("/")[0]}/*\n  X-Robots-Tag: noindex, nofollow\n/${ed.hostedDir}/download/*\n  Content-Disposition: attachment; filename="${fileBase(ed)}-Planner.html"\n`).join(""));
   writeFileSync(join(site, "netlify.toml"), `[build]\n  publish = "."\n  command = ""\n`);
 }
 

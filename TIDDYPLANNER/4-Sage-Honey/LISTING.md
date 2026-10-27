@@ -32,8 +32,8 @@ Rotate in after 30 days: `cash envelopes`, `sinking funds`, `refund tracker`, `s
 
 ## Files to upload
 
-1. `Sage-and-Honey-Buyer-Guide.pdf` — private online link, setup and the Apple Pay guide (buyers open this first)
-2. `Sage-and-Honey-Planner.html` — the offline app (zip it if Etsy refuses `.html`)
+1. `Sage-and-Honey-Buyer-Guide.pdf` — **the only file buyers need.** It holds the private online link, the button to download the offline version, the Apple Pay guide and every setup step.
+2. *(optional backup)* `Sage-and-Honey-Planner.html` — the same offline app, in case a buyer can't download it from the guide (zip it if Etsy refuses `.html`).
 
 ## Images and video
 
@@ -110,7 +110,7 @@ A one-time iPhone Shortcut (step-by-step guide included, about 3 minutes) saves 
 ━━━━━━━━━━━━━━━━━━
 📲 HOW IT WORKS
 ━━━━━━━━━━━━━━━━━━
-1. Download your files (PDF guide + offline planner)
+1. Download your PDF guide — it has everything
 2. Open the private link in the PDF — start with today's balance and your paycheck
 3. On your phone: Share → Add to Home Screen. It opens like an app, even offline.
 
@@ -137,9 +137,10 @@ The companion characters and room illustrations were created with the help of AI
 ```
 Thank you so much for your order! 🍯
 
-Your download has 2 files:
-1) Sage-and-Honey-Buyer-Guide.pdf — open this first. It has your private online link, setup steps and the Apple Pay guide.
-2) Sage-and-Honey-Planner.html — the offline version for your computer (unzip it first if it arrives zipped).
+Your download is one PDF: Sage-and-Honey-Buyer-Guide.pdf — open it first.
+• Tap the first button to open your planner online (phone, tablet or computer).
+• Tap "Download the offline version" to keep a copy on your computer that works without internet.
+• Page 3 shows the 3-minute Apple Pay set-up.
 
 Tip: on your phone, open the link and tap Share → Add to Home Screen.
 Questions? Just message me — happy to help!

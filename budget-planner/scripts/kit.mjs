@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { fileBase } from "./build.mjs";
+import { fileBase, downloadSlug } from "./build.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -44,6 +44,8 @@ const APPLE_PAY_PAGE = (ed) => `<section class="page">
   </div>
   <div class="foot"><span>${ed.appName} · Start here</span><span>Page 3 of 3</span></div>
 </section>`;
+const CLASSIC_FEATURES = "<b>Today</b> — one daily number you can spend. <b>Paycheck plan</b> — which bills each paycheck covers. <b>Impulse Pause</b> — wait 24h–7 days before buying. <b>Focus mode</b> — hides everything but the essentials. <b>Privacy blur</b> — hides amounts. <b>Readable font &amp; large text</b> in Settings. <b>Streaks, badges &amp; confetti</b> for small wins. <b>Search</b> — press K. <b>Send to my other device</b> in Settings.";
+const BALANCE_FEATURES = "<b>Available until payday</b> — one calm number and a daily guide. <b>Until payday</b> — your balance day by day. <b>Can I afford it?</b> before you buy. <b>Fresh start</b> after a missed week. <b>Honey Nook</b> — Mochi &amp; Bun, honey drops and a preview studio. <b>Evening recap</b> &amp; gentle <b>challenges</b>. <b>Envelopes</b>, <b>Accounts</b>, <b>Money back</b> and <b>Fees check</b>. <b>Just today</b> mode, <b>search</b> (press K), heads-up reminders and bills in your phone's calendar. Irregular income? Settings → <b>How you get paid</b>.";
 const fillFor = (ed) => (html) => {
   const b = ed.brand;
   return html
@@ -51,6 +53,8 @@ const fillFor = (ed) => (html) => {
     .replaceAll("{{PAGES}}", ed.skin?.balance ? "3" : "2")
     .replaceAll("{{SETUP_LINE}}", ed.skin?.balance ? "Add your name, currency, today’s balance and your paycheck." : "Add your name, currency and paycheck.")
     .replaceAll("{{FILE}}", `${fileBase(ed)}-Planner.html`)
+    .replaceAll("{{OFFLINE_URL}}", `${config.publicUrl}/${ed.hostedDir}/download/${downloadSlug(ed)}`)
+    .replaceAll("{{FEATURES}}", ed.skin?.balance ? BALANCE_FEATURES : CLASSIC_FEATURES)
     .replaceAll("{{APP}}", ed.appName)
     .replaceAll("{{URL}}", `${config.publicUrl}/${ed.hostedDir}/`)
     .replaceAll("{{DEMO_URL}}", `${config.publicUrl}/${ed.hostedDir}/demo/`)
@@ -172,6 +176,9 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
   await page.goto(pathToFileURL(tmp).href);
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);
+  // Nothing may run into the page footer.
+  const over = await page.evaluate(() => [...document.querySelectorAll(".page")].map((p, i) => { const foot = p.querySelector(".foot").getBoundingClientRect().top; const low = Math.max(...[...p.children].filter((c) => !c.classList.contains("foot")).map((c) => c.getBoundingClientRect().bottom)); return low > foot - 4 ? `page ${i + 1} overflows by ${Math.round(low - foot + 4)}px` : ""; }).filter(Boolean));
+  if (over.length) console.log(`  ⚠ buyer guide layout: ${over.join(", ")}`);
   await page.pdf({ path: join(out, ed.folder, `${fileBase(ed)}-Buyer-Guide.pdf`), format: "Letter", printBackground: true });
   await page.close();
   console.log(`  buyer guide → ${ed.folder}/${fileBase(ed)}-Buyer-Guide.pdf`);
