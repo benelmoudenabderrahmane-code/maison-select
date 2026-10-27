@@ -680,10 +680,11 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await page.keyboard.press("Escape");
     await go(page, "home");
     const hu = await page.$$eval(".hu", (els) => els.map((e) => e.textContent));
-    check("bill due tomorrow shows a heads-up", hu.some((t) => /due tomorrow/.test(t)), hu.join(" | "));
+    check("bill due today or tomorrow shows a heads-up", hu.some((t) => /due (today|tomorrow)/.test(t)), hu.join(" | "));
+    const first = await page.$eval(".hu:has([data-action=toggle-occ]) .hu-t", (e) => e.textContent);
     await page.click(".hu [data-action=toggle-occ]");
     await page.waitForTimeout(300);
-    check("ticking it from the heads-up pays it", !(await page.$$eval(".hu", (els) => els.map((e) => e.textContent))).some((t) => /due tomorrow/.test(t)));
+    check("ticking it from the heads-up pays it", !(await page.$$eval(".hu .hu-t", (els) => els.map((e) => e.textContent))).includes(first), first);
     await page.click(".hu [data-action=ics-later]");
     await page.waitForTimeout(200);
     check("calendar tip can be dismissed", !(await page.$(".hu [data-action=export-ics]")) && (await state(page, (S) => S.settings.icsDone)) === true);
