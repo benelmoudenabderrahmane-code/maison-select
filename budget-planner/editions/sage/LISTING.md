@@ -70,7 +70,6 @@ Use it ONLINE on any device or OFFLINE with the downloadable file. No subscripti
 💼 IRREGULAR INCOME — freelance, tips or gig work? Choose how long your money has to last (1 week, 2 weeks, end of month…)
 🏦 ACCOUNTS — add cash, savings and cards; choose what counts in today's number, see everything you have
 📲 MOVE DEVICES — "Send to my other device" shares your backup by AirDrop, email or WhatsApp
-🍂 SEASONAL TOUCHES — falling leaves, Halloween pumpkins, holiday gifts, Valentine hearts and spring petals in your nook
 🏅 KIND CHALLENGES — 3 no-spend days, coffee at home, no takeout fortnight… finish them to earn honey drops
 🛍️ CAN I AFFORD IT? — type a price before you buy, nothing gets recorded
 🌱 FRESH START — missed a few days? Update your balance and carry on, no catching up

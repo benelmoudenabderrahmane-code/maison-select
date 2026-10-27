@@ -222,7 +222,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, seasonal: true, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,

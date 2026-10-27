@@ -871,48 +871,12 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .hu-b .btn.sm { padding: 6px 10px; }
 }
 
-/* ---------- Accounts, move devices, seasonal nook ---------- */
+/* ---------- Accounts, move devices ---------- */
 .acct-card .fund-amt.neg { color: var(--bad); }
 .acct-card.main { background: linear-gradient(160deg, var(--accent-softer), var(--surface) 70%); }
 .acct-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 150px; border: 1.5px dashed var(--line-2); background: none; color: var(--ink-3); font: 600 .9rem var(--font-body); cursor: pointer; box-shadow: none; }
 .acct-add:hover { color: var(--accent-strong); border-color: var(--accent); }
 .steps-list { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: var(--ink-2); }
-.nook-fall { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
-.nook-fall i { position: absolute; top: -8%; left: var(--x); width: 14px; height: 9px; border-radius: 80% 0 80% 0; opacity: 0; animation: nookFall var(--d) linear var(--w) infinite; }
-.fall-leaf i { background: linear-gradient(135deg, hsl(28 85% 55%), hsl(12 70% 45%)); }
-.fall-leaf i:nth-child(3n) { background: linear-gradient(135deg, hsl(42 90% 58%), hsl(30 80% 48%)); }
-.fall-petal i { width: 11px; height: 8px; border-radius: 60% 40% 60% 40%; background: linear-gradient(135deg, hsl(345 85% 88%), hsl(340 70% 76%)); }
-.fall-heart i { width: auto; height: auto; border-radius: 0; color: hsl(345 80% 68%); font-style: normal; font-size: 13px; background: none; }
-@keyframes nookFall {
-  0% { transform: translate3d(0, 0, 0) rotate(var(--r)); opacity: 0; }
-  10% { opacity: .9; }
-  50% { transform: translate3d(24px, 260px, 0) rotate(calc(var(--r) + 160deg)); }
-  90% { opacity: .85; }
-  100% { transform: translate3d(-10px, 520px, 0) rotate(calc(var(--r) + 320deg)); opacity: 0; }
-}
-.nook-deco { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
-.nook-deco span { position: absolute; bottom: 9%; font-size: clamp(22px, 3.1vw, 40px); filter: drop-shadow(0 6px 6px hsl(30 40% 20% / .35)) saturate(.9); }
-.nook-deco .d0 { left: 76%; }
-.nook-deco .d1 { left: 81.5%; bottom: 7.5%; font-size: clamp(16px, 2.2vw, 28px); }
-.nook-season-chip { position: absolute; top: 14px; right: 168px; z-index: 4; padding: 6px 12px; border-radius: 999px; background: hsl(0 0% 100% / .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font: 600 .76rem var(--font-body); color: var(--ink); border: 1px solid hsl(0 0% 100% / .6); }
-:root[data-theme="dark"] .nook-season-chip { background: hsl(150 12% 10% / .7); border-color: hsl(0 0% 100% / .12); }
-@media (prefers-reduced-motion: reduce) { .nook-fall { display: none; } }
-:root[data-motion="off"] .nook-fall { display: none; }
-@container main (max-width: 860px) {
-  .nook-season-chip { top: 210px; right: 12px; font-size: .7rem; padding: 5px 10px; }
-  .nook-deco span { bottom: auto; top: 168px; font-size: 28px; }
-  .nook-deco .d0 { left: 30%; }
-  .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
-  .nook-page .nook-deco span { top: auto; bottom: 8%; }
-}
-/* Older Safari (before iOS 16) has no container queries: fall back to the screen width. */
-@supports not (container-type: inline-size) { @media (max-width: 860px) {
-  .nook-season-chip { top: 210px; right: 12px; font-size: .7rem; padding: 5px 10px; }
-  .nook-deco span { bottom: auto; top: 168px; font-size: 28px; }
-  .nook-deco .d0 { left: 30%; }
-  .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
-  .nook-page .nook-deco span { top: auto; bottom: 8%; }
-} }
 
 
 /* ---------- Preview studio ---------- */
@@ -1385,7 +1349,7 @@ function freshState() {
     profile: { name: "", currency: "USD", weekStart: 1, buffer: 0 },
     settings: {
       theme: "light", palette: DEFAULT_PALETTE.id, h: DEFAULT_PALETTE.h, s: DEFAULT_PALETTE.s, font: "elegant", size: "normal",
-      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, seasonal: true, lastBackup: null,
+      motion: "on", celebrate: true, privacy: false, focus: false, justToday: false, lastBackup: null,
     },
     categories: DEFAULT_CATEGORIES.map(([name, emoji, group, budget], i) => ({
       id: uid(), name, emoji, group, budget, hue: CAT_HUES[i % CAT_HUES.length], rollover: false,
@@ -3240,7 +3204,6 @@ function viewSettings() {
           <div class="field"><span>Text size</span>${seg("size", [["normal", "Comfortable"], ["large", "Large"]])}</div>
           <div class="field"><span>Animations</span>${seg("motion", [["on", "On"], ["off", "Reduced"]])}</div>
           ${chk("celebrate", st.celebrate, "Celebrate wins with confetti 🎉").replace("<input", `<input data-input="celebrate"`)}
-          ${typeof NOOK !== "undefined" && NOOK ? chk("seasonal", st.seasonal, "Seasonal touches in your nook (autumn leaves, Halloween, holidays, spring petals) 🍂").replace("<input", `<input data-input="seasonal"`) : ""}
         </div>
       </div>
     </div>
@@ -5644,66 +5607,16 @@ Object.assign(INPUTS, {
   "acct-include": (el, ev) => { if (ev.type !== "change") return; const x = S.accounts.find((y) => y.id === el.dataset.id); if (x) { x.include = el.checked; commit(el.checked ? `${x.name} counts in today's number` : `${x.name} left out of today's number`); } },
 });
 
-/* 14-season.js */
-/* ==========================================================================
-   Seasonal touches in the Honey Nook: falling leaves, Halloween pumpkins,
-   holiday gifts, Valentine hearts and spring petals (Settings → Appearance).
-   ========================================================================== */
-const SEASONS = {
-  halloween: { label: "Halloween week", e: "🎃", fall: "leaf", deco: ["🎃", "🎃"], line: "Happy Halloween! Treats fit in your guide 🎃" },
-  autumn: { label: "Cozy autumn", e: "🍂", fall: "leaf", line: "Cozy season — a warm drink at home is a small win 🍂" },
-  holidays: { label: "Holiday season", e: "🎄", fall: "", deco: ["🎁", "🎄"], line: "Gifts feel lighter with an envelope for them 🎁" },
-  valentine: { label: "Valentine's", e: "💕", fall: "heart", line: "Loving yourself includes your future self 💕" },
-  spring: { label: "Spring", e: "🌸", fall: "petal", line: "Fresh start season — perfect for a balance check 🌸" },
-  summer: { label: "Summer", e: "☀️", fall: "", line: "Sunny days, calm money ☀️" },
-};
-function seasonNow(d = new Date()) {
-  const m = d.getMonth() + 1, day = d.getDate();
-  if (m === 10 && day >= 15) return "halloween";
-  if (m === 12) return "holidays";
-  if (m === 2 && day <= 14) return "valentine";
-  if ((m === 3 && day >= 20) || m === 4 || m === 5) return "spring";
-  if ((m === 9 && day >= 22) || m === 10 || m === 11) return "autumn";
-  if (m >= 6 && m <= 8) return "summer";
-  return "";
-}
-function seasonOn() { return NOOK && S.settings.seasonal !== false && !!seasonNow(); }
-function seasonLayer(id) {
-  const s = SEASONS[id];
-  const fall = s.fall ? `<div class="nook-fall fall-${s.fall}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--x:${(i * 41 + 7) % 100}%;--d:${7 + (i % 5)}s;--w:${(i * 1.7) % 7}s;--r:${(i * 67) % 360}deg">${s.fall === "heart" ? "♥" : ""}</i>`).join("")}</div>` : "";
-  const deco = s.deco ? `<div class="nook-deco" aria-hidden="true">${s.deco.map((e, i) => `<span class="d${i}">${e}</span>`).join("")}</div>` : "";
-  return `${fall}${deco}<span class="nook-season-chip" title="${esc(s.label)}">${s.e} ${esc(s.label)}</span>`;
-}
-
-if (NOOK) {
-  const baseScene = nookScene;
-  nookScene = function (opts) {
-    const html = baseScene(opts);
-    if (!seasonOn()) return html;
-    const id = seasonNow();
-    return html.replace('<div class="nook ', `<div data-season="${id}" class="nook `).replace('<div class="nook-light" aria-hidden="true"></div>', `<div class="nook-light" aria-hidden="true"></div>${seasonLayer(id)}`);
-  };
-  const baseLine = nookLine;
-  nookLine = function (a) {
-    const line = baseLine(a);
-    // Every other hour, a seasonal hello replaces the everyday encouragement (never over a real heads-up).
-    if (seasonOn() && a && a.leftToday > 0 && !a.stale && !a.shortBy && !a.confirmPayday && nookTime() !== "night" && new Date().getHours() % 2 === 0) return SEASONS[seasonNow()].line;
-    return line;
-  };
-}
-Object.assign(INPUTS, { seasonal: (el, ev) => { if (ev.type !== "change") return; S.settings.seasonal = el.checked; commit(el.checked ? "Seasonal touches on" : "Seasonal touches off"); } });
-
 /* 15-studio.js */
 /* ==========================================================================
    Preview studio (Honey Nook page): try every friend, pose, reaction, time
-   of day, room and season for free. Nothing is unlocked, spent or saved.
+   of day and room for free. Nothing is unlocked, spent or saved.
    ========================================================================== */
 const STUDIO = {
   pet: [["", "Yours"], ...Object.entries(NOOK_PETS).map(([id, p]) => [id, p.name])],
   pose: [["", "Auto"], ["idle", "Sitting"], ["coin", "Holding a coin"], ["happy", "Happy"], ["cheer", "Cheering"], ["sleep", "Sleeping"]],
   time: [["", "Now"], ["morning", "Morning"], ["day", "Day"], ["golden", "Golden hour"], ["night", "Night"]],
   room: [["", "Yours"], ...Object.entries(NOOK_ROOMS).map(([id, r]) => [id, r.name])],
-  season: [["", "Now"], ["none", "No season"], ...Object.entries(SEASONS).map(([id, x]) => [id, `${x.e} ${x.label}`])],
 };
 const studioOn = () => ui.view === "nook" && ui.nookPreview && Object.values(ui.nookPreview).some(Boolean);
 const sp = (k) => (ui.view === "nook" && ui.nookPreview ? ui.nookPreview[k] || "" : "");
@@ -5719,9 +5632,9 @@ function nookStudio() {
       <button type="button" class="chip" data-action="nook-play" data-mood="happy" data-text="♡">▶ Happy hello</button>
       <button type="button" class="chip" data-action="nook-play" data-mood="coin" data-text="+1 🍯">▶ Honey reward</button>
     </div></div>
-    ${row("time", "Time of day")}${row("room", "Room")}${row("season", "Season")}
+    ${row("time", "Time of day")}${row("room", "Room")}
     ${soon}
-    <div class="row wrap mt-s">${studioOn() ? `<button type="button" class="btn sm" data-action="nook-preview-reset">Back to my nook</button>` : ""}<span class="tiny">Your real nook follows the clock, the season and what you've unlocked.</span></div>
+    <div class="row wrap mt-s">${studioOn() ? `<button type="button" class="btn sm" data-action="nook-preview-reset">Back to my nook</button>` : ""}<span class="tiny">Your real nook follows the clock, the time of year and what you've unlocked.</span></div>
   </div>`;
 }
 
@@ -5734,10 +5647,6 @@ if (NOOK) {
   nookRoom = function (d) { return sp("room") || baseRoom(d); };
   const basePose = nookPose;
   nookPose = function (a) { return sp("pose") || basePose(a); };
-  const baseSeason = seasonNow;
-  seasonNow = function (d) { const v = sp("season"); return v === "none" ? "" : v || baseSeason(d); };
-  const baseSeasonOn = seasonOn;
-  seasonOn = function () { return sp("season") && sp("season") !== "none" ? true : baseSeasonOn(); };
 }
 Object.assign(ACTIONS, {
   "nook-preview": (el) => {

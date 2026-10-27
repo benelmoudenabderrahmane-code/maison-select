@@ -585,10 +585,9 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await page.click("[data-action=nook-preview][data-k=pet][data-v=mochi]");
     await page.click("[data-action=nook-preview][data-k=time][data-v=night]");
     await page.click("[data-action=nook-preview][data-k=room][data-v=room-winter]");
-    await page.click("[data-action=nook-preview][data-k=season][data-v=halloween]");
     await page.waitForTimeout(200);
-    const pv = await page.evaluate(() => ({ t: document.querySelector(".nook")?.dataset.time, r: document.querySelector(".nook")?.dataset.room, s: document.querySelector(".nook")?.dataset.season }));
-    check("preview studio shows night, winter room and a season", pv.t === "night" && pv.r === "room-winter" && pv.s === "halloween", JSON.stringify(pv));
+    const pv = await page.evaluate(() => ({ t: document.querySelector(".nook")?.dataset.time, r: document.querySelector(".nook")?.dataset.room, }));
+    check("preview studio shows night and the winter room", pv.t === "night" && pv.r === "room-winter", JSON.stringify(pv));
     await page.click("[data-action=nook-play][data-mood=cheer]");
     check("preview reactions play", !!(await page.$(".nook-pet.react")));
     check("preview unlocks and spends nothing", (await state(page, (S) => JSON.stringify(S.nook))) === before);
@@ -761,7 +760,7 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     await ctx.close();
   });
 
-  if (ed.skin?.balance) await step("accounts, move devices, seasons", async () => {
+  if (ed.skin?.balance) await step("accounts, move devices", async () => {
     const { ctx, page } = await newPage();
     current = page;
     await page.clock.install({ time: new Date(new Date().getFullYear(), 9, 26, 18, 10) });
@@ -798,13 +797,8 @@ for (const ed of config.editions.filter((e) => !process.argv[2] || e.id === proc
     check("…and explains the next steps", !!(await page.$(".modal .steps-list")));
     await page.keyboard.press("Escape");
     await go(page, "home");
-    check("seasonal touches in October", !!(await page.$(".nook[data-season] .nook-season-chip")) && !!(await page.$(".nook-deco")));
-    await go(page, "settings");
-    await page.click("[data-input=seasonal]");
-    await page.waitForTimeout(200);
-    await go(page, "home");
-    check("seasonal touches can be turned off", !(await page.$(".nook[data-season]")));
-    check("no JavaScript errors (accounts & seasons)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
+    await page.keyboard.press("Escape");
+    check("no JavaScript errors (accounts & devices)", page.errors.length === 0, page.errors.slice(0, 3).join(" | "));
     await ctx.close();
   });
 
