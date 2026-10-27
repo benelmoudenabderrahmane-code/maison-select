@@ -1,0 +1,93 @@
+/* Sage & Honey — "forest & gold" luxury listing art (2000×2000). Key content stays inside y 230–1770 so a 4:3 crop keeps it. */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&display=swap");
+:root {
+  --forest: #0f1e18; --forest-2: #183026; --forest-3: #22402f;
+  --gold: #d9ad5e; --gold-2: #f3d48f; --gold-3: #a8762a;
+  --cream: #f7efdc; --cream-2: #d7cdb6; --ivory: #fbf6ea; --ink: #1d2f25; --ink-2: #5d6a5f; --line: #e5d7b5;
+  --gold-grad: linear-gradient(100deg, #f8e3a6 0%, #dcab52 38%, #b47f2c 62%, #f1d08a 100%);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 2000px; height: 2000px; overflow: hidden; }
+body { font-family: "Inter", sans-serif; position: relative; -webkit-font-smoothing: antialiased; }
+body.dark { color: var(--cream); background: radial-gradient(1200px 1000px at 72% 38%, #2a4a37 0%, var(--forest-2) 42%, var(--forest) 78%); }
+body.light { color: var(--ink); background: radial-gradient(1300px 1100px at 70% 35%, #fffaf0 0%, var(--ivory) 45%, #f1e7cf 100%); }
+/* Film grain + gold hairline frame */
+body::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .10; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); }
+body.light::before { opacity: .07; mix-blend-mode: multiply; }
+body::after { content: ""; position: absolute; inset: 46px; z-index: 2; pointer-events: none; border-radius: 40px; border: 2px solid rgba(217, 173, 94, .42); box-shadow: inset 0 0 0 10px rgba(217, 173, 94, .06); }
+.bloom { position: absolute; z-index: 1; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(243, 212, 143, .38), rgba(243, 212, 143, 0) 66%); }
+.light .bloom { background: radial-gradient(circle, rgba(232, 176, 74, .30), rgba(232, 176, 74, 0) 66%); }
+.abs { position: absolute; z-index: 5; }
+
+/* Type */
+.eyebrow { font-size: 30px; font-weight: 700; letter-spacing: .32em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 22px; }
+.eyebrow::before, .eyebrow.c::after { content: ""; width: 70px; height: 2px; background: var(--gold-grad); }
+.light .eyebrow { color: var(--gold-3); }
+.h { font-family: "Fraunces", serif; font-weight: 560; letter-spacing: -.035em; line-height: .96; margin: 0; font-variant-numeric: lining-nums; font-optical-sizing: auto; }
+.gold { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: italic; font-weight: 480; padding-right: .06em; }
+.light .gold { background: linear-gradient(100deg, #c48a2c, #9a6619 55%, #c99a45); -webkit-background-clip: text; background-clip: text; }
+.lead { font-size: 44px; line-height: 1.4; margin: 0; color: var(--cream-2); font-weight: 420; }
+.light .lead { color: var(--ink-2); }
+.lead b { color: var(--cream); font-weight: 650; }
+.light .lead b { color: var(--ink); }
+.center { text-align: center; }
+
+/* Pills & lists */
+.pills { display: flex; flex-direction: column; gap: 20px; }
+.pill { display: inline-flex; align-items: center; gap: 20px; align-self: flex-start; padding: 20px 34px 20px 22px; border-radius: 999px; font-size: 38px; font-weight: 620; color: var(--cream);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02)); border: 2px solid rgba(217, 173, 94, .55); box-shadow: 0 20px 50px -30px rgba(0, 0, 0, .6); }
+.pill i { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--gold-grad); display: grid; place-items: center; font-style: normal; color: var(--forest); font-size: 26px; font-weight: 800; }
+.light .pill { color: var(--ink); background: rgba(255, 255, 255, .75); border-color: rgba(168, 118, 42, .45); }
+.row { display: flex; gap: 20px; flex-wrap: wrap; }
+.row .pill { align-self: auto; }
+.chip { display: inline-flex; align-items: center; gap: 12px; padding: 14px 26px; border-radius: 999px; font-size: 30px; font-weight: 650; background: var(--gold-grad); color: var(--forest); }
+
+/* Callout cards */
+.call { position: absolute; z-index: 8; width: 560px; padding: 34px 38px; border-radius: 30px; background: rgba(251, 246, 234, .97); color: var(--ink); box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .65); border: 2px solid rgba(217, 173, 94, .55); }
+.dark .call { background: linear-gradient(180deg, rgba(34, 64, 47, .96), rgba(24, 48, 38, .96)); color: var(--cream); }
+.call .n { display: inline-grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: var(--gold-grad); color: var(--forest); font-weight: 800; font-size: 28px; margin-bottom: 14px; }
+.call b { display: block; font-family: "Fraunces", serif; font-size: 44px; font-weight: 580; letter-spacing: -.02em; line-height: 1.08; }
+.call span { display: block; font-size: 30px; line-height: 1.38; margin-top: 10px; color: var(--ink-2); }
+.dark .call span { color: var(--cream-2); }
+
+/* Devices */
+.iphone { position: absolute; z-index: 6; aspect-ratio: 1170 / 2532; border-radius: 13.5% / 6.3%; padding: 2.6%;
+  background: linear-gradient(145deg, #4a4c4f 0%, #1c1d1f 18%, #0b0b0c 60%, #3a3b3d 100%);
+  box-shadow: 0 0 0 2px rgba(217, 173, 94, .45), 0 90px 140px -60px rgba(0, 0, 0, .75), 0 40px 60px -40px rgba(0, 0, 0, .6); }
+.iphone::before { content: ""; position: absolute; left: 50%; top: 3.3%; width: 30%; height: 3.6%; transform: translateX(-50%); border-radius: 999px; background: #050505; z-index: 2; }
+.iphone::after { content: ""; position: absolute; right: -1.2%; top: 22%; width: 1.4%; height: 11%; border-radius: 0 6px 6px 0; background: #2a2b2d; }
+.iphone .scr { width: 100%; height: 100%; border-radius: 11.6% / 5.4%; overflow: hidden; background: #fbf7ee; position: relative; display: flex; flex-direction: column; container-type: inline-size; }
+.iphone .scr::before { content: "9:41"; flex: none; height: 11cqw; display: flex; align-items: center; padding: 1.5cqw 0 0 9cqw; font: 700 4.6cqw/1 "Inter", sans-serif; color: #1d2f25; letter-spacing: -.01em; }
+.iphone .scr::after { content: ""; position: absolute; right: 7cqw; top: 4.4cqw; width: 15cqw; height: 4cqw; background:
+  radial-gradient(circle at 1.2cqw 60%, #1d2f25 1cqw, transparent 1.05cqw), linear-gradient(#1d2f25, #1d2f25) 4cqw 70% / 1cqw 45% no-repeat, linear-gradient(#1d2f25, #1d2f25) 5.6cqw 60% / 1cqw 65% no-repeat,
+  linear-gradient(#1d2f25, #1d2f25) 7.2cqw 50% / 1cqw 85% no-repeat, linear-gradient(90deg, #1d2f25 0 80%, transparent 0) 9cqw 50% / 6cqw 3cqw no-repeat; border-radius: 2px; }
+.iphone.night .scr { background: #161c18; }
+.iphone.night .scr::before { color: #f3ecd9; }
+.iphone img { display: block; width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: top; }
+.laptop { position: absolute; z-index: 6; }
+.laptop .lid { background: linear-gradient(160deg, #2b2d30, #0c0c0d); border-radius: 34px 34px 10px 10px; padding: 26px 26px 34px; box-shadow: 0 0 0 2px rgba(217, 173, 94, .35), 0 90px 140px -60px rgba(0, 0, 0, .7); }
+.laptop .lid img { display: block; width: 100%; border-radius: 6px; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+.laptop .base { height: 44px; margin: 0 -9%; border-radius: 4px 4px 40px 40px; background: linear-gradient(#e9e4da, #b8b1a3 60%, #8f897d); box-shadow: 0 30px 50px -20px rgba(0, 0, 0, .55); position: relative; }
+.laptop .base::before { content: ""; position: absolute; left: 42%; right: 42%; top: 0; height: 14px; border-radius: 0 0 16px 16px; background: rgba(0, 0, 0, .18); }
+.tablet { position: absolute; z-index: 6; aspect-ratio: 820 / 1180; border-radius: 6.5% / 4.6%; padding: 3.4%; background: linear-gradient(145deg, #45474a, #121314 30%, #0a0a0b 70%, #36373a);
+  box-shadow: 0 0 0 2px rgba(217, 173, 94, .4), 0 90px 140px -60px rgba(0, 0, 0, .7); }
+.tablet .scr { width: 100%; height: 100%; border-radius: 3.6% / 2.5%; overflow: hidden; background: #fbf7ee; }
+.tablet img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.card { position: absolute; z-index: 6; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px rgba(217, 173, 94, .5), 0 70px 120px -50px rgba(0, 0, 0, .55); }
+.card img { display: block; width: 100%; }
+
+/* Companions */
+.pet { position: absolute; z-index: 9; filter: drop-shadow(0 34px 30px rgba(0, 0, 0, .35)); }
+.pet img { display: block; width: 100%; }
+.shadow { position: absolute; z-index: 8; height: 46px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .38), transparent); }
+.bubble { position: absolute; z-index: 10; padding: 24px 32px; border-radius: 34px 34px 34px 10px; background: var(--ivory); color: var(--ink); font-family: "Fraunces", serif; font-style: italic; font-size: 38px; line-height: 1.2; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .55); border: 2px solid rgba(217, 173, 94, .5); }
+
+/* Footer wordmark */
+.mark { position: absolute; z-index: 7; left: 0; right: 0; bottom: 92px; text-align: center; font-family: "Fraunces", serif; font-style: italic; font-size: 44px; font-weight: 520; letter-spacing: .01em; color: var(--cream); }
+.light .mark { color: var(--ink); }
+.mark span { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mark small { display: block; font-family: "Inter", sans-serif; font-style: normal; font-size: 24px; letter-spacing: .34em; text-transform: uppercase; margin-top: 8px; color: var(--gold); }
+.light .mark small { color: var(--gold-3); }
+.fine { position: absolute; z-index: 7; font-size: 24px; color: rgba(215, 205, 182, .75); }
+.light .fine { color: #8a8a7c; }

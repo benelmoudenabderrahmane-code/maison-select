@@ -1,0 +1,113 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&display=swap">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; font-family: Inter, sans-serif; color: #f7efdc; background: radial-gradient(900px 800px at 60% 45%, #2a4a37 0%, #183026 45%, #0f1e18 85%); }
+  body::after { content: ""; position: absolute; inset: 24px; border-radius: 26px; border: 1.5px solid rgba(217, 173, 94, .42); z-index: 30; pointer-events: none; }
+  .a { position: absolute; will-change: transform, opacity; }
+  .gold { background: linear-gradient(100deg, #f8e3a6 0%, #dcab52 38%, #b47f2c 62%, #f1d08a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: italic; font-weight: 480; padding-right: .06em; }
+  .h { font-family: Fraunces, serif; font-weight: 560; letter-spacing: -.035em; line-height: 1; }
+  #glow { left: 140px; top: 120px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(243, 212, 143, .32), rgba(243, 212, 143, 0) 65%); }
+  #title { left: 0; right: 0; top: 150px; text-align: center; font-size: 112px; }
+  #sub { left: 0; right: 0; top: 285px; text-align: center; font-size: 26px; letter-spacing: .34em; text-transform: uppercase; color: #d9ad5e; font-weight: 700; }
+  .pet { filter: drop-shadow(0 26px 22px rgba(0, 0, 0, .4)); }
+  .pet img { display: block; width: 100%; }
+  #mochi { left: 340px; top: 330px; width: 400px; transform-origin: 50% 100%; }
+  #cheer, #sleep { left: 180px; top: 640px; width: 260px; transform-origin: 50% 100%; }
+  #sleep { top: 760px; width: 300px; left: 160px; }
+  #bun { left: 400px; top: 660px; width: 230px; transform-origin: 50% 100%; }
+  #shadowM { left: 330px; top: 950px; width: 420px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .4), transparent); }
+  .phone { left: 600px; top: 230px; width: 330px; aspect-ratio: 1170 / 2532; border-radius: 46px; padding: 9px; background: linear-gradient(145deg, #4a4c4f, #111 30%, #0b0b0c 70%, #3a3b3d); box-shadow: 0 0 0 1.5px rgba(217, 173, 94, .5), 0 50px 90px -40px rgba(0, 0, 0, .8); }
+  .phone::before { content: ""; position: absolute; left: 50%; top: 20px; width: 90px; height: 26px; transform: translateX(-50%); border-radius: 999px; background: #050505; z-index: 3; }
+  .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 38px; overflow: hidden; background: #fbf7ee; }
+  .phone .scr .bar { position: absolute; left: 0; right: 0; top: 0; height: 40px; background: #fbf7ee; font: 700 15px Inter; color: #1d2f25; padding: 13px 0 0 30px; z-index: 2; }
+  .phone .scr .bar.n { background: #161c18; color: #f3ecd9; }
+  .phone .scr img { position: absolute; left: 0; top: 40px; width: 100%; }
+  .cap { left: 70px; right: 70px; top: 66px; text-align: center; font-size: 60px; }
+  .badge { left: 640px; top: 520px; padding: 18px 26px; border-radius: 22px; background: linear-gradient(180deg, rgba(34, 64, 47, .97), rgba(24, 48, 38, .97)); border: 1.5px solid rgba(217, 173, 94, .6); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .7); }
+  .badge small { display: block; font-size: 15px; letter-spacing: .22em; text-transform: uppercase; color: #d9ad5e; font-weight: 700; }
+  .badge b { display: block; font-family: Fraunces, serif; font-size: 58px; font-weight: 560; letter-spacing: -.02em; margin-top: 4px; }
+  .chip { padding: 14px 22px; border-radius: 999px; background: linear-gradient(100deg, #f8e3a6, #dcab52 45%, #c18c36); color: #0f1e18; font-weight: 800; font-size: 24px; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, .7); white-space: nowrap; }
+  #float { left: 270px; top: 580px; font-weight: 800; font-size: 40px; color: #f3d48f; text-shadow: 0 2px 0 #0f1e18; }
+  #end { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #end .w { font-family: Fraunces, serif; font-style: italic; font-size: 104px; font-weight: 520; letter-spacing: -.02em; }
+  #end .t { font-size: 24px; letter-spacing: .34em; text-transform: uppercase; color: #d9ad5e; font-weight: 700; margin-top: 14px; }
+  #end .row { display: flex; gap: 14px; margin-top: 34px; }
+  #end .p { padding: 14px 24px; border-radius: 999px; border: 1.5px solid rgba(217, 173, 94, .6); font-size: 24px; font-weight: 650; }
+  #end img { width: 230px; margin-bottom: 18px; filter: drop-shadow(0 24px 20px rgba(0, 0, 0, .4)); }
+  #cta { margin-top: 34px; }
+  #bar { left: 80px; right: 80px; bottom: 54px; height: 4px; border-radius: 4px; background: rgba(217, 173, 94, .18); z-index: 31; }
+  #bar i { display: block; height: 100%; width: 0; border-radius: 4px; background: linear-gradient(90deg, #f8e3a6, #dcab52); }
+</style></head><body>
+<div class="a" id="glow"></div>
+<div class="a h" id="title">Meet <span class="gold">Mochi</span></div>
+<div class="a" id="sub">your calm money buddy</div>
+<div class="a" id="shadowM"></div>
+<div class="a pet" id="mochi"><img src="shots/mochi-hero.webp"></div>
+<div class="a pet" id="cheer"><img src="shots/mochi-cheer.png"></div>
+<div class="a pet" id="sleep"><img src="shots/mochi-sleep.png"></div>
+<div class="a pet" id="bun"><img src="shots/bun-cheer.png"></div>
+<div class="a" id="float">+1 🍯</div>
+<div class="a phone" id="phone"><div class="scr">
+  <div class="bar" id="barD">9:41</div><div class="bar n" id="barN">9:41</div>
+  <img id="s1" src="shots/m-home.png"><img id="s2" src="shots/m-collect.png"><img id="s3" src="shots/m-forecast.png"><img id="s4" src="shots/m-home-night.png">
+</div></div>
+<div class="a badge" id="num"><small>Safe to spend</small><b id="numv">$0.00</b></div>
+<div class="a chip" id="paid" style="left:612px;top:880px">✓ 3 Apple Pay spends added</div>
+<div class="a chip" id="low" style="left:610px;top:880px">Lowest point: $405 · Nov 5</div>
+<div class="a h cap" id="c1">Know what's safe to spend <span class="gold">until payday.</span></div>
+<div class="a h cap" id="c2">Paid with Apple Pay? <span class="gold">It's already here.</span></div>
+<div class="a h cap" id="c3">See your month <span class="gold">before it happens.</span></div>
+<div class="a h cap" id="c4">Sleeps at 9 pm. <span class="gold">Bills covered.</span></div>
+<div class="a h cap" id="c5">Earn honey drops, <span class="gold">unlock friends.</span></div>
+<div class="a" id="end">
+  <img src="shots/mochi-hero.webp">
+  <div class="w">Sage <span class="gold">&amp;</span> Honey</div>
+  <div class="t">ADHD-friendly budget app</div>
+  <div class="row"><span class="p">Phone · Tablet · Computer</span><span class="p">No subscription</span><span class="p">Works offline</span></div>
+  <div class="chip" id="cta">Try the free demo ↓</div>
+</div>
+<div class="a" id="bar"><i id="bari"></i></div>
+<script src="_film.js"></script>
+<script>
+window.DURATION = 15;
+const drift = dust();
+window.render = (t) => {
+  drift(t);
+  $("bari").style.width = (t / 15 * 100) + "%";
+  // A — Mochi arrives
+  const inM = back(prog(t, 0.1, 0.9));
+  const toSide = easeInOut(prog(t, 2.5, 3.3));
+  const breathe = 1 + Math.sin(t * 2.4) * 0.012;
+  const endOut = 1 - prog(t, 12.4, 12.9);
+  const swap = t >= 8.3 && t < 9.5 ? "cheer" : t >= 10.2 && t < 12.6 ? "sleep" : "hero";
+  set("mochi", { x: lerp(0, -230, toSide), y: lerp(90, 0, inM), s: lerp(0.8, 1, inM) * lerp(1, 0.66, toSide) * breathe, o: prog(t, 0.1, 0.5) * endOut * (swap === "hero" ? 1 : 0) });
+  set("shadowM", { x: lerp(0, -230, toSide), s: lerp(1, 0.66, toSide), o: prog(t, 0.2, 0.8) * endOut * 0.9 });
+  const hop = Math.max(0, Math.sin(prog(t, 8.3, 9.5) * Math.PI * 2)) * -70;
+  set("cheer", { y: hop, o: swap === "cheer" ? 1 : 0 });
+  set("sleep", { s: 1 + Math.sin(t * 1.6) * 0.015, o: swap === "sleep" ? 1 : 0 });
+  set("float", { y: -110 * easeOut(prog(t, 8.4, 9.9)), o: win(t, 8.4, 9.9, 0.25) });
+  set("title", { y: lerp(30, 0, easeOut(prog(t, 0.5, 1.2))), o: Math.min(prog(t, 0.5, 1.1), 1 - prog(t, 2.3, 2.7)) });
+  set("sub", { o: Math.min(prog(t, 0.9, 1.5), 1 - prog(t, 2.3, 2.7)) });
+  // B — the phone
+  const inP = easeOut(prog(t, 2.7, 3.5));
+  set("phone", { x: lerp(560, 0, inP), r: lerp(8, 0, inP), o: prog(t, 2.7, 3.0) * endOut });
+  const cross = (id, a, b) => $(id).style.opacity = Math.min(prog(t, a, a + 0.35), b ? 1 - prog(t, b, b + 0.35) : 1);
+  cross("s1", 0, 5.3); cross("s2", 5.3, 7.7); cross("s3", 7.7, 10.1); cross("s4", 10.1, 0);
+  $("barN").style.opacity = prog(t, 10.1, 10.45); $("barD").style.opacity = 1 - prog(t, 10.1, 10.45);
+  const pn = back(prog(t, 3.4, 4.0));
+  set("num", { x: lerp(60, -170, pn), y: 40, s: lerp(0.6, 1, pn), o: win(t, 3.4, 5.3, 0.3) });
+  $("numv").textContent = money(586.34 * easeOut(prog(t, 3.5, 4.6)));
+  set("paid", { y: lerp(30, 0, back(prog(t, 6.1, 6.6))), o: win(t, 6.1, 7.7, 0.3) });
+  set("low", { y: lerp(30, 0, back(prog(t, 8.6, 9.1))), o: win(t, 8.6, 10.1, 0.3) });
+  // Captions
+  [["c1", 3.0, 5.3], ["c2", 5.4, 7.7], ["c3", 7.8, 10.1], ["c4", 10.2, 11.4], ["c5", 11.5, 12.5]].forEach(([id, a, b]) => set(id, { y: lerp(18, 0, easeOut(prog(t, a, a + 0.45))), o: win(t, a, b, 0.3) }));
+  // Bun hops in
+  const inB = back(prog(t, 11.4, 12.0));
+  set("bun", { x: lerp(-220, 0, easeOut(prog(t, 11.4, 12.0))), y: Math.max(0, Math.sin(prog(t, 11.4, 12.3) * Math.PI * 2)) * -40, s: lerp(0.7, 1, inB), o: prog(t, 11.4, 11.6) * endOut });
+  // F — end card
+  const e = easeOut(prog(t, 12.8, 13.6));
+  set("end", { y: lerp(40, 0, e), o: prog(t, 12.8, 13.4) });
+  set("cta", { s: 1 + Math.max(0, Math.sin((t - 13.8) * 3.2)) * 0.04 * prog(t, 13.8, 14) });
+};
+render(0);
+</script></body></html>

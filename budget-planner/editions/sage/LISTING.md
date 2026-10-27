@@ -37,9 +37,22 @@ Rotate in after 30 days: `cash envelopes`, `sinking funds`, `refund tracker`, `s
 
 ## Images and video
 
-Upload `images/Sage-and-Honey-01-cover.jpg` … `10-what-you-get.jpg` in order (2000 × 2000).
+Upload in this order (2000 × 2000; the key content sits in the middle so Etsy's 4:3 thumbnails keep it):
 
-**Video:** upload `video/Sage-and-Honey-Video-Promo.mp4` (15 s, premium Q&A promo) as the main video, and `video/Sage-and-Honey-Walkthrough.mp4` (14.5 s, real app walkthrough) as the second one if Etsy offers two slots. Both are silent.
+1. `01-cover` — the click-maker: Mochi + the real app + the promise (dark background stands out in white search results)
+2. `02-meet-the-friends` — Mochi & Bun, their poses, honey drops
+3. `03-one-number` — safe to spend, explained
+4. `04-forecast` — until payday, heads-up, reminders, irregular pay
+5. `05-apple-pay` — Apple Pay quick entry in 3 steps
+6. `06-gentle-habits` — evening recap & challenges
+7. `07-protected-first` — bills, envelopes, accounts
+8. `08-adhd-brains` — the ADHD-friendly tools
+9. `09-every-screen` — phone, tablet, computer, offline
+10. `10-what-you-get` — files, free demo
+
+**Video** (Etsy takes one per listing, 5–15 s, silent): upload `video/Sage-and-Honey-Video-1-Meet-Mochi.mp4` (14.8 s, character-led — best for clicks). Use `video/Sage-and-Honey-Video-2-Inside-the-App.mp4` (14.8 s, feature tour) for Pinterest, Instagram/TikTok, or swap it in later to compare. Both are 1080 × 1080.
+
+**AI disclosure:** the companion characters (Mochi, Bun) and the room illustrations were made with an AI image tool. Keep the line about it at the end of the description, and answer Etsy's "how is it made" questions accordingly.
 
 ## Pricing (suggestion)
 
@@ -116,6 +129,7 @@ A one-time iPhone Shortcut (step-by-step guide included, about 3 minutes) saves 
 • Digital downloads can't be refunded, but message me and I'll help with anything.
 
 This planner is a budgeting tool and does not provide financial advice.
+The companion characters and room illustrations were created with the help of AI image tools and finished by hand. Apple Pay is a trademark of Apple Inc.; this planner is not affiliated with Apple.
 ```
 
 ## Message to buyers

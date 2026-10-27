@@ -92,7 +92,7 @@
       "tagline": "Calm money, sweet days",
       "storeKey": "sage-honey-v1",
       "hostedDir": "sage/planner-80ef14a66457",
-      "listingImages": true,
+      "listingImages": false,
       "fonts": "family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&family=Lexend:wght@300..700",
       "themeColor": "#f7f2e8",
       "skin": {

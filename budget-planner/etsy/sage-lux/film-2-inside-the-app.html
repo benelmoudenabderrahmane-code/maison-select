@@ -1,0 +1,96 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&display=swap">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; font-family: Inter, sans-serif; color: #f7efdc; background: radial-gradient(900px 800px at 50% 42%, #2a4a37 0%, #183026 45%, #0f1e18 85%); }
+  body::after { content: ""; position: absolute; inset: 24px; border-radius: 26px; border: 1.5px solid rgba(217, 173, 94, .42); z-index: 30; pointer-events: none; }
+  .a { position: absolute; will-change: transform, opacity; }
+  .gold { background: linear-gradient(100deg, #f8e3a6 0%, #dcab52 38%, #b47f2c 62%, #f1d08a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: italic; font-weight: 480; padding-right: .06em; }
+  .h { font-family: Fraunces, serif; font-weight: 560; letter-spacing: -.035em; line-height: 1; }
+  .eb { font-size: 22px; letter-spacing: .34em; text-transform: uppercase; color: #d9ad5e; font-weight: 700; }
+  #intro { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #intro .h { font-size: 120px; margin-top: 18px; }
+  #intro .s { font-size: 30px; color: #d7cdb6; margin-top: 26px; }
+  .laptop { left: 110px; top: 190px; width: 860px; }
+  .laptop .lid { background: linear-gradient(160deg, #2b2d30, #0c0c0d); border-radius: 22px 22px 8px 8px; padding: 16px 16px 22px; box-shadow: 0 0 0 1.5px rgba(217, 173, 94, .4), 0 60px 100px -50px rgba(0, 0, 0, .8); }
+  .laptop .view { border-radius: 4px; overflow: hidden; aspect-ratio: 16 / 10; }
+  .laptop img { display: block; width: 100%; transform-origin: 30% 20%; }
+  .laptop .base { height: 28px; margin: 0 -8%; border-radius: 3px 3px 28px 28px; background: linear-gradient(#e9e4da, #b8b1a3 60%, #8f897d); }
+  .card { border-radius: 24px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1.5px rgba(217, 173, 94, .5), 0 50px 90px -40px rgba(0, 0, 0, .75); }
+  .card img { display: block; width: 100%; }
+  .phone { width: 320px; aspect-ratio: 1170 / 2532; border-radius: 44px; padding: 9px; background: linear-gradient(145deg, #4a4c4f, #111 30%, #0b0b0c 70%, #3a3b3d); box-shadow: 0 0 0 1.5px rgba(217, 173, 94, .5), 0 50px 90px -40px rgba(0, 0, 0, .8); }
+  .phone::before { content: ""; position: absolute; left: 50%; top: 19px; width: 86px; height: 25px; transform: translateX(-50%); border-radius: 999px; background: #050505; z-index: 3; }
+  .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: #fbf7ee; }
+  .phone .scr::before { content: "9:41"; position: absolute; left: 0; right: 0; top: 0; height: 38px; background: #fbf7ee; font: 700 15px Inter; color: #1d2f25; padding: 12px 0 0 28px; box-sizing: border-box; z-index: 2; }
+  .phone img { position: absolute; left: 0; top: 38px; width: 100%; }
+  .lab { left: 0; right: 0; bottom: 96px; display: flex; justify-content: center; }
+  .lab div { display: flex; align-items: center; gap: 18px; padding: 16px 30px 16px 16px; border-radius: 999px; background: rgba(15, 30, 24, .9); border: 1.5px solid rgba(217, 173, 94, .6); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .8); }
+  .lab i { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 22px; color: #0f1e18; background: linear-gradient(100deg, #f8e3a6, #dcab52 45%, #c18c36); }
+  .lab b { font-family: Fraunces, serif; font-size: 40px; font-weight: 560; letter-spacing: -.02em; }
+  .lab span { font-size: 22px; color: #d7cdb6; margin-left: 6px; }
+  .pet { filter: drop-shadow(0 22px 20px rgba(0, 0, 0, .45)); }
+  .pet img { display: block; width: 100%; }
+  #end { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #end .h { font-size: 84px; }
+  #end .row { display: flex; gap: 14px; margin-top: 30px; }
+  #end .p { padding: 14px 24px; border-radius: 999px; border: 1.5px solid rgba(217, 173, 94, .6); font-size: 24px; font-weight: 650; }
+  #end .w { font-family: Fraunces, serif; font-style: italic; font-size: 54px; margin-top: 34px; }
+  #end img { width: 190px; margin-bottom: 16px; filter: drop-shadow(0 22px 18px rgba(0, 0, 0, .45)); }
+  .chip { display: inline-block; margin-top: 26px; padding: 16px 30px; border-radius: 999px; background: linear-gradient(100deg, #f8e3a6, #dcab52 45%, #c18c36); color: #0f1e18; font-weight: 800; font-size: 28px; }
+  #bar { left: 80px; right: 80px; bottom: 54px; height: 4px; border-radius: 4px; background: rgba(217, 173, 94, .18); z-index: 31; }
+  #bar i { display: block; height: 100%; width: 0; border-radius: 4px; background: linear-gradient(90deg, #f8e3a6, #dcab52); }
+</style></head><body>
+<div class="a" id="intro"><div class="eb">Sage &amp; Honey</div><div class="h">Inside <span class="gold">the app</span></div><div class="s">7 premium features in 15 seconds</div></div>
+
+<div class="a laptop" id="L1"><div class="lid"><div class="view"><img id="L1i" src="shots/d-home.png"></div></div><div class="base"></div></div>
+<div class="a card" id="F" style="left:70px;top:300px;width:940px"><img src="shots/d-forecast.png"></div>
+<div class="a phone" id="P1" style="left:380px;top:130px"><div class="scr"><img src="shots/m-collect.png"></div></div>
+<div class="a card" id="R" style="left:110px;top:200px;width:620px"><img src="shots/d-recap.png"></div>
+<div class="a card" id="C" style="left:350px;top:480px;width:620px"><img src="shots/d-challenge.png"></div>
+<div class="a pet" id="bun" style="left:770px;top:150px;width:210px"><img src="shots/bun-hero.webp"></div>
+<div class="a laptop" id="L2"><div class="lid"><div class="view"><img id="L2i" src="shots/d-nook-studio.png"></div></div><div class="base"></div></div>
+<div class="a phone" id="P2" style="left:190px;top:140px;width:300px"><div class="scr"><img src="shots/m-justtoday.png"></div></div>
+<div class="a phone" id="P3" style="left:590px;top:140px;width:300px"><div class="scr"><img src="shots/m-accounts.png"></div></div>
+<div class="a laptop" id="L3"><div class="lid"><div class="view"><img src="shots/d-search.png"></div></div><div class="base"></div></div>
+
+<div class="a lab" id="l1"><div><i>01</i><b>Cozy home</b><span>one number for today</span></div></div>
+<div class="a lab" id="l2"><div><i>02</i><b>Forecast</b><span>until payday</span></div></div>
+<div class="a lab" id="l3"><div><i>03</i><b>Apple Pay</b><span>quick entry</span></div></div>
+<div class="a lab" id="l4"><div><i>04</i><b>Evening recap</b><span>&amp; challenges</span></div></div>
+<div class="a lab" id="l5"><div><i>05</i><b>Honey Nook</b><span>friends &amp; rooms</span></div></div>
+<div class="a lab" id="l6"><div><i>06</i><b>Just today</b><span>&amp; accounts</span></div></div>
+<div class="a lab" id="l7"><div><i>07</i><b>Search</b><span>anything, by amount too</span></div></div>
+
+<div class="a" id="end">
+  <img src="shots/mochi-hero.webp">
+  <div class="h">Everything included. <span class="gold">No subscription.</span></div>
+  <div class="row"><span class="p">Online + offline</span><span class="p">No bank login</span><span class="p">24 currencies</span></div>
+  <div class="w">Sage <span class="gold">&amp;</span> Honey</div>
+  <div class="chip">Try the free demo ↓</div>
+</div>
+<div class="a" id="bar"><i id="bari"></i></div>
+<script src="_film.js"></script>
+<script>
+window.DURATION = 15;
+const drift = dust(26);
+// [element ids, label, start, end]
+const S = [[["L1"], "l1", 1.5, 3.5], [["F"], "l2", 3.5, 5.4], [["P1"], "l3", 5.4, 7.3], [["R", "C", "bun"], "l4", 7.3, 9.2], [["L2"], "l5", 9.2, 11.0], [["P2", "P3"], "l6", 11.0, 12.6], [["L3"], "l7", 12.6, 13.6]];
+window.render = (t) => {
+  drift(t);
+  $("bari").style.width = (t / 15 * 100) + "%";
+  set("intro", { y: lerp(26, 0, easeOut(prog(t, 0.1, 0.8))), o: win(t, 0.05, 1.5, 0.4) });
+  for (const [ids, lab, a, b] of S) {
+    const k = prog(t, a, b), inn = easeOut(prog(t, a, a + 0.55)), o = win(t, a, b, 0.32);
+    ids.forEach((id, j) => {
+      const d = j * 0.12, inj = easeOut(prog(t, a + d, a + d + 0.55));
+      const pet = id === "bun";
+      set(id, { x: pet ? lerp(80, 0, inj) : 0, y: lerp(pet ? 0 : 70, 0, inj) + (pet ? Math.max(0, Math.sin(prog(t, a + 0.5, a + 1.4) * Math.PI * 2)) * -30 : 0), s: lerp(0.94, 1, inj) * (1 + 0.035 * k), o: win(t, a + d, b, 0.32) });
+    });
+    set(lab, { y: lerp(26, 0, back(prog(t, a + 0.15, a + 0.6))), o: o });
+  }
+  // A slow push-in on the laptop screens
+  $("L1i").style.transform = `scale(${1 + 0.18 * easeInOut(prog(t, 1.9, 3.5))})`;
+  $("L2i").style.transform = `scale(${1 + 0.14 * easeInOut(prog(t, 9.5, 11))})`;
+  set("end", { y: lerp(36, 0, easeOut(prog(t, 13.6, 14.3))), o: prog(t, 13.6, 14.1) });
+};
+render(0);
+</script></body></html>
