@@ -87,7 +87,8 @@ function feesScan(today = todayISO()) {
     const steady = amounts.every((x) => Math.abs(x - mean) <= Math.max(1, mean * 0.12));
     const monthly = avg >= 25 && avg <= 35, weekly = avg >= 6 && avg <= 8;
     if (steady && (monthly || weekly) && !S.bills.some((b) => normName(b.name) === name)) {
-      repeats.push({ name: sorted.at(-1).name, amount: round2(sorted.at(-1).amount), every: monthly ? "month" : "week", count: list.length, yearly: round2(sorted.at(-1).amount * (monthly ? 12 : 52)) });
+      const lastT = sorted[sorted.length - 1];
+      repeats.push({ name: lastT.name, amount: round2(lastT.amount), every: monthly ? "month" : "week", count: list.length, yearly: round2(lastT.amount * (monthly ? 12 : 52)) });
     }
   }
   const dupes = [];

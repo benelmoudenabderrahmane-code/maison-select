@@ -752,6 +752,22 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .nook-bubble { max-width: 170px; font-size: .82rem; transform: translateX(-70%); }
   @keyframes nookBubble { from { opacity: 0; } to { opacity: 1; } }
 }
+/* Older Safari (before iOS 16) has no container queries: fall back to the screen width. */
+@supports not (container-type: inline-size) { @media (max-width: 860px) {
+  .nook, .nook-page { aspect-ratio: auto; min-height: 0; padding-top: 250px; background: var(--surface); }
+  .nook-bg { height: 260px; bottom: auto; object-position: 66% 50%; }
+  .nook-light { height: 260px; bottom: auto; }
+  .nook-card { position: relative; left: auto; top: auto; transform: none; width: auto; margin: 0 10px 10px; animation: none; background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nook-friend { left: 64%; bottom: auto; top: 88px; width: min(30%, 120px); min-width: 0; top: 100px; }
+  .nook-drops { right: auto; left: 12px; top: 204px; }
+  .nook-page .nook-drops { top: 12px; }
+  .nook-page { padding-top: 0; aspect-ratio: 1.45 / 1; }
+  .nook-page .nook-bg, .nook-page .nook-light { height: 100%; bottom: 0; }
+  .nook-page .nook-friend { top: auto; bottom: 7%; width: 24%; left: 62%; }
+  .nook-bubble { max-width: 170px; font-size: .82rem; transform: translateX(-70%); }
+  @keyframes nookBubble { from { opacity: 0; } to { opacity: 1; } }
+} }
+
 
 /* ---------- Today tools: forecast, evening recap, just today, forgot ---------- */
 .avail.counting { transition: none; }
@@ -870,6 +886,15 @@ h1, h2, h3 { color: var(--head, var(--ink)); }
   .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
   .nook-page .nook-deco span { top: auto; bottom: 8%; }
 }
+/* Older Safari (before iOS 16) has no container queries: fall back to the screen width. */
+@supports not (container-type: inline-size) { @media (max-width: 860px) {
+  .nook-season-chip { top: 210px; right: 12px; font-size: .7rem; padding: 5px 10px; }
+  .nook-deco span { bottom: auto; top: 168px; font-size: 28px; }
+  .nook-deco .d0 { left: 30%; }
+  .nook-deco .d1 { left: 38%; top: 176px; font-size: 20px; }
+  .nook-page .nook-deco span { top: auto; bottom: 8%; }
+} }
+
 
 /* ---------- Preview studio ---------- */
 .studio-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 0; border-top: 1px dashed var(--line-2); }

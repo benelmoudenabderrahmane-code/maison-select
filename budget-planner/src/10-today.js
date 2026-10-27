@@ -40,7 +40,7 @@ function paydayForecast(a = availableSummary()) {
     pts.push({ i, d, v: round2(bal) });
   }
   const low = pts.reduce((m, p) => (p.v < m.v ? p : m), pts[0]);
-  return { start: a.balance + (a.extra || 0), pts, events, low, end: pts.at(-1).v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
+  return { start: a.balance + (a.extra || 0), pts, events, low, end: pts[pts.length - 1].v, pay: a.pay.occ ? a.pay.occ.amount : 0, h: a.h };
 }
 function forecastChart(f) {
   // The line stretches with the card (SVG without aspect ratio); dots and labels are HTML so they stay round and readable.
